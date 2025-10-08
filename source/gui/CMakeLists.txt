@@ -1,5 +1,5 @@
-add_library(common STATIC
-    source/ErrorHandler.cpp
+add_library(gui STATIC
+    source/Vector.cpp
 )
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -18,10 +18,16 @@ else()
     add_compile_options(-O2)
 endif()
 
-set_target_properties(common PROPERTIES FOLDER "source")
+set_target_properties(gui PROPERTIES FOLDER "source")
 
-target_include_directories(common
+target_include_directories(gui
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> # Для сборки проекта
         $<INSTALL_INTERFACE:include>                           # Для будущей установки
+)
+
+target_link_libraries(gui
+    PRIVATE 
+        sfml-graphics
+        common
 )
