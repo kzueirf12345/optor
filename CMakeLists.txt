@@ -1,0 +1,46 @@
+cmake_minimum_required(VERSION 3.21)
+
+project(optor LANGUAGES CXX)
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # to generate compile_commands.json
+
+set(CMAKE_BUILD_PARALLEL_LEVEL 1)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    add_compile_options(
+        -g
+        -O0
+        -fsanitize=address
+        -fsanitize=undefined
+        -fno-omit-frame-pointer
+    )
+    add_link_options(
+        -fsanitize=address
+        -fsanitize=undefined
+    )
+else()
+    add_compile_options(-O2)
+endif()
+
+add_subdirectory(source/common)
+
+find_package(X11                            REQUIRED)
+find_package(SFML 2.5.1 COMPONENTS graphics REQUIRED)
+
+
+add_executable(${CMAKE_PROJECT_NAME}
+    source/main.cpp
+)
+
+target_link_libraries(${CMAKE_PROJECT_NAME} 
+    PRIVATE
+        sfml-graphics
+        ${X11_LIBRARIES}
+
+        common
+)
