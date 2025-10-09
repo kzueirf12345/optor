@@ -20,7 +20,7 @@ class ErrorHandler {
             try {
                 if constexpr (std::is_void_v<std::invoke_result_t<Func, Args...>>){
                     std::invoke(std::forward<Func>(func), std::forward<Args>(args)...);
-                    return 0;
+                    return;
                 } else {
                     return std::invoke(std::forward<Func>(func), std::forward<Args>(args)...);
                 }

@@ -1,5 +1,8 @@
-add_library(vector STATIC
+add_library(hui STATIC
     source/Vector.cpp
+    source/Drawable.cpp
+    source/Event.cpp
+    source/Window.cpp
 )
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -18,15 +21,15 @@ else()
     add_compile_options(-O2)
 endif()
 
-set_target_properties(vector PROPERTIES FOLDER "source")
+set_target_properties(hui PROPERTIES FOLDER "source")
 
-target_include_directories(vector
+target_include_directories(hui
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> # Для сборки проекта
         $<INSTALL_INTERFACE:include>                           # Для будущей установки
 )
 
-target_link_libraries(vector
+target_link_libraries(hui
     PRIVATE 
         sfml-graphics
         common

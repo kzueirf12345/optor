@@ -1,9 +1,9 @@
-#ifndef OPTOR_SOURCE_VECTOR_INCLUDE_VECTOR_VECTOR_HPP
-#define OPTOR_SOURCE_VECTOR_INCLUDE_VECTOR_VECTOR_HPP
+#ifndef OPTOR_SOURCE_HUI_INCLUDE_HUI_VECTOR_HPP
+#define OPTOR_SOURCE_HUI_INCLUDE_HUI_VECTOR_HPP
 
 #include <cmath>
 
-namespace Mephi
+namespace hui
 {
 
 enum class Axis {
@@ -33,9 +33,9 @@ class Vector2 {
         [[nodiscard]] T Len2() const;
         [[nodiscard]] T Len()  const;
         [[nodiscard]] Vector2<T> Normal() const;
-        [[nodiscard]] Vector2<T> Mirror(Mephi::Axis axis) const;
-        [[nodiscard]] Vector2<T> Clump(const Mephi::Vector2<T>& minVec, 
-                                       const Mephi::Vector2<T>& maxVec) const;
+        [[nodiscard]] Vector2<T> Mirror(hui::Axis axis) const;
+        [[nodiscard]] Vector2<T> Clump(const hui::Vector2<T>& minVec, 
+                                       const hui::Vector2<T>& maxVec) const;
 
         Vector2<T> operator-() const {
             return Vector2<T>(-this->x, -this->y);
@@ -66,18 +66,18 @@ class Vector2 {
         }
 };
 
-typedef Mephi::Vector2<float>  Vector2f;
-typedef Mephi::Vector2<double> Vector2d;
-typedef Mephi::Vector2<int>    Vector2i;
+typedef hui::Vector2<float>  Vector2f;
+typedef hui::Vector2<double> Vector2d;
+typedef hui::Vector2<int>    Vector2i;
 
 template <typename T>
-T operator ^(const Mephi::Vector2<T>& left, const Mephi::Vector2<T>& right) {
+T operator ^(const hui::Vector2<T>& left, const hui::Vector2<T>& right) {
     return left.x * right.x + left.y * right.y;
 }
 
 template <typename T>
-Mephi::Vector2<T> operator !(const Mephi::Vector2<T>& right) {
-    return Mephi::Vector2<T>(right / right.Len());
+hui::Vector2<T> operator !(const hui::Vector2<T>& right) {
+    return hui::Vector2<T>(right / right.Len());
 }
 
 template <typename T>
@@ -123,38 +123,38 @@ Vector2<T>& operator+=(Vector2<T>& left, const Vector2<T>& right) {
 }
 
 template <typename T>
-T Mephi::Vector2<T>::Len2() const {
+T hui::Vector2<T>::Len2() const {
     return (*this) ^ (*this);
 }
 
 template <typename T>
-T Mephi::Vector2<T>::Len() const {
+T hui::Vector2<T>::Len() const {
     return std::sqrt(this->Len2());
 }
 
 template <typename T>
-Mephi::Vector2<T> Mephi::Vector2<T>::Normal() const {
+hui::Vector2<T> hui::Vector2<T>::Normal() const {
     return Vector2<T>(this->y, -this->x);
 }
 
 template <typename T>
-Vector2<T> Mephi::Vector2<T>::Mirror(Mephi::Axis axis) const {
+Vector2<T> hui::Vector2<T>::Mirror(hui::Axis axis) const {
     return {
-        axis == Mephi::Axis::X ? -this->x : this->x,
-        axis == Mephi::Axis::Y ? -this->y : this->y
+        axis == hui::Axis::X ? -this->x : this->x,
+        axis == hui::Axis::Y ? -this->y : this->y
     };
 }
 
 template <typename T>
-Vector2<T> Mephi::Vector2<T>::Clump(const Mephi::Vector2<T>& minVec, 
-                                                      const Mephi::Vector2<T>& maxVec) const {
+Vector2<T> hui::Vector2<T>::Clump(const hui::Vector2<T>& minVec, 
+                                                      const hui::Vector2<T>& maxVec) const {
     return {
         std::max(std::min(this->x, maxVec.x), minVec.x),
         std::max(std::min(this->y, maxVec.y), minVec.y)
     };
 }
 
-void TransformVector(Mephi::Vector2d& Vector, const Mephi::Transform Transform, 
+void TransformVector(hui::Vector2d& Vector, const hui::Transform Transform, 
                      const float AngleRadians = 0.01);
 
 //--------------------------------------------------------------------------------------------------
@@ -171,9 +171,9 @@ class Vector3 {
         
         [[nodiscard]] T Len2() const;
         [[nodiscard]] T Len()  const;
-        [[nodiscard]] Vector3<T> Mirror(Mephi::Axis axis) const;
-        [[nodiscard]] Vector3<T> Clump(const Mephi::Vector3<T>& minVec, 
-                                       const Mephi::Vector3<T>& maxVec) const;
+        [[nodiscard]] Vector3<T> Mirror(hui::Axis axis) const;
+        [[nodiscard]] Vector3<T> Clump(const hui::Vector3<T>& minVec, 
+                                       const hui::Vector3<T>& maxVec) const;
 
         Vector3<T> operator-() const {
             return Vector3<T>(-this->x, -this->y, -this->z);
@@ -208,18 +208,18 @@ class Vector3 {
         }
 };
 
-typedef Mephi::Vector3<float>  Vector3f;
-typedef Mephi::Vector3<double> Vector3d;
-typedef Mephi::Vector3<int>    Vector3i;
+typedef hui::Vector3<float>  Vector3f;
+typedef hui::Vector3<double> Vector3d;
+typedef hui::Vector3<int>    Vector3i;
 
 template <typename T>
-T operator ^(const Mephi::Vector3<T>& left, const Mephi::Vector3<T>& right) {
+T operator ^(const hui::Vector3<T>& left, const hui::Vector3<T>& right) {
     return left.x * right.x + left.y * right.y + left.z * right.z;
 }
 
 template <typename T>
-Mephi::Vector3<T> operator !(const Mephi::Vector3<T>& right) {
-    return Mephi::Vector3<T>(right / right.Len());
+hui::Vector3<T> operator !(const hui::Vector3<T>& right) {
+    return hui::Vector3<T>(right / right.Len());
 }
 
 template <typename T>
@@ -258,27 +258,27 @@ bool operator!=(const Vector3<T>& left, const Vector3<T>& right) {
 }
 
 template <typename T>
-T Mephi::Vector3<T>::Len2() const {
+T hui::Vector3<T>::Len2() const {
     return (*this) ^ (*this);
 }
 
 template <typename T>
-T Mephi::Vector3<T>::Len() const {
+T hui::Vector3<T>::Len() const {
     return std::sqrt(this->Len2());
 }
 
 template <typename T>
-Vector3<T> Mephi::Vector3<T>::Mirror(Mephi::Axis axis) const {
+Vector3<T> hui::Vector3<T>::Mirror(hui::Axis axis) const {
     return {
-        axis == Mephi::Axis::X ? -this->x : this->x,
-        axis == Mephi::Axis::Y ? -this->y : this->y,
-        axis == Mephi::Axis::Z ? -this->z : this->z
+        axis == hui::Axis::X ? -this->x : this->x,
+        axis == hui::Axis::Y ? -this->y : this->y,
+        axis == hui::Axis::Z ? -this->z : this->z
     };
 }
 
 template <typename T>
-Vector3<T> Mephi::Vector3<T>::Clump(const Mephi::Vector3<T>& minVec, 
-                                                      const Mephi::Vector3<T>& maxVec) const {
+Vector3<T> hui::Vector3<T>::Clump(const hui::Vector3<T>& minVec, 
+                                                      const hui::Vector3<T>& maxVec) const {
     return {
         std::max(std::min(this->x, maxVec.x), minVec.x),
         std::max(std::min(this->y, maxVec.y), minVec.y),
@@ -286,9 +286,9 @@ Vector3<T> Mephi::Vector3<T>::Clump(const Mephi::Vector3<T>& minVec,
     };
 }
 
-void TransformVector(Mephi::Vector3d& Vector, const Mephi::Transform Transform, 
-                     Mephi::Axis Axis, const float AngleRadians = 0.01);
+void TransformVector(hui::Vector3d& Vector, const hui::Transform Transform, 
+                     hui::Axis Axis, const float AngleRadians = 0.01);
 
 }
 
-#endif /*OPTOR_SOURCE_VECTOR_INCLUDE_VECTOR_VECTOR_HPP*/
+#endif /*OPTOR_SOURCE_HUI_INCLUDE_HUI_VECTOR_HPP*/
