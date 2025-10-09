@@ -1,9 +1,13 @@
+#include <SFML/Graphics/RenderStates.hpp>
 #include <memory>
 
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Window/Window.hpp>
 #include <SFML/Window/Event.hpp>
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/VideoMode.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
 
 #include "hui/Window.hpp"
 #include "common/ErrorHandler.hpp"
@@ -36,20 +40,17 @@ hui::Window::~Window() = default;
 
 
 void hui::Window::Clear() {
-    ERROR_HANDLE([&](){ impl_->clear(); });
+    ERROR_HANDLE(&sf::RenderWindow::clear, impl_, sf::Color(0, 0, 0, 255));
 }
 
 void hui::Window::Draw(const hui::Drawable& drawable) {
-    ERROR_HANDLE(
-        [&](const sf::Drawable* obj){
-            impl_->draw(*obj);
-        }, 
-        drawable.GetImplAs<const sf::Drawable>()
-    );
+    ERROR_HANDLE([&](){
+        impl_->draw(*static_cast<const sf::Drawable*>(drawable.GetImplAs()));
+    });
 }
 
 void hui::Window::Display() {
-    ERROR_HANDLE([&](){ impl_->display(); });
+    ERROR_HANDLE(&sf::RenderWindow::display, *impl_.get());
 }
 
 bool hui::Window::isOpen() const {
@@ -65,6 +66,6 @@ bool hui::Window::PoolEvent(hui::Event& event) {
         [&](sf::Event* obj){
             return impl_->pollEvent(*obj);
         }, 
-        event.GetImplAs<sf::Event>()
+        static_cast<sf::Event*>(event.GetImplAs())
     );
 }

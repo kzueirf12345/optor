@@ -1,5 +1,5 @@
-#ifndef OPTOR_HUI_INCLUDE_HUI_EVENT_HPP
-#define OPTOR_HUI_INCLUDE_HUI_EVENT_HPP
+#ifndef OPTOR_SOURCE_HUI_INCLUDE_HUI_EVENT_HPP
+#define OPTOR_SOURCE_HUI_INCLUDE_HUI_EVENT_HPP
 
 #include <memory>
 
@@ -14,10 +14,8 @@ class Event {
 
         ~Event();
 
-        template<typename T>
-        [[nodiscard]] const T* GetImplAs() const noexcept;
-        template<typename T>
-        [[nodiscard]]       T* GetImplAs()       noexcept;
+        [[nodiscard]] virtual const void* GetImplAs() const noexcept;
+        [[nodiscard]] virtual       void* GetImplAs()       noexcept;
 
         enum Type 
         {
@@ -56,4 +54,4 @@ class Event {
 
 }
 
-#endif /*OPTOR_HUI_INCLUDE_HUI_EVENT_HPP*/
+#endif /*OPTOR_SOURCE_HUI_INCLUDE_HUI_EVENT_HPP*/

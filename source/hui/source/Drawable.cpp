@@ -1,26 +1,29 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/Drawable.hpp> 
+#include <memory>
 
 #include "hui/Drawable.hpp"
 
 class hui::DrawableImpl : public sf::Drawable {
-    private:
     public:
-        [[nodiscard]]       sf::Drawable* asSF()       noexcept {return this;}
-        [[nodiscard]] const sf::Drawable* asSF() const noexcept {return this;}
+    protected:
+        virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
+            throw std::logic_error("not override method");
+        }
+    private:
 };
+
+hui::Drawable::Drawable(): impl_(std::make_unique<hui::DrawableImpl>()) {}
 
 hui::Drawable::~Drawable() = default;
 
-template<typename T>
-const T* hui::Drawable::GetImplAs() const noexcept {
-    return static_cast<const T*>(impl_.get());
+const void* hui::Drawable::GetImplAs() const noexcept {
+    return impl_.get();
 }
 
-template<typename T>
-T* hui::Drawable::GetImplAs() noexcept {
-    return static_cast<T*>(impl_.get());
+void* hui::Drawable::GetImplAs() noexcept {
+    return impl_.get();
 }
 
-template const sf::Drawable* hui::Drawable::GetImplAs<const sf::Drawable>() const noexcept;
-template       sf::Drawable* hui::Drawable::GetImplAs<      sf::Drawable>() noexcept;
+// template const sf::Drawable* hui::Drawable::GetImplAs<const sf::Drawable>() const noexcept;
+// template       sf::Drawable* hui::Drawable::GetImplAs<      sf::Drawable>()       noexcept;

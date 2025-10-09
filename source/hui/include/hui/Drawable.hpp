@@ -3,6 +3,8 @@
 
 #include <memory>
 
+#include <SFML/Graphics/Shape.hpp>
+
 namespace hui 
 {
 
@@ -10,13 +12,11 @@ class DrawableImpl;
 
 class Drawable {
     public:
+        Drawable();
         virtual ~Drawable();
 
-        template<typename T>
-        [[nodiscard]] const T* GetImplAs() const noexcept;
-        
-        template<typename T>
-        [[nodiscard]]       T* GetImplAs()       noexcept;
+        [[nodiscard]] virtual const void* GetImplAs() const noexcept;
+        [[nodiscard]] virtual       void* GetImplAs()       noexcept;
     
     private:
         std::unique_ptr<hui::DrawableImpl> impl_;
