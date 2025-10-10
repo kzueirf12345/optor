@@ -4,7 +4,6 @@
 #include <deque>
 #include <memory>
 
-#include "hui/Vector.hpp"
 #include "widgets/Widget.hpp"
 #include "hui/RectangleShape.hpp"
 

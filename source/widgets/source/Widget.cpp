@@ -2,7 +2,6 @@
 
 #include "widgets/Widget.hpp"
 #include "common/ErrorHandler.hpp"
-#include "hui/Drawable.hpp"
 #include "hui/RectangleShape.hpp"
 #include "hui/Vector.hpp"
 #include "global/Global.hpp"
