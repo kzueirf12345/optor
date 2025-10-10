@@ -27,6 +27,9 @@ class ErrorHandler {
             } catch (const std::exception& e) {
                 HandleException(e, location);
                 throw; 
+            } catch(...) {
+                HandleException(location);
+                throw;
             }
         }
 
@@ -44,6 +47,14 @@ class ErrorHandler {
                 << YELLOW_FORMAT 
                 << "'"
                 << NORMAL_FORMAT 
+                << "\n";
+        }
+
+        static void HandleException(const std::source_location& location) {
+            std::cerr << RED_FORMAT
+                << "Error at " << location.file_name() 
+                << ":" << location.line() 
+                << " in " << location.function_name()
                 << "\n";
         }
 };

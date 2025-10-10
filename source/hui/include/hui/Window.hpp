@@ -5,6 +5,7 @@
 
 #include "hui/Drawable.hpp"
 #include "hui/Event.hpp"
+#include "hui/Vector.hpp"
 
 namespace hui 
 {
@@ -28,7 +29,9 @@ class Window {
                       void Display();
         [[nodiscard]] bool isOpen() const;
                       void Close();
-                      bool PoolEvent(hui::Event& event);
+                      bool PoolEvent(hui::Event* event);
+
+        [[nodiscard]] hui::Vector2d GetSize() const;
 
     private:
         std::unique_ptr<WindowImpl> impl_;

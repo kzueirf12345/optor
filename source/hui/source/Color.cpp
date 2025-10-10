@@ -16,10 +16,13 @@ hui::Color::Color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha)
 
 hui::Color::~Color() = default;
 
-const void* hui::Color::GetImplAs() const noexcept {
+hui::Color::Color                (Color&& other) noexcept = default;
+hui::Color& hui::Color::operator=(Color&& other) noexcept = default;
+
+const void* hui::Color::GetImpl() const noexcept {
     return impl_.get();
 }
 
-void* hui::Color::GetImplAs() noexcept {
+void* hui::Color::GetImpl() noexcept {
     return impl_.get();
 }

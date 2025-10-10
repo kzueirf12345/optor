@@ -15,8 +15,14 @@ class Drawable {
         Drawable();
         virtual ~Drawable();
 
-        [[nodiscard]] virtual const void* GetImplAs() const noexcept;
-        [[nodiscard]] virtual       void* GetImplAs()       noexcept;
+        Drawable           (const Drawable&) = delete;
+        Drawable& operator=(const Drawable&) = delete;
+        
+        Drawable           (Drawable&& other) noexcept;
+        Drawable& operator=(Drawable&& other) noexcept;
+
+        [[nodiscard]] virtual const void* GetImpl() const noexcept;
+        [[nodiscard]] virtual       void* GetImpl()       noexcept;
     
     private:
         std::unique_ptr<hui::DrawableImpl> impl_;

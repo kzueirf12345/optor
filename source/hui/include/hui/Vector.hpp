@@ -154,7 +154,7 @@ Vector2<T> hui::Vector2<T>::Clump(const hui::Vector2<T>& minVec,
     };
 }
 
-void TransformVector(hui::Vector2d& Vector, const hui::Transform Transform, 
+void TransformVector(hui::Vector2d* Vector, const hui::Transform Transform, 
                      const float AngleRadians = 0.01);
 
 //--------------------------------------------------------------------------------------------------
@@ -286,7 +286,7 @@ Vector3<T> hui::Vector3<T>::Clump(const hui::Vector3<T>& minVec,
     };
 }
 
-void TransformVector(hui::Vector3d& Vector, const hui::Transform Transform, 
+void TransformVector(hui::Vector3d* Vector, const hui::Transform Transform, 
                      hui::Axis Axis, const float AngleRadians = 0.01);
 
 }

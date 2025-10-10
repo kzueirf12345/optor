@@ -16,11 +16,11 @@ hui::Event::Event()
 
 hui::Event::~Event() = default;
 
-const void* hui::Event::GetImplAs() const noexcept {
+const void* hui::Event::GetImpl() const noexcept {
     return impl_.get();
 }
 
-void* hui::Event::GetImplAs() noexcept {
+void* hui::Event::GetImpl() noexcept {
     return impl_.get();
 }
 
@@ -28,7 +28,7 @@ void* hui::Event::GetImplAs() noexcept {
         case guiType: return huiType
 
 hui::Event::Type hui::Event::GetType() const {
-    switch (static_cast<const hui::EventImpl*>(GetImplAs())->type) {
+    switch (static_cast<const hui::EventImpl*>(GetImpl())->type) {
         CASE_RET_TYPE_(sf::Event::EventType::Closed,                hui::Event::Type::Closed);
         CASE_RET_TYPE_(sf::Event::EventType::Resized,               hui::Event::Type::Resized);
         CASE_RET_TYPE_(sf::Event::EventType::LostFocus,             hui::Event::Type::LostFocus);

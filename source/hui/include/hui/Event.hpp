@@ -14,8 +14,8 @@ class Event {
 
         ~Event();
 
-        [[nodiscard]] virtual const void* GetImplAs() const noexcept;
-        [[nodiscard]] virtual       void* GetImplAs()       noexcept;
+        [[nodiscard]] virtual const void* GetImpl() const noexcept;
+        [[nodiscard]] virtual       void* GetImpl()       noexcept;
 
         enum Type 
         {

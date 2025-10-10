@@ -13,11 +13,19 @@ class RectangleShapeImpl;
 
 class RectangleShape : public hui::Shape {
     public:
-         RectangleShape(const hui::Vector2d& size);
+        explicit RectangleShape(const hui::Vector2d& size);
         ~RectangleShape();
 
-        [[nodiscard]] virtual const void* GetImplAs() const noexcept override final;
-        [[nodiscard]] virtual       void* GetImplAs()       noexcept override final;
+        RectangleShape           (const RectangleShape&) = delete;
+        RectangleShape& operator=(const RectangleShape&) = delete;
+        
+        RectangleShape           (RectangleShape&& other) noexcept;
+        RectangleShape& operator=(RectangleShape&& other) noexcept;
+
+        [[nodiscard]] virtual const void* GetImpl() const noexcept override final;
+        [[nodiscard]] virtual       void* GetImpl()       noexcept override final;
+
+        [[nodiscard]] const hui::Vector2d GetSize() const;
 
     private:
         std::unique_ptr<RectangleShapeImpl> impl_;

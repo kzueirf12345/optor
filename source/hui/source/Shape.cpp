@@ -25,28 +25,45 @@ hui::Shape::Shape() : impl_(std::make_unique<hui::ShapeImpl>()) {}
 
 hui::Shape::~Shape() = default;
 
+hui::Shape::Shape                (hui::Shape&& other) noexcept = default;
+hui::Shape& hui::Shape::operator=(hui::Shape&& other) noexcept = default;
 
-const void* hui::Shape::GetImplAs() const noexcept {
+
+const void* hui::Shape::GetImpl() const noexcept {
     return impl_.get();
 }
 
 
-void* hui::Shape::GetImplAs() noexcept {
+void* hui::Shape::GetImpl() noexcept {
     return impl_.get();
 }
-
-// template const sf::Shape* hui::Shape::GetImplAs<const sf::Shape>() const noexcept;
-// template       sf::Shape* hui::Shape::GetImplAs<      sf::Shape>()       noexcept;
 
 
 void hui::Shape::SetFillColor       (const hui::Color& color) {
-    ERROR_HANDLE(&sf::Shape::setFillColor, *static_cast<hui::ShapeImpl*>(GetImplAs()), *static_cast<const sf::Color*>(color.GetImplAs()));
+    ERROR_HANDLE(&sf::Shape::setFillColor, *static_cast<hui::ShapeImpl*>(GetImpl()), *static_cast<const sf::Color*>(color.GetImpl()));
 }
 
 void hui::Shape::SetOutlineColor    (const hui::Color& color) {
-    ERROR_HANDLE(&sf::Shape::setOutlineColor, *static_cast<hui::ShapeImpl*>(GetImplAs()), *static_cast<const sf::Color*>(color.GetImplAs()));
+    ERROR_HANDLE(&sf::Shape::setOutlineColor, *static_cast<hui::ShapeImpl*>(GetImpl()), *static_cast<const sf::Color*>(color.GetImpl()));
 }
 
 void hui::Shape::SetOutlineThickness(double thickness) {
-    ERROR_HANDLE(&sf::Shape::setOutlineThickness, *static_cast<hui::ShapeImpl*>(GetImplAs()), static_cast<float>(thickness));
+    ERROR_HANDLE(&sf::Shape::setOutlineThickness, *static_cast<hui::ShapeImpl*>(GetImpl()), static_cast<float>(thickness));
+}
+
+void hui::Shape::SetPosition(const hui::Vector2d& position) {
+    ERROR_HANDLE([&](){
+        static_cast<hui::ShapeImpl*>(GetImpl())->setPosition(
+            position.x, 
+            position.y
+        );}
+    );
+}
+
+hui::Vector2d hui::Shape::GetPosition() const {
+    const sf::Vector2f res = ERROR_HANDLE(
+        &sf::Shape::getPosition, 
+        *static_cast<const hui::ShapeImpl*>(GetImpl())
+    );
+    return {res.x, res.y};
 }

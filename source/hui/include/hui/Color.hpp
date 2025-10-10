@@ -13,8 +13,14 @@ class Color {
         Color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255);
         ~Color();
 
-        [[nodiscard]] virtual const void* GetImplAs() const noexcept;
-        [[nodiscard]] virtual       void* GetImplAs()       noexcept;
+        Color           (const Color&) = delete;
+        Color& operator=(const Color&) = delete;
+        
+        Color           (Color&& other) noexcept;
+        Color& operator=(Color&& other) noexcept;
+
+        [[nodiscard]] virtual const void* GetImpl() const noexcept;
+        [[nodiscard]] virtual       void* GetImpl()       noexcept;
         
     private:
         std::unique_ptr<hui::ColorImpl> impl_;

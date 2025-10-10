@@ -17,11 +17,14 @@ hui::Drawable::Drawable(): impl_(std::make_unique<hui::DrawableImpl>()) {}
 
 hui::Drawable::~Drawable() = default;
 
-const void* hui::Drawable::GetImplAs() const noexcept {
+hui::Drawable::Drawable                (hui::Drawable&& other) noexcept = default;
+hui::Drawable& hui::Drawable::operator=(hui::Drawable&& other) noexcept = default;
+
+const void* hui::Drawable::GetImpl() const noexcept {
     return impl_.get();
 }
 
-void* hui::Drawable::GetImplAs() noexcept {
+void* hui::Drawable::GetImpl() noexcept {
     return impl_.get();
 }
 
