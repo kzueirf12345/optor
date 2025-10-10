@@ -59,3 +59,8 @@ hui::Event::Type hui::Event::GetType() const {
     throw std::overflow_error("Unknown Event type");
 }
 #undef CASE_RET_TYPE_
+
+hui::Vector2d hui::Event::GetMouseCoord() const noexcept {
+    const auto* event = static_cast<const hui::EventImpl*>(GetImpl());
+    return {static_cast<double>(event->mouseMove.x), static_cast<double>(event->mouseMove.y)};
+}

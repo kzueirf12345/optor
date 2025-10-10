@@ -1,6 +1,7 @@
 #ifndef OPTOR_SOURCE_HUI_INCLUDE_HUI_EVENT_HPP
 #define OPTOR_SOURCE_HUI_INCLUDE_HUI_EVENT_HPP
 
+#include "hui/Vector.hpp"
 #include <memory>
 
 namespace hui 
@@ -46,7 +47,8 @@ class Event {
             Count
         };
 
-        [[nodiscard]] hui::Event::Type GetType() const;
+        [[nodiscard]] hui::Event::Type GetType()       const;
+        [[nodiscard]] hui::Vector2d    GetMouseCoord() const noexcept;
 
     private:
         std::unique_ptr<EventImpl> impl_;

@@ -6,8 +6,8 @@
 #include "hui/Vector.hpp"
 #include "global/Global.hpp"
 
-optor::Widget::Widget(hui::RectangleShape rect)
-    :   rect_{std::move(rect)}, parent_{nullptr}
+optor::Widget::Widget(hui::RectangleShape rect, const optor::Widget** hoveredWidget)
+    :   rect_{std::move(rect)}, parent_{nullptr}, hoveredWidget_{hoveredWidget}
 {
     ERROR_HANDLE(&hui::RectangleShape::SetFillColor,        &rect_, optor::color::WindowBackground);
     ERROR_HANDLE(&hui::RectangleShape::SetOutlineColor,     &rect_, optor::color::WindowBorder);
@@ -53,4 +53,21 @@ hui::Vector2d optor::Widget::AbsCoord() const {
         absCoord += ancestor->rect_.GetPosition();
     }
     return std::move(absCoord);
+}
+
+bool optor::Widget::OnMouseMove(const hui::Event& event) {
+    if (ERROR_HANDLE(&optor::Widget::OnMe, this, event.GetMouseCoord())) {
+        *hoveredWidget_ = this;
+        return true;
+    }
+
+    return false;
+}
+
+bool optor::Widget::OnMe(const hui::Vector2d& absCoord) const {
+    const hui::Vector2d leftCorner  = AbsCoord();
+    const hui::Vector2d rightCorner = leftCorner + rect_.GetSize();
+
+    return leftCorner.x <= absCoord.x && absCoord.x <= rightCorner.x 
+        && leftCorner.y <= absCoord.y && absCoord.y <= rightCorner.y;
 }

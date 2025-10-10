@@ -25,7 +25,8 @@ int main() {
         &optor::WidgetChildable::AddChild, 
         manager.GetDesktop(), 
         std::make_unique<optor::Widget>(
-            hui::RectangleShape({500, 500})
+            hui::RectangleShape({500, 500}),
+            manager.GetHoveredWidget()
         )
     );
 
@@ -33,18 +34,15 @@ int main() {
 
     while (ERROR_HANDLE(&hui::Window::isOpen, window)) {
 
-        auto event = ERROR_HANDLE([](){ return hui::Event(); });
-        while (ERROR_HANDLE(&hui::Window::PoolEvent, &window, &event)) {
-            if (event.GetType() == hui::Event::Type::Closed) {
-                ERROR_HANDLE(&hui::Window::Close, &window);
-            }
-        }
+        ERROR_HANDLE(&optor::WidgetManager::HandleEvents, &manager, &window);
 
         ERROR_HANDLE(&hui::Window::Clear, &window);
 
         ERROR_HANDLE(&optor::WidgetManager::Draw, &manager, &window);
 
         ERROR_HANDLE(&hui::Window::Display, &window);
+
+        std::cerr << "horvered widget addr " << *manager.GetHoveredWidget() << std::endl;
     }
 
     return EXIT_SUCCESS;
