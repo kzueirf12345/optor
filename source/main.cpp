@@ -1,7 +1,6 @@
 #include <cstdlib>
 #include <memory>
 
-#include "hui/Event.hpp"
 #include "hui/RectangleShape.hpp"
 #include "hui/Vector.hpp"
 #include "hui/Window.hpp"
@@ -26,7 +25,7 @@ int main() {
         manager.GetDesktop(), 
         std::make_unique<optor::Widget>(
             hui::RectangleShape({500, 500}),
-            manager.GetHoveredWidget()
+            manager.GetState()
         )
     );
 
@@ -41,8 +40,6 @@ int main() {
         ERROR_HANDLE(&optor::WidgetManager::Draw, &manager, &window);
 
         ERROR_HANDLE(&hui::Window::Display, &window);
-
-        std::cerr << "horvered widget addr " << *manager.GetHoveredWidget() << std::endl;
     }
 
     return EXIT_SUCCESS;

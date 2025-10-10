@@ -5,8 +5,8 @@
 #include "common/ErrorHandler.hpp"
 #include "widgets/Widget.hpp"
 
-optor::WidgetChildable::WidgetChildable(hui::RectangleShape rect, const optor::Widget** hoveredWidget)
-    :   Widget{std::move(rect), hoveredWidget}, children_{}
+optor::WidgetChildable::WidgetChildable(hui::RectangleShape rect, optor::WidgetsState* state)
+    :   Widget{std::move(rect), state}, children_{}
 {}
 
 void optor::WidgetChildable::Draw(hui::Window* window) {
@@ -23,7 +23,6 @@ void optor::WidgetChildable::Draw(hui::Window* window) {
 
 bool optor::WidgetChildable::OnMouseMove(const hui::Event& event) {
     for (auto childIt = children_.rbegin(); childIt != children_.rend(); ++childIt) {
-        // std::cerr << "kek\n";
         if (ERROR_HANDLE(&optor::Widget::OnMouseMove, *childIt, event)) {
             return true;
         }
@@ -31,6 +30,30 @@ bool optor::WidgetChildable::OnMouseMove(const hui::Event& event) {
 
     return ERROR_HANDLE([this, &event](){
         return optor::Widget::OnMouseMove(event);
+    });
+}
+
+bool optor::WidgetChildable::OnMousePress(const hui::Event& event) {
+    for (auto childIt = children_.rbegin(); childIt != children_.rend(); ++childIt) {
+        if (ERROR_HANDLE(&optor::Widget::OnMousePress, *childIt, event)) {
+            return true;
+        }
+    }
+
+    return ERROR_HANDLE([this, &event](){
+        return optor::Widget::OnMousePress(event); // FIXME remove copypast use func
+    });
+}
+
+bool optor::WidgetChildable::OnMouseRelease(const hui::Event& event) {
+    for (auto childIt = children_.rbegin(); childIt != children_.rend(); ++childIt) {
+        if (ERROR_HANDLE(&optor::Widget::OnMouseRelease, *childIt, event)) {
+            return true;
+        }
+    }
+
+    return ERROR_HANDLE([this, &event](){
+        return optor::Widget::OnMouseRelease(event);
     });
 }
 

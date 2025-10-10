@@ -7,17 +7,22 @@
 #include "hui/RectangleShape.hpp"
 #include "hui/Window.hpp"
 #include "widgets/WidgetChildable.hpp"
+#include "widgets/Widget.hpp"
+#include "widgets/WidgetChildable.hpp"
 
 optor::WidgetManager::WidgetManager()
 {
     desktop_ = ERROR_HANDLE(
-        std::make_unique<optor::WidgetChildable, hui::RectangleShape, const optor::Widget** const>, 
+        std::make_unique<optor::WidgetChildable, hui::RectangleShape, optor::WidgetsState*>, 
         hui::RectangleShape({optor::PROGRAM_WIDTH, optor::PROGRAM_HEIGHT}),
-        &hoveredWidget_
+        &state_
     );
     ERROR_HANDLE(&optor::Widget::SetBackgroundColor, desktop_, optor::color::ProgramBackground);
+    ERROR_HANDLE(&optor::Widget::SetIsDraggable, desktop_, false);
 
-    hoveredWidget_ = desktop_.get();
+    state_.hoveredWidget = desktop_.get();
+    state_.draggedWidget = nullptr;
+    state_.prevMouseCoord = {0, 0}; // TODO normal
 }
 
 void optor::WidgetManager::Draw(hui::Window* window) {
@@ -39,6 +44,15 @@ void optor::WidgetManager::HandleEvents(hui::Window* window) {
 
             case hui::Event::Type::MouseMoved:
                 ERROR_HANDLE(&optor::WidgetChildable::OnMouseMove, desktop_, event);
+                state_.prevMouseCoord = event.GetMouseCoord();
+                break;
+
+            case hui::Event::Type::MouseButtonPressed:
+                ERROR_HANDLE(&optor::WidgetChildable::OnMousePress, desktop_, event);
+                break;
+
+            case hui::Event::Type::MouseButtonReleased:
+                ERROR_HANDLE(&optor::WidgetChildable::OnMouseRelease, desktop_, event);
                 break;
 
             default:
@@ -49,14 +63,9 @@ void optor::WidgetManager::HandleEvents(hui::Window* window) {
 
 optor::WidgetChildable* optor::WidgetManager::SetDesktop(std::unique_ptr<optor::WidgetChildable> desktop) noexcept {
     desktop_ = std::move(desktop);
-    hoveredWidget_ = desktop_.get();
+    state_.hoveredWidget = desktop_.get();
     return desktop_.get();
 }
-
-void optor::WidgetManager::SetHoveredWidget(const optor::Widget* hoveredWidget) noexcept {
-    hoveredWidget_ = hoveredWidget;
-}
-
 const optor::WidgetChildable* optor::WidgetManager::GetDesktop() const noexcept {
     return desktop_.get();
 }
@@ -65,6 +74,10 @@ optor::WidgetChildable* optor::WidgetManager::GetDesktop() noexcept {
     return desktop_.get();
 }
 
-const optor::Widget** optor::WidgetManager::GetHoveredWidget() noexcept {
-    return &hoveredWidget_;
+const optor::WidgetsState* optor::WidgetManager::GetState() const noexcept {
+    return &state_;
+}
+
+optor::WidgetsState* optor::WidgetManager::GetState() noexcept {
+    return &state_;
 }

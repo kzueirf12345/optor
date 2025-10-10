@@ -3,11 +3,19 @@
 
 #include <memory>
 
+#include "hui/Vector.hpp"
 #include "hui/Window.hpp"
-#include "widgets/Widget.hpp"
-#include "widgets/WidgetChildable.hpp"
 
 namespace optor {
+
+class Widget;
+class WidgetChildable;
+
+struct WidgetsState {
+    const optor::Widget* hoveredWidget;
+    const optor::Widget* draggedWidget;
+    hui::Vector2d        prevMouseCoord;
+};
     
 class WidgetManager {
     public:
@@ -22,17 +30,17 @@ class WidgetManager {
         void HandleEvents(hui::Window* window);
         
         optor::WidgetChildable* SetDesktop(std::unique_ptr<optor::WidgetChildable> desktop) noexcept;
-        void                    SetHoveredWidget(const optor::Widget* hoveredWidget)        noexcept;
 
-        [[nodiscard]] const optor::WidgetChildable* GetDesktop()       const noexcept;
-        [[nodiscard]]       optor::WidgetChildable* GetDesktop()             noexcept;
-        [[nodiscard]] const optor::Widget**         GetHoveredWidget()       noexcept;
+        [[nodiscard]] const optor::WidgetChildable* GetDesktop() const noexcept;
+        [[nodiscard]]       optor::WidgetChildable* GetDesktop()       noexcept;
+        [[nodiscard]] const optor::WidgetsState*    GetState()   const noexcept;
+        [[nodiscard]]       optor::WidgetsState*    GetState()         noexcept;
 
     protected:
 
     private:
         std::unique_ptr<optor::WidgetChildable> desktop_;
-        const optor::Widget* hoveredWidget_;
+        optor::WidgetsState state_;
 };
 
 }

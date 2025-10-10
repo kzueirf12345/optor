@@ -12,7 +12,7 @@ namespace optor
 
 class WidgetChildable: public Widget {
     public:
-        explicit WidgetChildable(hui::RectangleShape rect, const optor::Widget** hoveredWidget);
+        explicit WidgetChildable(hui::RectangleShape rect, optor::WidgetsState* state);
 
         WidgetChildable           (const WidgetChildable&) = delete;
         WidgetChildable& operator=(const WidgetChildable&) = delete;
@@ -23,7 +23,9 @@ class WidgetChildable: public Widget {
 
         virtual void Draw(hui::Window* window) override;
 
-        virtual bool OnMouseMove(const hui::Event& event) override;
+        virtual bool OnMouseMove   (const hui::Event& event) override;
+        virtual bool OnMousePress  (const hui::Event& event) override;
+        virtual bool OnMouseRelease(const hui::Event& event) override;
 
         optor::Widget* AddChild(std::unique_ptr<Widget> child);
 

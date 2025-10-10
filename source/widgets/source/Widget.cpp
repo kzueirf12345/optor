@@ -6,8 +6,9 @@
 #include "hui/Vector.hpp"
 #include "global/Global.hpp"
 
-optor::Widget::Widget(hui::RectangleShape rect, const optor::Widget** hoveredWidget)
-    :   rect_{std::move(rect)}, parent_{nullptr}, hoveredWidget_{hoveredWidget}
+optor::Widget::Widget(hui::RectangleShape rect, optor::WidgetsState* state)
+    :   rect_{std::move(rect)}, parent_{nullptr}, state_{state}, isDraggable_{true}, 
+        draggableButton_{optor::INIT_DRAGGABLE_BUTTON_}, isFreeDraggable_{false}
 {
     ERROR_HANDLE(&hui::RectangleShape::SetFillColor,        &rect_, optor::color::WindowBackground);
     ERROR_HANDLE(&hui::RectangleShape::SetOutlineColor,     &rect_, optor::color::WindowBorder);
@@ -47,6 +48,19 @@ void optor::Widget::SetParent(optor::Widget* parent) noexcept {
     parent_ = parent;
 }
 
+void optor::Widget::SetIsDraggable(const bool isDraggable) noexcept {
+    isDraggable_ = isDraggable;
+}
+
+void optor::Widget::SetIsFreeDraggable(const bool isFreeDraggable) noexcept {
+    isFreeDraggable_ = isFreeDraggable;
+}
+
+void optor::Widget::SetDraggableButton(hui::Event::MouseButton draggableButton) noexcept {
+    draggableButton_ = draggableButton;
+}
+
+
 hui::Vector2d optor::Widget::AbsCoord() const {
     hui::Vector2d absCoord = rect_.GetPosition();
     for (const auto* ancestor = parent_; ancestor != nullptr; ancestor = ancestor->parent_) {
@@ -56,12 +70,44 @@ hui::Vector2d optor::Widget::AbsCoord() const {
 }
 
 bool optor::Widget::OnMouseMove(const hui::Event& event) {
-    if (ERROR_HANDLE(&optor::Widget::OnMe, this, event.GetMouseCoord())) {
-        *hoveredWidget_ = this;
+    const hui::Vector2d mouseCoord = event.GetMouseCoord();
+
+    if (state_->draggedWidget == this) {
+        ERROR_HANDLE(&optor::Widget::Drag, this, mouseCoord - state_->prevMouseCoord);
+        return true;
+    }
+
+    if (ERROR_HANDLE(&optor::Widget::OnMe, this, mouseCoord)) {
+        state_->hoveredWidget = this;
         return true;
     }
 
     return false;
+}
+
+bool optor::Widget::OnMousePress(const hui::Event& event) {
+    if (state_->hoveredWidget == this 
+     && isDraggable_ 
+     && event.GetMouseButton() == draggableButton_) {
+        state_->draggedWidget = this;
+        return true;
+    };
+
+    return false;
+}
+
+bool optor::Widget::OnMouseRelease(const hui::Event& event) {
+    if (state_->draggedWidget == this
+     && event.GetMouseButton() == draggableButton_) {
+        state_->draggedWidget = nullptr;
+        return true;
+    };
+
+    return false;
+}
+
+void optor::Widget::OnIdle() {
+    
 }
 
 bool optor::Widget::OnMe(const hui::Vector2d& absCoord) const {
@@ -70,4 +116,19 @@ bool optor::Widget::OnMe(const hui::Vector2d& absCoord) const {
 
     return leftCorner.x <= absCoord.x && absCoord.x <= rightCorner.x 
         && leftCorner.y <= absCoord.y && absCoord.y <= rightCorner.y;
+}
+
+void optor::Widget::Drag(const hui::Vector2d& shift) {
+    ERROR_HANDLE(&hui::RectangleShape::SetPosition, &rect_, rect_.GetPosition() + shift);
+
+    if (!isFreeDraggable_ && parent_){
+        ERROR_HANDLE(
+            &hui::RectangleShape::SetPosition, 
+            &rect_, 
+            rect_.GetPosition().Clump(
+                {0, 0},
+                parent_->rect_.GetSize() - rect_.GetSize()
+            )
+        );
+    }
 }

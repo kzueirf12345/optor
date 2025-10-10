@@ -1,8 +1,8 @@
 #ifndef OPTOR_SOURCE_GLOBAL_INCLUDE_GLOBAL_GLOBAL_HPP
 #define OPTOR_SOURCE_GLOBAL_INCLUDE_GLOBAL_GLOBAL_HPP
 
-
 #include "hui/Color.hpp"
+#include "hui/Event.hpp"
 
 namespace optor 
 {
@@ -29,6 +29,8 @@ static constexpr inline double PROGRAM_WIDTH = 1400;
 static constexpr inline double PROGRAM_HEIGHT = 900;
 
 static constexpr inline double INIT_WIDGET_BORDER_THICKNESS = 5;
+
+static constexpr inline hui::Event::MouseButton INIT_DRAGGABLE_BUTTON_ = hui::Event::MouseButton::Middle;
 
 }
 
