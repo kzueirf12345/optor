@@ -27,6 +27,3 @@ const void* hui::Drawable::GetImpl() const noexcept {
 void* hui::Drawable::GetImpl() noexcept {
     return impl_.get();
 }
-
-// template const sf::Drawable* hui::Drawable::GetImplAs<const sf::Drawable>() const noexcept;
-// template       sf::Drawable* hui::Drawable::GetImplAs<      sf::Drawable>()       noexcept;

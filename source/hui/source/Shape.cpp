@@ -40,15 +40,27 @@ void* hui::Shape::GetImpl() noexcept {
 
 
 void hui::Shape::SetFillColor       (const hui::Color& color) {
-    ERROR_HANDLE(&sf::Shape::setFillColor, *static_cast<hui::ShapeImpl*>(GetImpl()), *static_cast<const sf::Color*>(color.GetImpl()));
+    ERROR_HANDLE(
+        &sf::Shape::setFillColor, 
+        *static_cast<hui::ShapeImpl*>(GetImpl()), 
+        *static_cast<const sf::Color*>(color.GetImpl())
+    );
 }
 
 void hui::Shape::SetOutlineColor    (const hui::Color& color) {
-    ERROR_HANDLE(&sf::Shape::setOutlineColor, *static_cast<hui::ShapeImpl*>(GetImpl()), *static_cast<const sf::Color*>(color.GetImpl()));
+    ERROR_HANDLE(
+        &sf::Shape::setOutlineColor, 
+        *static_cast<hui::ShapeImpl*>(GetImpl()), 
+        *static_cast<const sf::Color*>(color.GetImpl())
+    );
 }
 
 void hui::Shape::SetOutlineThickness(double thickness) {
-    ERROR_HANDLE(&sf::Shape::setOutlineThickness, *static_cast<hui::ShapeImpl*>(GetImpl()), static_cast<float>(thickness));
+    ERROR_HANDLE(
+        &sf::Shape::setOutlineThickness, 
+        *static_cast<hui::ShapeImpl*>(GetImpl()), 
+        static_cast<float>(thickness)
+    );
 }
 
 void hui::Shape::SetPosition(const hui::Vector2d& position) {

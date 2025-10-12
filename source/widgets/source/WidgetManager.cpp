@@ -4,6 +4,7 @@
 #include "widgets/WidgetManager.hpp"
 #include "global/Global.hpp"
 #include "common/ErrorHandler.hpp"
+#include "hui/Event.hpp"
 #include "hui/RectangleShape.hpp"
 #include "hui/Window.hpp"
 #include "widgets/WidgetChildable.hpp"
@@ -37,7 +38,7 @@ void optor::WidgetManager::HandleEvents(hui::Window* window) {
     auto event = ERROR_HANDLE([](){ return hui::Event(); });
 
     while (ERROR_HANDLE(&hui::Window::PoolEvent, window, &event)) {
-        switch (event.GetType()) {
+        switch (ERROR_HANDLE(&hui::Event::GetType, event)) {
             case hui::Event::Type::Closed:
                 ERROR_HANDLE(&hui::Window::Close, window);
                 break;

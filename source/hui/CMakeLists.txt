@@ -1,6 +1,7 @@
 add_library(hui STATIC
     source/Vector.cpp
     source/Color.cpp
+    source/RectDouble.cpp
     
     source/Drawable.cpp
     source/Shape.cpp
