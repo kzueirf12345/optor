@@ -1,17 +1,5 @@
-add_library(hui STATIC
-    source/Vector.cpp
-    source/Color.cpp
-    source/RectDouble.cpp
-    
-    source/Drawable.cpp
-    source/Shape.cpp
-    source/RectangleShape.cpp
-    source/Texture.cpp
-    source/Sprite.cpp
-    
-    source/Event.cpp
-    source/Renderer.cpp
-    source/Window.cpp
+add_library(optics STATIC
+    source/Sphere.cpp
 )
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -30,16 +18,18 @@ else()
     add_compile_options(-O2)
 endif()
 
-set_target_properties(hui PROPERTIES FOLDER "source")
+set_target_properties(optics PROPERTIES FOLDER "source")
 
-target_include_directories(hui
+target_include_directories(optics
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> # Для сборки проекта
         $<INSTALL_INTERFACE:include>                           # Для будущей установки
 )
 
-target_link_libraries(hui
+target_link_libraries(optics
     PRIVATE 
         sfml-graphics
         common
+        hui
+        global
 )

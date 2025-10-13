@@ -31,6 +31,7 @@ add_subdirectory(source/common)
 add_subdirectory(source/hui)
 add_subdirectory(source/widgets)
 add_subdirectory(source/global)
+add_subdirectory(source/optics)
 
 find_package(X11                            REQUIRED)
 find_package(SFML 2.5.1 COMPONENTS graphics REQUIRED)
@@ -49,4 +50,5 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
         hui
         widgets
         global
+        optics
 )

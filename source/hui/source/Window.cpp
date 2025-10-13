@@ -17,7 +17,7 @@
 #include "hui/Renderer.hpp"
 #include "hui/Vector.hpp"
 
-class hui::WindowImpl : public sf::RenderWindow {
+class hui::WindowImpl : public sf::RenderWindow{
     private:
     public:
         WindowImpl(const hui::Vector2d& size, const std::string& title) 

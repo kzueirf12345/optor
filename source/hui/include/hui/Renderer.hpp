@@ -14,7 +14,7 @@ class RendererImpl;
 
 class Renderer {
     public:
-        Renderer(const hui::Vector2d& size);
+        explicit Renderer(const hui::Vector2d& size);
         virtual ~Renderer();
 
         Renderer           (const Renderer&) = delete;

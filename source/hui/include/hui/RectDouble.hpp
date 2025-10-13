@@ -13,7 +13,8 @@ class RectDoubleImpl;
 
 class RectDouble {
     public:
-        RectDouble(const hui::Vector2d& size, const hui::Vector2d& position = {});
+        explicit RectDouble(const hui::Vector2d& size);
+                 RectDouble(const hui::Vector2d& size, const hui::Vector2d& position);
         virtual ~RectDouble();
 
         RectDouble           (const RectDouble&) = delete;
@@ -25,7 +26,7 @@ class RectDouble {
         [[nodiscard]] hui::Vector2d GetPosition()    const noexcept;
         [[nodiscard]] hui::Vector2d GetSize()        const noexcept;
         [[nodiscard]] double        GetWidth()       const noexcept;
-        [[nodiscard]] double        GetHeigh()       const noexcept;
+        [[nodiscard]] double        GetHeight()       const noexcept;
         [[nodiscard]] hui::Vector2d GetRightCorner() const noexcept;
 
         void SetPosition(const hui::Vector2d& position) noexcept;

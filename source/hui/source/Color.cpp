@@ -1,16 +1,23 @@
 #include <cassert>
 
 #include <SFML/Graphics/Color.hpp>
+#include <memory>
 
 #include "hui/Color.hpp"
 
 class hui::ColorImpl : public sf::Color {
     public:
+        ColorImpl()
+        {}
         ColorImpl(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha)
             :   sf::Color(red, green, blue, alpha)
         {}
     private:
 };
+
+hui::Color::Color() 
+    : impl_(std::make_unique<hui::ColorImpl>())
+{}
 
 hui::Color::Color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha)
     : impl_(std::make_unique<hui::ColorImpl>(red, green, blue, alpha))

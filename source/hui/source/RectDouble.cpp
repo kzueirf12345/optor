@@ -17,6 +17,10 @@ class hui::RectDoubleImpl: public sf::Rect<double> {
     private:
 };
 
+hui::RectDouble::RectDouble(const hui::Vector2d& size)
+    :   hui::RectDouble::RectDouble(size, {0, 0})
+{}
+
 hui::RectDouble::RectDouble(const hui::Vector2d& size, const hui::Vector2d& position)
     :   impl_{std::make_unique<hui::RectDoubleImpl>(size, position)}
 {}
@@ -49,7 +53,7 @@ double hui::RectDouble::GetWidth() const noexcept {
     return impl->width;
 }
 
-double hui::RectDouble::GetHeigh() const noexcept {
+double hui::RectDouble::GetHeight() const noexcept {
     const auto* const impl = static_cast<const hui::RectDoubleImpl*>(GetImpl()); 
     return impl->height;
 }

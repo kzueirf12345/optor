@@ -1,10 +1,9 @@
+#include <memory>
+#include <stdexcept>
+
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/Drawable.hpp>
-#include <exception>
-#include <memory>
-
 #include <SFML/Graphics/RenderTexture.hpp>
-#include <stdexcept>
 
 #include "hui/Renderer.hpp"
 #include "common/ErrorHandler.hpp"
