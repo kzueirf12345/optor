@@ -1,4 +1,5 @@
 #include "hui/Texture.hpp"
+#include "common/ErrorHandler.hpp"
 #include <SFML/Graphics/Texture.hpp>
 
 class hui::TextureImpl: public sf::Texture {
@@ -34,4 +35,11 @@ const void* hui::Texture::GetImpl() const noexcept {
 
 void* hui::Texture::GetImpl() noexcept {
     return impl_.get();
+}
+
+void hui::Texture::Update(const std::vector<uint32_t>& pixels) {
+    auto* const impl = static_cast<hui::TextureImpl*>(GetImpl());
+    ERROR_HANDLE([impl, &pixels](){
+        impl->update(reinterpret_cast<const std::uint8_t*>(pixels.data()));
+    });
 }

@@ -23,6 +23,8 @@ namespace color
     static const hui::Color TextPrimary(0xc0, 0xca, 0xf5);
 #endif /*OPTOR_PALETE_NAME*/
 
+    static const hui::Color Transparent(0x0, 0x0, 0x0, 0x0);
+
 }
 
 static constexpr inline double PROGRAM_WIDTH = 1400;

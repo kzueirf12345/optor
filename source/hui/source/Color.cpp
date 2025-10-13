@@ -84,7 +84,7 @@ void hui::Color::SetAlpha   (uint8_t  alpha)  noexcept {
 
 static uint8_t GetColorPart_(uint32_t color, size_t num) noexcept {
     assert(num < 4);
-    return (color << (8 * num)) >> (8 * (4 - num));
+    return (color >> (8 * (3 - num))) & 0xFF;
 }
 
 void hui::Color::SetInt     (uint32_t color)  noexcept {

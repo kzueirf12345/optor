@@ -9,8 +9,8 @@ class hui::RectDoubleImpl: public sf::Rect<double> {
     public:
         RectDoubleImpl(const hui::Vector2d& size, const hui::Vector2d& position)
             :   sf::Rect<double>(
-                    {size.x, size.y},
-                    {position.x, position.y}
+                    {position.x, position.y},
+                    {size.x, size.y}
                 )
         {}
 
