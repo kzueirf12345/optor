@@ -43,7 +43,7 @@ void hui::Shape::SetFillColor       (const hui::Color& color) {
     ERROR_HANDLE(
         &sf::Shape::setFillColor, 
         *static_cast<hui::ShapeImpl*>(GetImpl()), 
-        *static_cast<const sf::Color*>(color.GetImpl())
+        sf::Color(color.GetInt())
     );
 }
 
@@ -51,7 +51,7 @@ void hui::Shape::SetOutlineColor    (const hui::Color& color) {
     ERROR_HANDLE(
         &sf::Shape::setOutlineColor, 
         *static_cast<hui::ShapeImpl*>(GetImpl()), 
-        *static_cast<const sf::Color*>(color.GetImpl())
+        sf::Color(color.GetInt())
     );
 }
 

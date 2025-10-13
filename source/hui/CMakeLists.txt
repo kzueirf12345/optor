@@ -8,6 +8,7 @@ add_library(hui STATIC
     source/RectangleShape.cpp
     
     source/Event.cpp
+    source/Renderer.cpp
     source/Window.cpp
 )
 

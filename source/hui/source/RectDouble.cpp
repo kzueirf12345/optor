@@ -1,7 +1,6 @@
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <memory>
-#include <numbers>
 
 #include "hui/RectDouble.hpp"
 #include "common/ErrorHandler.hpp"

@@ -14,16 +14,17 @@
 #include "hui/Window.hpp"
 #include "common/ErrorHandler.hpp"
 #include "hui/Event.hpp"
+#include "hui/Renderer.hpp"
 #include "hui/Vector.hpp"
 
 class hui::WindowImpl : public sf::RenderWindow {
     private:
     public:
-        WindowImpl(double width, double height, const std::string& title) 
+        WindowImpl(const hui::Vector2d& size, const std::string& title) 
             :   sf::RenderWindow {
                     sf::VideoMode(
-                        static_cast<unsigned int>(width), 
-                        static_cast<unsigned int>(height)
+                        static_cast<unsigned int>(size.x), 
+                        static_cast<unsigned int>(size.y)
                     ), 
                     title
                 }
@@ -31,19 +32,24 @@ class hui::WindowImpl : public sf::RenderWindow {
 
 };
 
-hui::Window::Window(double width, double height, const std::string& title) 
-    :   impl_{std::make_unique<hui::WindowImpl>(width, height, title)}
+hui::Window::Window(const hui::Vector2d& size, const std::string& title) 
+    :   hui::Renderer(size), impl_{std::make_unique<hui::WindowImpl>(size, title)}
 {}
 
 hui::Window::Window                (hui::Window&& other) noexcept = default;
 hui::Window& hui::Window::operator=(hui::Window&& other) noexcept = default;
 
-
 hui::Window::~Window() = default;
 
+const void* hui::Window::GetImpl() const noexcept {
+    return impl_.get();
+}
+void* hui::Window::GetImpl() noexcept {
+    return impl_.get();
+}
 
-void hui::Window::Clear() {
-    ERROR_HANDLE(&sf::RenderWindow::clear, impl_, sf::Color(0, 0, 0, 255));
+void hui::Window::Clear(const hui::Color& color) {
+    ERROR_HANDLE(&sf::RenderWindow::clear, impl_, sf::Color(color.GetInt()));
 }
 
 void hui::Window::Draw(const hui::Drawable& drawable) {
@@ -55,6 +61,7 @@ void hui::Window::Draw(const hui::Drawable& drawable) {
 void hui::Window::Display() {
     ERROR_HANDLE(&sf::RenderWindow::display, *impl_.get());
 }
+
 
 bool hui::Window::isOpen() const {
     return ERROR_HANDLE([&](){ return impl_->isOpen(); });

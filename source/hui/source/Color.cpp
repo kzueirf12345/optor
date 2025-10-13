@@ -1,3 +1,5 @@
+#include <cassert>
+
 #include <SFML/Graphics/Color.hpp>
 
 #include "hui/Color.hpp"
@@ -25,4 +27,63 @@ const void* hui::Color::GetImpl() const noexcept {
 
 void* hui::Color::GetImpl() noexcept {
     return impl_.get();
+}
+
+uint8_t  hui::Color::GetRed()   const noexcept {
+    const auto* const impl = static_cast<const hui::ColorImpl*>(GetImpl());
+    return impl->r;
+}
+
+uint8_t  hui::Color::GetGreen() const noexcept {
+    const auto* const impl = static_cast<const hui::ColorImpl*>(GetImpl());
+    return impl->g;
+}
+
+uint8_t  hui::Color::GetBlue()  const noexcept {
+    const auto* const impl = static_cast<const hui::ColorImpl*>(GetImpl());
+    return impl->b;
+}
+
+uint8_t  hui::Color::GetAlpha() const noexcept {
+    const auto* const impl = static_cast<const hui::ColorImpl*>(GetImpl());
+    return impl->a;
+}
+
+uint32_t hui::Color::GetInt()   const noexcept {
+    const auto* const impl = static_cast<const hui::ColorImpl*>(GetImpl());
+    return impl->toInteger();
+}
+
+
+void hui::Color::SetRed     (uint8_t  red)    noexcept {
+    auto* const impl = static_cast<hui::ColorImpl*>(GetImpl());
+    impl->r = red;
+}
+
+void hui::Color::SetGreen   (uint8_t  green)  noexcept {
+    auto* const impl = static_cast<hui::ColorImpl*>(GetImpl());
+    impl->g = green;
+}
+
+void hui::Color::SetBlue    (uint8_t  blue)   noexcept {
+    auto* const impl = static_cast<hui::ColorImpl*>(GetImpl());
+    impl->b = blue;
+}
+
+void hui::Color::SetAlpha   (uint8_t  alpha)  noexcept {
+    auto* const impl = static_cast<hui::ColorImpl*>(GetImpl());
+    impl->a = alpha;
+}
+
+static uint8_t GetColorPart_(uint32_t color, size_t num) noexcept {
+    assert(num < 4);
+    return (color << (8 * num)) >> (8 * (4 - num));
+}
+
+void hui::Color::SetInt     (uint32_t color)  noexcept {
+    auto* const impl = static_cast<hui::ColorImpl*>(GetImpl());
+    impl->r = GetColorPart_(color, 0);
+    impl->g = GetColorPart_(color, 1);
+    impl->b = GetColorPart_(color, 2);
+    impl->a = GetColorPart_(color, 3);
 }

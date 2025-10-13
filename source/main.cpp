@@ -13,7 +13,7 @@
 int main() {
 
     auto window = ERROR_HANDLE([](){
-        return hui::Window(optor::PROGRAM_WIDTH, optor::PROGRAM_HEIGHT, "Optor (0xCEBAEBA1DEDA)");
+        return hui::Window({optor::PROGRAM_WIDTH, optor::PROGRAM_HEIGHT}, "Optor (0xCEBAEBA1DEDA)");
     });
 
     auto manager = ERROR_HANDLE([](){
@@ -35,7 +35,7 @@ int main() {
 
         ERROR_HANDLE(&optor::WidgetManager::HandleEvents, &manager, &window);
 
-        ERROR_HANDLE(&hui::Window::Clear, &window);
+        ERROR_HANDLE(&hui::Window::Clear, &window, optor::color::ProgramBackground);
 
         ERROR_HANDLE(&optor::WidgetManager::Draw, &manager, &window);
 

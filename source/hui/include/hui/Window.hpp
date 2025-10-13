@@ -5,6 +5,7 @@
 
 #include "hui/Drawable.hpp"
 #include "hui/Event.hpp"
+#include "hui/Renderer.hpp"
 #include "hui/Vector.hpp"
 
 namespace hui 
@@ -12,9 +13,9 @@ namespace hui
 
 class WindowImpl;
 
-class Window {
+class Window : public hui::Renderer {
     public:
-        Window(double width, double height, const std::string& title);
+        Window(const hui::Vector2d& size, const std::string& title);
 
         Window           (const Window&) = delete;
         Window& operator=(const Window&) = delete;
@@ -23,10 +24,13 @@ class Window {
         Window& operator=(Window&& other) noexcept;
 
         ~Window();
+
+        [[nodiscard]] virtual const void* GetImpl() const noexcept override final;
+        [[nodiscard]] virtual       void* GetImpl()       noexcept override final;
         
-                      void Clear();
-                      void Draw(const hui::Drawable& drawable);
-                      void Display();
+        virtual       void Clear(const hui::Color& color) override;
+        virtual       void Draw(const hui::Drawable& drawable) override;
+        virtual       void Display() override;
         [[nodiscard]] bool isOpen() const;
                       void Close();
                       bool PoolEvent(hui::Event* event);
