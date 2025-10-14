@@ -8,16 +8,20 @@
 #include "hui/Renderer.hpp"
 #include "common/ErrorHandler.hpp"
 #include "hui/Color.hpp"
+#include "hui/Texture.hpp"
 
 class hui::RendererImpl: public sf::RenderTexture {
     public:
         RendererImpl(const hui::Vector2d& size)
-            :   sf::RenderTexture()
+            :   sf::RenderTexture(), cachedTexture_{}
         {
             if (!this->create(size.x, size.y)) {
                 throw std::runtime_error("Can't create sf::RenderTexture");
             }
         }
+
+        
+        hui::Texture cachedTexture_;
     private:
 };
 
@@ -60,4 +64,11 @@ hui::Vector2d hui::Renderer::GetSize() const {
     const auto* const impl = static_cast<const hui::RendererImpl*>(GetImpl());
     const auto res = ERROR_HANDLE(&hui::RendererImpl::getSize, impl);
     return {static_cast<double>(res.x), static_cast<double>(res.y)};
+}
+
+const hui::Texture& hui::Renderer::GetTexture() {
+    auto* const impl = static_cast<hui::RendererImpl*>(GetImpl());
+    const sf::Texture& sfTexture = ERROR_HANDLE(&hui::RendererImpl::getTexture, impl);
+    impl->cachedTexture_.SetImpl((void*)&sfTexture);
+    return impl->cachedTexture_;
 }

@@ -1,6 +1,10 @@
+#include <memory>
+#include <cassert>
+
+#include <SFML/Graphics/Texture.hpp>
+
 #include "hui/Texture.hpp"
 #include "common/ErrorHandler.hpp"
-#include <SFML/Graphics/Texture.hpp>
 
 class hui::TextureImpl: public sf::Texture {
     public:
@@ -12,6 +16,7 @@ class hui::TextureImpl: public sf::Texture {
                 throw std::runtime_error("Can't create sf::Texture");
             }
         }
+        TextureImpl(const TextureImpl& other) = default;
             
     private:
 };
@@ -42,4 +47,10 @@ void hui::Texture::Update(const std::vector<uint32_t>& pixels) {
     ERROR_HANDLE([impl, &pixels](){
         impl->update(reinterpret_cast<const std::uint8_t*>(pixels.data()));
     });
+}
+
+void hui::Texture::SetImpl(void* impl) noexcept {
+    assert(impl);
+
+    impl_ = std::make_unique<hui::TextureImpl>(*static_cast<hui::TextureImpl*>(impl));
 }

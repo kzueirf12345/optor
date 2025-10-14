@@ -27,6 +27,9 @@ class RectangleShape : public hui::Shape {
 
         [[nodiscard]] const hui::Vector2d GetSize() const;
 
+        virtual void SetPosition(const hui::Vector2d& position) override final;
+        virtual hui::Vector2d GetPosition() const override final;
+
     private:
         std::unique_ptr<RectangleShapeImpl> impl_;
 };

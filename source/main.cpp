@@ -1,13 +1,11 @@
 #include <cstdlib>
 #include <memory>
 
-#include "hui/Color.hpp"
 #include "hui/RectangleShape.hpp"
-#include "hui/Sprite.hpp"
-#include "hui/Texture.hpp"
 #include "hui/Vector.hpp"
 #include "hui/Window.hpp"
 #include "common/ErrorHandler.hpp"
+#include "widgets/RenderWidget.hpp"
 #include "widgets/Widget.hpp"
 #include "global/Global.hpp"
 #include "widgets/WidgetChildable.hpp"
@@ -24,22 +22,25 @@ int main() {
         return optor::WidgetManager();
     });
 
-    auto* tempWidget = ERROR_HANDLE(
+    auto* scene = ERROR_HANDLE(
         &optor::WidgetChildable::AddChild, 
         manager.GetDesktop(), 
-        std::make_unique<optor::Widget>(
+        std::make_unique<optor::RenderWidget>(
             hui::RectangleShape({500, 500}),
             manager.GetState()
         )
     );
 
-    optor::Sphere sphere = ERROR_HANDLE([](){
-        return optor::Sphere(
-            100
+    ERROR_HANDLE(&optor::Widget::SetPosition, scene, hui::Vector2d(100, 100));
+
+    auto* sphere = ERROR_HANDLE([scene](){
+        return dynamic_cast<optor::RenderWidget*>(scene)->AddItem(
+            std::make_unique<optor::Sphere>(
+                100,
+                hui::Vector3d(20, 20, 0)
+            )
         );
     });
-
-    ERROR_HANDLE(&optor::Widget::SetPosition, tempWidget, hui::Vector2d(100, 100));
 
     while (ERROR_HANDLE(&hui::Window::isOpen, window)) {
 
@@ -48,11 +49,8 @@ int main() {
         ERROR_HANDLE(&hui::Window::Clear, &window, optor::color::ProgramBackground);
 
         ERROR_HANDLE(&optor::WidgetManager::Draw, &manager, &window);
-        ERROR_HANDLE(&hui::Window::Draw, &window, sphere);
 
         ERROR_HANDLE(&hui::Window::Display, &window);
-        
-        ERROR_HANDLE(&optor::Sphere::Update, &sphere);
     }
 
     return EXIT_SUCCESS;

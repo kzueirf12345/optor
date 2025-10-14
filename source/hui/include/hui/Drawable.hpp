@@ -3,8 +3,6 @@
 
 #include <memory>
 
-#include <SFML/Graphics/Shape.hpp>
-
 namespace hui 
 {
 

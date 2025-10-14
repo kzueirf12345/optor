@@ -5,14 +5,13 @@
 
 #include "hui/Drawable.hpp"
 #include "hui/Color.hpp"
-#include "hui/Vector.hpp"
-
+#include "hui/Transformable.hpp"
 namespace hui 
 {
 
 class ShapeImpl;
 
-class Shape: public hui::Drawable {
+class Shape: public hui::Drawable, public hui::Transformable {
     public:
         Shape();
         virtual ~Shape();
@@ -26,8 +25,6 @@ class Shape: public hui::Drawable {
         void SetFillColor       (const hui::Color& color);
         void SetOutlineColor    (const hui::Color& color);
         void SetOutlineThickness(double thickness);
-        void SetPosition(const hui::Vector2d& position);
-        hui::Vector2d GetPosition() const;
 
         [[nodiscard]] virtual const void* GetImpl() const noexcept override;
         [[nodiscard]] virtual       void* GetImpl()       noexcept override;

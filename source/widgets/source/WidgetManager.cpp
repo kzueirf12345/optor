@@ -60,6 +60,8 @@ void optor::WidgetManager::HandleEvents(hui::Window* window) {
                 break;
         }
     }
+
+    ERROR_HANDLE(&optor::WidgetChildable::OnIdle, desktop_);
 }
 
 optor::WidgetChildable* optor::WidgetManager::SetDesktop(std::unique_ptr<optor::WidgetChildable> desktop) noexcept {

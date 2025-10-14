@@ -5,13 +5,14 @@
 
 #include "hui/Drawable.hpp"
 #include "hui/Texture.hpp"
+#include "hui/Transformable.hpp"
 
 namespace hui 
 {
 
 class SpriteImpl;
 
-class Sprite: public hui::Drawable {
+class Sprite: public hui::Drawable, public hui::Transformable {
     public:
         Sprite();
         explicit Sprite(const hui::Texture& texture);
@@ -24,10 +25,13 @@ class Sprite: public hui::Drawable {
         
         virtual ~Sprite();
 
-        [[nodiscard]] virtual const void* GetImpl() const noexcept;
-        [[nodiscard]] virtual       void* GetImpl()       noexcept;
+        [[nodiscard]] virtual const void* GetImpl() const noexcept override final;
+        [[nodiscard]] virtual       void* GetImpl()       noexcept override final;
 
         void SetTexture(const hui::Texture& texture);
+
+        virtual void SetPosition(const hui::Vector2d& position) override final;
+        virtual hui::Vector2d GetPosition() const override final;
 
     private:
         std::unique_ptr<SpriteImpl> impl_;

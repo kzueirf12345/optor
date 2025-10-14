@@ -26,6 +26,7 @@ class WidgetChildable: public Widget {
         virtual bool OnMouseMove   (const hui::Event& event) override;
         virtual bool OnMousePress  (const hui::Event& event) override;
         virtual bool OnMouseRelease(const hui::Event& event) override;
+        virtual void OnIdle        ()                        override;
 
         optor::Widget* AddChild(std::unique_ptr<Widget> child);
 

@@ -44,3 +44,20 @@ void hui::Sprite::SetTexture(const hui::Texture& texture) {
         impl->setTexture(*texture_impl);
     });
 }
+
+void hui::Sprite::SetPosition(const hui::Vector2d& position) { // FIXME
+    ERROR_HANDLE([this, &position](){
+        static_cast<hui::SpriteImpl*>(GetImpl())->setPosition(
+            position.x, 
+            position.y
+        );}
+    );
+}
+
+hui::Vector2d hui::Sprite::GetPosition() const { // FIXME
+    const sf::Vector2f res = ERROR_HANDLE(
+        &sf::Sprite::getPosition, 
+        *static_cast<const hui::SpriteImpl*>(GetImpl())
+    );
+    return {res.x, res.y};
+}

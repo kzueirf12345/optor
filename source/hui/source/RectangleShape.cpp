@@ -5,6 +5,7 @@
 
 #include "hui/RectangleShape.hpp"
 #include "common/ErrorHandler.hpp"
+#include "hui/Transformable.hpp"
 
 class hui::RectangleShapeImpl: public sf::RectangleShape {
     public:
@@ -35,6 +36,22 @@ void* hui::RectangleShape::GetImpl() noexcept {
 const hui::Vector2d hui::RectangleShape::GetSize() const {
     auto res = ERROR_HANDLE(
         &sf::RectangleShape::getSize, 
+        *static_cast<const hui::RectangleShapeImpl*>(GetImpl())
+    );
+    return {res.x, res.y};
+}
+
+void hui::RectangleShape::SetPosition(const hui::Vector2d& position){
+    ERROR_HANDLE([this, &position](){
+        static_cast<hui::RectangleShapeImpl*>(GetImpl())->setPosition(
+            position.x, 
+            position.y
+        );}
+    );
+}
+hui::Vector2d hui::RectangleShape::GetPosition() const{
+    const sf::Vector2f res = ERROR_HANDLE(
+        &sf::Transformable::getPosition, 
         *static_cast<const hui::RectangleShapeImpl*>(GetImpl())
     );
     return {res.x, res.y};

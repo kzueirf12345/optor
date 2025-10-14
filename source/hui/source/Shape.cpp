@@ -62,20 +62,3 @@ void hui::Shape::SetOutlineThickness(double thickness) {
         static_cast<float>(thickness)
     );
 }
-
-void hui::Shape::SetPosition(const hui::Vector2d& position) {
-    ERROR_HANDLE([&](){
-        static_cast<hui::ShapeImpl*>(GetImpl())->setPosition(
-            position.x, 
-            position.y
-        );}
-    );
-}
-
-hui::Vector2d hui::Shape::GetPosition() const {
-    const sf::Vector2f res = ERROR_HANDLE(
-        &sf::Shape::getPosition, 
-        *static_cast<const hui::ShapeImpl*>(GetImpl())
-    );
-    return {res.x, res.y};
-}

@@ -1,9 +1,11 @@
 #ifndef OPTOR_SOURCE_HUI_INCLUDE_HUI_RENDERER_HPP
 #define OPTOR_SOURCE_HUI_INCLUDE_HUI_RENDERER_HPP
 
+#include <SFML/Graphics/Color.hpp>
 #include <memory>
 
 #include "hui/Color.hpp"
+#include "hui/Texture.hpp"
 #include "hui/Vector.hpp"
 #include "hui/Drawable.hpp"
 
@@ -26,11 +28,12 @@ class Renderer {
         [[nodiscard]] virtual const void* GetImpl() const noexcept;
         [[nodiscard]] virtual       void* GetImpl()       noexcept;
 
-        virtual void Clear(const hui::Color& color = hui::Color(0, 0, 0));
+        virtual void Clear(const hui::Color& color = hui::Color(0, 0, 0, 255));
         virtual void Draw(const hui::Drawable& drawable);
         virtual void Display();
 
         [[nodiscard]] hui::Vector2d GetSize() const;
+        [[nodiscard]] const hui::Texture& GetTexture();
 
     private:
         std::unique_ptr<RendererImpl> impl_;

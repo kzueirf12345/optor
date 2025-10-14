@@ -57,6 +57,16 @@ bool optor::WidgetChildable::OnMouseRelease(const hui::Event& event) {
     });
 }
 
+void optor::WidgetChildable::OnIdle() {
+    for (auto childIt = children_.rbegin(); childIt != children_.rend(); ++childIt) {
+        ERROR_HANDLE(&optor::Widget::OnIdle, *childIt);
+    }
+
+    ERROR_HANDLE([this](){
+        optor::Widget::OnIdle();
+    });
+}
+
 optor::Widget* optor::WidgetChildable::AddChild(std::unique_ptr<Widget> child) {
     ERROR_HANDLE([this, &child](){
         children_.push_back(std::move(child));
