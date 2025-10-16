@@ -12,15 +12,10 @@ class Light: public Sphere {
         Light(double radius);
         Light(double radius, const hui::Vector3d& center);
 
-        [[nodiscard]] virtual std::optional<hui::Color> TraceRay(
-                                                            const hui::Vector3d& rayDir,
-                                                            const hui::Vector3d& cameraPos, 
-                                                            const std::vector<optor::Light*>& lights
-                                                        ) const override;
-
         [[nodiscard]] hui::Color GetEmmitColor() const noexcept;
 
         void SetEmmitColor(const hui::Color& color);
+        
     protected:
         hui::Color emmitColor_;
 };

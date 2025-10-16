@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "hui/TexturedShape.hpp"
+#include "hui/Vector.hpp"
 #include "optics/Camera.hpp"
 #include "optics/Light.hpp"
 #include "optics/OpticObj.hpp"
@@ -28,6 +29,9 @@ class Scene: public hui::Textured {
         std::vector<optor::Light*> lights_;
 
         optor::Camera camera_;
+
+        std::optional<hui::Color> TraceRay(const hui::Vector3d rayDir, const optor::OpticObj* obj, 
+                                           double* dist);
 };
 
 }

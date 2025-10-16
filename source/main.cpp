@@ -36,43 +36,44 @@ int main() {
 
     ERROR_HANDLE(&optor::Widget::SetPosition, sceneWidget, hui::Vector2d(100, 100));
 
-    auto* sphere1 = ERROR_HANDLE([sceneWidget](){
+    auto* sphere1 = dynamic_cast<optor::Sphere*>(ERROR_HANDLE([sceneWidget](){
         return sceneWidget->AddObj(
             std::make_unique<optor::Sphere>(
                 1,
                 hui::Vector3d(0, 0, 3)
             )
         );
-    });
+    }));
 
-    ERROR_HANDLE([sphere1](){
-        dynamic_cast<optor::Sphere*>(sphere1)->SetAmbientColor(optor::color::AccentCyan);
-    });
+    ERROR_HANDLE([sphere1](){sphere1->SetAmbientColor(optor::color::AccentCyan);});
+    ERROR_HANDLE([sphere1](){sphere1->SetDiffColor(hui::Color(hui::Vector3d(0.85, 0.1, 0.1)));});
+    ERROR_HANDLE([sphere1](){sphere1->SetSpecColor(hui::Color(hui::Vector3d(1, 1, 1)));});
+    
 
-    auto* sphere2 = ERROR_HANDLE([sceneWidget](){
+    auto* sphere2 = dynamic_cast<optor::Sphere*>(ERROR_HANDLE([sceneWidget](){
         return sceneWidget->AddObj(
             std::make_unique<optor::Sphere>(
-                0.5,
-                hui::Vector3d(0, -2, 5)
+                3,
+                hui::Vector3d(0, -1, 7)
             )
         );
-    });
+    }));
 
-    ERROR_HANDLE([sphere2](){
-        dynamic_cast<optor::Sphere*>(sphere2)->SetAmbientColor(optor::color::AccentRed);
-    });
+    ERROR_HANDLE([sphere2](){sphere2->SetAmbientColor(optor::color::AccentRed);});
+    ERROR_HANDLE([sphere2](){sphere2->SetDiffColor(hui::Color(hui::Vector3d(0.85, 0.1, 0.1)));});
+    ERROR_HANDLE([sphere2](){sphere2->SetSpecColor(hui::Color(hui::Vector3d(1, 1, 1)));});
 
     auto* light1 = ERROR_HANDLE([sceneWidget](){
         return sceneWidget->AddObj(
             std::make_unique<optor::Light>(
                 0.1,
-                hui::Vector3d(-3, 0, -1)
+                hui::Vector3d(0, 0, -1)
             )
         );
     });
 
     ERROR_HANDLE([light1](){
-        dynamic_cast<optor::Sphere*>(light1)->SetAmbientColor(optor::color::AccentGreen);
+        light1->SetAmbientColor(optor::color::AccentGreen);
     });
 
     while (ERROR_HANDLE(&hui::Window::isOpen, window)) {

@@ -1,3 +1,6 @@
+#include <cassert>
+#include <limits>
+
 #include "optics/Scene.hpp"
 #include "common/ErrorHandler.hpp"
 #include "global/Global.hpp"
@@ -35,17 +38,17 @@ void optor::Scene::Update() {
 
             pixelBuffer_[pixelIndex] = optor::color::Transparent.GetInt();
 
-            for (auto& obj : objs_) { // FIXME check перекрывание
-                const std::optional<hui::Color> color = ERROR_HANDLE(
-                    &optor::OpticObj::TraceRay, 
-                    obj, 
-                    rayDir,
-                    camera_.GetPosition(), 
-                    lights_
-                );
-                if (color.has_value() && pixelBuffer_[pixelIndex] == optor::color::Transparent.GetInt())
+            double minDist = std::numeric_limits<double>::max();
+
+            for (auto& obj : objs_) {
+                double curDist = 0;
+                const std::optional<hui::Color> color = 
+                    ERROR_HANDLE(&optor::Scene::TraceRay, this, rayDir, obj.get(), &curDist);
+
+                if (color.has_value() && curDist < minDist)
                 {
-                    pixelBuffer_[pixelIndex] =  color.value().GetInt();
+                    pixelBuffer_[pixelIndex] = color.value().GetInt();
+                    minDist = curDist;
                 }
             }
 
@@ -55,6 +58,74 @@ void optor::Scene::Update() {
     ERROR_HANDLE([this](){
         hui::Textured::Update();
     });
+}
+
+std::optional<hui::Color> optor::Scene::TraceRay(const hui::Vector3d rayDir, const optor::OpticObj* obj,
+                                                 double* dist) {
+    assert(obj);
+    assert(dist);
+
+    const hui::Vector3d cameraPos = camera_.GetPosition();
+
+    std::optional<double> distCamera2Intersect = ERROR_HANDLE(
+        &optor::OpticObj::IntersectRay, 
+        obj, 
+        cameraPos, 
+        rayDir
+    );
+    
+    if (!distCamera2Intersect.has_value()) {
+        return std::nullopt;
+    }
+
+    *dist = distCamera2Intersect.value(); 
+    
+    const hui::Vector3d intersectPoint = cameraPos + rayDir * *dist;
+    const hui::Vector3d normalVec = obj->GetNormal(intersectPoint);
+    
+    const hui::Vector3d ambientColor = obj->GetAmbientColor().GetNormalized();
+    const hui::Vector3d diffColor    = obj->GetDiffColor().GetNormalized();
+    const hui::Vector3d specColor    = obj->GetSpecColor().GetNormalized();
+    
+    const hui::Vector3d ambientPart = ambientColor * GLOBAL_AMBIENT_COEF;
+    
+    hui::Vector3d diffPart(0, 0, 0);
+    hui::Vector3d specPart(0, 0, 0);
+    
+    for (const auto& light : lights_) {
+        const hui::Vector3d lightCenter = light->GetCenter();
+        const hui::Vector3d lightDir = !(lightCenter - intersectPoint);
+        
+        const double distLight2Intersect = (lightCenter - intersectPoint).Len();
+
+        bool isAttained = true;
+        for (const auto& otherObj : objs_) {
+            if (otherObj.get() == obj || light == otherObj.get()) {
+                continue;
+            }
+            const std::optional<double> distLight2Other = 
+                ERROR_HANDLE(&optor::OpticObj::IntersectRay, otherObj, lightCenter, -lightDir);
+
+            if (distLight2Other.has_value() && distLight2Other.value() < distLight2Intersect) {
+                isAttained = false;
+                break;
+            }
+        }
+        if (!isAttained) {
+            continue;
+        }
+
+        const hui::Vector3d curEmmitColor = light->GetEmmitColor().GetNormalized();
+        
+        const double        curDiffCoef = std::max(0., lightDir ^ normalVec); 
+        const hui::Vector3d curDiffPart = hui::Product(diffColor, curEmmitColor);
+        
+        diffPart += curDiffCoef * curDiffPart;
+    }
+
+    const hui::Vector3d resultColor(ambientPart + diffPart + specPart);
+
+    return hui::Color(resultColor.Clump({0, 0, 0}, {1, 1, 1}));
 }
 
 optor::OpticObj* optor::Scene::AddObj(std::unique_ptr<optor::OpticObj> obj) {
