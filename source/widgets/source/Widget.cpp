@@ -69,6 +69,10 @@ hui::Vector2d optor::Widget::AbsCoord() const {
     return std::move(absCoord);
 }
 
+hui::Vector2d optor::Widget::GetSize() const {
+    return ERROR_HANDLE(&hui::RectangleShape::GetSize, rect_);
+}
+
 bool optor::Widget::OnMouseMove(const hui::Event& event) {
     const hui::Vector2d mouseCoord = event.GetMouseCoord();
 

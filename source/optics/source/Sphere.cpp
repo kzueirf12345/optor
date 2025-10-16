@@ -1,34 +1,52 @@
+#include <optional>
+
 #include "optics/Sphere.hpp"
-#include "common/ErrorHandler.hpp"
+#include "hui/Vector.hpp"
 #include "global/Global.hpp"
-#include "hui/TexturedShape.hpp"
+#include "common/ErrorHandler.hpp"
 
 optor::Sphere::Sphere(double radius)
     :   optor::Sphere::Sphere(radius, {0, 0, 0})
 {}
 
 optor::Sphere::Sphere(double radius, const hui::Vector3d& center)
-    :   hui::TexturedShape({2*radius, 2*radius}, {center.x - radius, center.y - radius}), 
-        radius_{radius},
-        center_{center}
-{
-    ERROR_HANDLE(&optor::Sphere::Update, this);
+    :   radius_{radius},
+        center_{center},
+        radius2_{radius * radius}
+{}
+
+bool optor::Sphere::IsContainsDot(const hui::Vector3d& dot) const noexcept {
+    return dot.Len2() <= radius2_;
 }
 
-void optor::Sphere::Update() {
-    std::cerr << "i'm in Update sphere\n";
-
-    for (size_t y = 0; y < (size_t)boxSize_.y; ++y) {
-        for (size_t x = 0; x < (size_t)boxSize_.x; ++x) {
-            if ((x - radius_) * (x - radius_) + (y - radius_) * (y - radius_) <= radius_ * radius_) {
-                pixelBuffer_[y*boxSize_.x + x] = (optor::color::TextPrimary.GetInt());
-            } else {
-                pixelBuffer_[y*boxSize_.x + x] = (optor::color::Transparent.GetInt());
-            }
-        }
+std::optional<double> optor::Sphere::IntersectRay(const hui::Vector3d& rayBegin, 
+                                                  const hui::Vector3d& rayDirection) const {
+    const hui::Vector3d oc = rayBegin - center_;
+    
+    const double a = rayDirection.Len2();
+    const double b = 2.0 * (oc ^ rayDirection);
+    const double c = oc.Len2() - radius2_;
+    
+    const double discriminant = b * b - 4 * a * c;
+    
+    if (discriminant < 0) {
+        return std::nullopt;
     }
+    
+    const double sqrtD = std::sqrt(discriminant);
+    const double t1 = (-b - sqrtD) / (2 * a);
+    const double t2 = (-b + sqrtD) / (2 * a);
+    
+    if (t1 > 0) return t1;
+    if (t2 > 0) return t2;
+    
+    return std::nullopt;
+}
 
-    ERROR_HANDLE([this](){
-        hui::TexturedShape::Update();
-    });
+uint32_t optor::Sphere::TraceRay(const hui::Vector3d& rayBegin, 
+                                 const hui::Vector3d& rayDirection) const {
+    if (ERROR_HANDLE(&optor::Sphere::IntersectRay, this, rayBegin, rayDirection)) {
+        return optor::color::TextPrimary.GetInt();
+    }
+    return optor::color::Transparent.GetInt();
 }

@@ -10,8 +10,8 @@
 
 namespace optor 
 {
-    
-class Widget {
+
+    class Widget {
     public:
         explicit Widget(hui::RectangleShape rect, optor::WidgetsState* state);
 
@@ -35,7 +35,7 @@ class Widget {
         
         [[nodiscard]] hui::Vector2d AbsCoord() const;  
 
-
+        [[nodiscard]] hui::Vector2d GetSize() const;
     protected:
         hui::RectangleShape rect_;
         optor::Widget* parent_;

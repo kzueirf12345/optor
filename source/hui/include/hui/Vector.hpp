@@ -27,33 +27,33 @@ class Vector2 {
         T x;
         T y;
 
-        Vector2() : x{}, y{} {}
-        Vector2(T x, T y) : x{x}, y{y} {}
+        Vector2() noexcept : x{}, y{} {}
+        Vector2(T x, T y) noexcept : x{x}, y{y} {}
 
-        [[nodiscard]] T Len2() const;
+        [[nodiscard]] T Len2() const noexcept;
         [[nodiscard]] T Len()  const;
-        [[nodiscard]] Vector2<T> Normal() const;
-        [[nodiscard]] Vector2<T> Mirror(hui::Axis axis) const;
+        [[nodiscard]] Vector2<T> Normal() const noexcept;
+        [[nodiscard]] Vector2<T> Mirror(hui::Axis axis) const noexcept;
         [[nodiscard]] Vector2<T> Clump(const hui::Vector2<T>& minVec, 
                                        const hui::Vector2<T>& maxVec) const;
 
-        Vector2<T> operator-() const {
+        Vector2<T> operator-() const noexcept {
             return Vector2<T>(-this->x, -this->y);
         }
 
-        Vector2<T>& operator+=(const Vector2<T>& other) {
+        Vector2<T>& operator+=(const Vector2<T>& other) noexcept {
             this->x += other.x;
             this->y += other.y;
             return *this;
         }
 
-        Vector2<T>& operator-=(const Vector2<T>& other) {
+        Vector2<T>& operator-=(const Vector2<T>& other) noexcept {
             this->x -= other.x;
             this->y -= other.y;
             return *this;
         }
 
-        Vector2<T>& operator*=(T scalar) {
+        Vector2<T>& operator*=(T scalar) noexcept {
             this->x *= scalar;
             this->y *= scalar;
             return *this;
@@ -71,7 +71,7 @@ typedef hui::Vector2<double> Vector2d;
 typedef hui::Vector2<int>    Vector2i;
 
 template <typename T>
-T operator ^(const hui::Vector2<T>& left, const hui::Vector2<T>& right) {
+T operator ^(const hui::Vector2<T>& left, const hui::Vector2<T>& right) noexcept {
     return left.x * right.x + left.y * right.y;
 }
 
@@ -81,22 +81,22 @@ hui::Vector2<T> operator !(const hui::Vector2<T>& right) {
 }
 
 template <typename T>
-Vector2<T> operator+(const Vector2<T>& left, const Vector2<T>& right) {
+Vector2<T> operator+(const Vector2<T>& left, const Vector2<T>& right) noexcept {
     return Vector2<T>(left.x + right.x, left.y + right.y);
 }
 
 template <typename T>
-Vector2<T> operator-(const Vector2<T>& left, const Vector2<T>& right) {
+Vector2<T> operator-(const Vector2<T>& left, const Vector2<T>& right) noexcept {
     return Vector2<T>(left.x - right.x, left.y - right.y);
 }
 
 template <typename T>
-Vector2<T> operator*(const Vector2<T>& left, T right) {
+Vector2<T> operator*(const Vector2<T>& left, T right) noexcept{
     return Vector2<T>(left.x * right, left.y * right);
 }
 
 template <typename T>
-Vector2<T> operator*(T left, const Vector2<T>& right) {
+Vector2<T> operator*(T left, const Vector2<T>& right) noexcept {
     return Vector2<T>(right.x * left, right.y * left);
 }
 
@@ -106,24 +106,24 @@ Vector2<T> operator/(const Vector2<T>& left, T right) {
 }
 
 template <typename T>
-bool operator==(const Vector2<T>& left, const Vector2<T>& right) {
+bool operator==(const Vector2<T>& left, const Vector2<T>& right) noexcept {
     return left.x == right.x && left.y == right.y;
 }
 
 template <typename T>
-bool operator!=(const Vector2<T>& left, const Vector2<T>& right) {
+bool operator!=(const Vector2<T>& left, const Vector2<T>& right) noexcept {
     return !(left == right);
 }
 
 template <typename T>
-Vector2<T>& operator+=(Vector2<T>& left, const Vector2<T>& right) {
+Vector2<T>& operator+=(Vector2<T>& left, const Vector2<T>& right) noexcept {
     left.x += right.x;
     left.y += right.y;
     return left;
 }
 
 template <typename T>
-T hui::Vector2<T>::Len2() const {
+T hui::Vector2<T>::Len2() const noexcept {
     return (*this) ^ (*this);
 }
 
@@ -133,12 +133,12 @@ T hui::Vector2<T>::Len() const {
 }
 
 template <typename T>
-hui::Vector2<T> hui::Vector2<T>::Normal() const {
+hui::Vector2<T> hui::Vector2<T>::Normal() const noexcept {
     return Vector2<T>(this->y, -this->x);
 }
 
 template <typename T>
-Vector2<T> hui::Vector2<T>::Mirror(hui::Axis axis) const {
+Vector2<T> hui::Vector2<T>::Mirror(hui::Axis axis) const noexcept {
     return {
         axis == hui::Axis::X ? -this->x : this->x,
         axis == hui::Axis::Y ? -this->y : this->y
@@ -166,34 +166,34 @@ class Vector3 {
         T x;
         T y;
         T z;
-        Vector3(): x{}, y{}, z{} {}
-        Vector3(T x, T y, T z) : x{x}, y{y}, z{z} {};
+        Vector3() noexcept: x{}, y{}, z{} {}
+        Vector3(T x, T y, T z) noexcept : x{x}, y{y}, z{z} {};
         
-        [[nodiscard]] T Len2() const;
+        [[nodiscard]] T Len2() const noexcept;
         [[nodiscard]] T Len()  const;
-        [[nodiscard]] Vector3<T> Mirror(hui::Axis axis) const;
+        [[nodiscard]] Vector3<T> Mirror(hui::Axis axis) const noexcept;
         [[nodiscard]] Vector3<T> Clump(const hui::Vector3<T>& minVec, 
                                        const hui::Vector3<T>& maxVec) const;
 
-        Vector3<T> operator-() const {
+        Vector3<T> operator-() const noexcept{
             return Vector3<T>(-this->x, -this->y, -this->z);
         }
 
-        Vector3<T>& operator+=(const Vector3<T>& other) {
+        Vector3<T>& operator+=(const Vector3<T>& other) noexcept {
             this->x += other.x;
             this->y += other.y;
             this->z += other.z;
             return *this;
         }
 
-        Vector3<T>& operator-=(const Vector3<T>& other) {
+        Vector3<T>& operator-=(const Vector3<T>& other) noexcept {
             this->x -= other.x;
             this->y -= other.y;
             this->z -= other.z;
             return *this;
         }
 
-        Vector3<T>& operator*=(T scalar) {
+        Vector3<T>& operator*=(T scalar) noexcept {
             this->x *= scalar;
             this->y *= scalar;
             this->z *= scalar;
@@ -213,7 +213,7 @@ typedef hui::Vector3<double> Vector3d;
 typedef hui::Vector3<int>    Vector3i;
 
 template <typename T>
-T operator ^(const hui::Vector3<T>& left, const hui::Vector3<T>& right) {
+T operator ^(const hui::Vector3<T>& left, const hui::Vector3<T>& right) noexcept {
     return left.x * right.x + left.y * right.y + left.z * right.z;
 }
 
@@ -223,22 +223,22 @@ hui::Vector3<T> operator !(const hui::Vector3<T>& right) {
 }
 
 template <typename T>
-Vector3<T> operator+(const Vector3<T>& left, const Vector3<T>& right) {
+Vector3<T> operator+(const Vector3<T>& left, const Vector3<T>& right) noexcept {
     return Vector3<T>(left.x + right.x, left.y + right.y, left.z + right.z);
 }
 
 template <typename T>
-Vector3<T> operator-(const Vector3<T>& left, const Vector3<T>& right) {
+Vector3<T> operator-(const Vector3<T>& left, const Vector3<T>& right) noexcept {
     return Vector3<T>(left.x - right.x, left.y - right.y, left.z - right.z);
 }
 
 template <typename T>
-Vector3<T> operator*(const Vector3<T>& left, T right) {
+Vector3<T> operator*(const Vector3<T>& left, T right) noexcept {
     return Vector3<T>(left.x * right, left.y * right, left.z * right);
 }
 
 template <typename T>
-Vector3<T> operator*(T left, const Vector3<T>& right) {
+Vector3<T> operator*(T left, const Vector3<T>& right) noexcept {
     return Vector3<T>(right.x * left, right.y * left, right.z * left);
 }
 
@@ -248,17 +248,26 @@ Vector3<T> operator/(const Vector3<T>& left, T right) {
 }
 
 template <typename T>
-bool operator==(const Vector3<T>& left, const Vector3<T>& right) {
+bool operator==(const Vector3<T>& left, const Vector3<T>& right) noexcept {
     return left.x == right.x && left.y == right.y && left.z == right.z;
 }
 
 template <typename T>
-bool operator!=(const Vector3<T>& left, const Vector3<T>& right) {
+bool operator!=(const Vector3<T>& left, const Vector3<T>& right) noexcept {
     return !(left == right);
 }
 
 template <typename T>
-T hui::Vector3<T>::Len2() const {
+Vector3<T> operator*(const Vector3<T>& left, const Vector3<T>& right) noexcept{
+    return Vector3<T>(
+        left.y * right.z - right.y * left.z, 
+        left.z * right.x - right.x * left.z,
+        left.x * right.y - right.x * left.y
+    );
+}
+
+template <typename T>
+T hui::Vector3<T>::Len2() const noexcept{
     return (*this) ^ (*this);
 }
 
@@ -268,7 +277,7 @@ T hui::Vector3<T>::Len() const {
 }
 
 template <typename T>
-Vector3<T> hui::Vector3<T>::Mirror(hui::Axis axis) const {
+Vector3<T> hui::Vector3<T>::Mirror(hui::Axis axis) const noexcept{
     return {
         axis == hui::Axis::X ? -this->x : this->x,
         axis == hui::Axis::Y ? -this->y : this->y,

@@ -2,6 +2,7 @@
 #include "hui/Renderer.hpp"
 #include "hui/Sprite.hpp"
 #include "hui/TexturedShape.hpp"
+#include "hui/Vector.hpp"
 #include "widgets/Widget.hpp"
 #include "global/Global.hpp"
 #include "common/ErrorHandler.hpp"
@@ -28,8 +29,6 @@ void optor::RenderWidget::Draw(hui::Window* window) {
         renderer_.Clear(optor::color::WindowBackground);
     });
 
-    std::cerr << "i'm in draw render widget\n";
-
     for (auto& item : items_) {
         ERROR_HANDLE([this, &item](){
             renderer_.Draw(*item);
@@ -53,10 +52,8 @@ void optor::RenderWidget::OnIdle() {
     ERROR_HANDLE([this](){
         optor::Widget::OnIdle();
     });
-    
+
     for (auto& item : items_) {
-        ERROR_HANDLE([&item](){
-            item->Update();
-        });
+        ERROR_HANDLE(&hui::TexturedShape::Update, item);
     }
 }

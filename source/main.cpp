@@ -5,6 +5,7 @@
 #include "hui/Vector.hpp"
 #include "hui/Window.hpp"
 #include "common/ErrorHandler.hpp"
+#include "optics/Scene.hpp"
 #include "widgets/RenderWidget.hpp"
 #include "widgets/Widget.hpp"
 #include "global/Global.hpp"
@@ -22,7 +23,7 @@ int main() {
         return optor::WidgetManager();
     });
 
-    auto* scene = ERROR_HANDLE(
+    auto* sceneWindow = ERROR_HANDLE(
         &optor::WidgetChildable::AddChild, 
         manager.GetDesktop(), 
         std::make_unique<optor::RenderWidget>(
@@ -31,16 +32,26 @@ int main() {
         )
     );
 
-    ERROR_HANDLE(&optor::Widget::SetPosition, scene, hui::Vector2d(100, 100));
+    ERROR_HANDLE(&optor::Widget::SetPosition, sceneWindow, hui::Vector2d(100, 100));
 
-    auto* sphere = ERROR_HANDLE([scene](){
-        return dynamic_cast<optor::RenderWidget*>(scene)->AddItem(
-            std::make_unique<optor::Sphere>(
-                100,
-                hui::Vector3d(20, 20, 0)
+    auto* scene = ERROR_HANDLE([sceneWindow](){
+        const hui::Vector2d sceneWindowSize = ERROR_HANDLE(&optor::Widget::GetSize, sceneWindow);
+        return dynamic_cast<optor::RenderWidget*>(sceneWindow)->AddItem(
+            std::make_unique<optor::Scene>(
+                sceneWindowSize
             )
         );
     });
+
+    auto* sphere1 = ERROR_HANDLE([scene](){
+        return dynamic_cast<optor::Scene*>(scene)->AddObj(
+            std::make_unique<optor::Sphere>(
+                1,
+                hui::Vector3d(0, 1, -3)
+            )
+        );
+    });
+
 
     while (ERROR_HANDLE(&hui::Window::isOpen, window)) {
 

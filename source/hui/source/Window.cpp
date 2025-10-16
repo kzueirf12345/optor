@@ -53,11 +53,9 @@ void hui::Window::Clear(const hui::Color& color) {
 }
 
 void hui::Window::Draw(const hui::Drawable& drawable) {
-    // std::cerr << "1\n";
     ERROR_HANDLE([&](){
         impl_->draw(*static_cast<const sf::Drawable*>(drawable.GetImpl()));
     });
-    // std::cerr << "2\n";
 }
 
 void hui::Window::Display() {

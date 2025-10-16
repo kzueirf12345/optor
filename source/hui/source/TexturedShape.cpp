@@ -30,11 +30,9 @@ hui::TexturedShape::TexturedShape(const hui::Vector2d& boxSize, const hui::Vecto
 hui::TexturedShape::~TexturedShape() = default;
 
 const void* hui::TexturedShape::GetImpl() const noexcept {
-    std::cerr << "textured shape get impl const\n";
     return sprite_.GetImpl();
 }
 void* hui::TexturedShape::GetImpl() noexcept {
-    std::cerr << "textured shape get impl non const\n";
     return sprite_.GetImpl();
 }
 
