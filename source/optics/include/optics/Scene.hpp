@@ -32,6 +32,8 @@ class Scene: public hui::Textured {
 
         std::optional<hui::Color> TraceRay(const hui::Vector3d rayDir, const optor::OpticObj* obj, 
                                            double* dist);
+        bool IsEclipse(const optor::OpticObj* obj, const optor::Light* light,
+                          const hui::Vector3d& intersectPoint);
 };
 
 }

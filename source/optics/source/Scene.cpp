@@ -96,22 +96,7 @@ std::optional<hui::Color> optor::Scene::TraceRay(const hui::Vector3d rayDir, con
         const hui::Vector3d lightCenter = light->GetCenter();
         const hui::Vector3d lightDir = !(lightCenter - intersectPoint);
         
-        const double distLight2Intersect = (lightCenter - intersectPoint).Len();
-
-        bool isAttained = true;
-        for (const auto& otherObj : objs_) {
-            if (otherObj.get() == obj || light == otherObj.get()) {
-                continue;
-            }
-            const std::optional<double> distLight2Other = 
-                ERROR_HANDLE(&optor::OpticObj::IntersectRay, otherObj, lightCenter, -lightDir);
-
-            if (distLight2Other.has_value() && distLight2Other.value() < distLight2Intersect) {
-                isAttained = false;
-                break;
-            }
-        }
-        if (!isAttained) {
+        if (ERROR_HANDLE(&optor::Scene::IsEclipse, this, obj, light, intersectPoint)) {
             continue;
         }
 
@@ -119,13 +104,47 @@ std::optional<hui::Color> optor::Scene::TraceRay(const hui::Vector3d rayDir, con
         
         const double        curDiffCoef = std::max(0., lightDir ^ normalVec); 
         const hui::Vector3d curDiffPart = hui::Product(diffColor, curEmmitColor);
-        
         diffPart += curDiffCoef * curDiffPart;
+        
+        const hui::Vector3d reflectDir = !(hui::Reflect(lightDir, normalVec));
+        const double specAngle = std::max(0., reflectDir ^ (rayDir));
+        
+        const double curSpecCoef = std::pow(specAngle, obj->GetShininess());
+        
+        const hui::Vector3d curSpecPart = hui::Product(specColor, curEmmitColor);
+        specPart += curSpecCoef * curSpecPart;
     }
 
     const hui::Vector3d resultColor(ambientPart + diffPart + specPart);
 
     return hui::Color(resultColor.Clump({0, 0, 0}, {1, 1, 1}));
+}
+
+bool optor::Scene::IsEclipse(const optor::OpticObj* obj, const optor::Light* light, 
+                             const hui::Vector3d& intersectPoint) {
+    assert(obj);
+    assert(light);
+
+    const hui::Vector3d lightCenter = light->GetCenter();
+    const hui::Vector3d lightDir = !(lightCenter - intersectPoint);
+    
+    const double distLight2Intersect = (lightCenter - intersectPoint).Len();
+
+    bool isEclipse = false;
+    for (const auto& otherObj : objs_) {
+        if (otherObj.get() == obj || light == otherObj.get()) {
+            continue;
+        }
+        const std::optional<double> distLight2Other = 
+            ERROR_HANDLE(&optor::OpticObj::IntersectRay, otherObj, lightCenter, -lightDir);
+
+        if (distLight2Other.has_value() && distLight2Other.value() < distLight2Intersect) {
+            isEclipse = true;
+            break;
+        }
+    }
+    
+    return isEclipse;
 }
 
 optor::OpticObj* optor::Scene::AddObj(std::unique_ptr<optor::OpticObj> obj) {

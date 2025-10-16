@@ -18,6 +18,10 @@ hui::Color optor::OpticObj::GetSpecColor() const noexcept {
     return hui::Color(specColor_);
 }
 
+double optor::OpticObj::GetShininess() const noexcept {
+    return shininess_;
+}
+
 void optor::OpticObj::SetAmbientColor(const hui::Color& color) {
     ambientColor_ = color.GetNormalized();
 }
@@ -28,4 +32,8 @@ void optor::OpticObj::SetDiffColor(const hui::Color& color) {
 
 void optor::OpticObj::SetSpecColor(const hui::Color& color) {
     specColor_ = color.GetNormalized();
+}
+
+void optor::OpticObj::SetShininess(const double shininess) {
+    shininess_ = shininess;
 }

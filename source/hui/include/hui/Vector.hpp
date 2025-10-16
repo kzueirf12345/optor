@@ -304,6 +304,11 @@ Vector3<T> Product(const Vector3<T>& first, const Vector3<T>& second) {
     };
 }
 
+template <typename T>
+Vector3<T> Reflect(const Vector3<T>& incident, const Vector3<T>& normal) {
+    return incident - 2 * (incident ^ normal) * normal;
+}
+
 void TransformVector(hui::Vector3d* Vector, const hui::Transform Transform, 
                      hui::Axis Axis, const float AngleRadians = 0.01);
 
