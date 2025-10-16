@@ -56,8 +56,9 @@ static constexpr inline unsigned int FRAME_LIMIT = 20;
 
 static constexpr inline double INIT_WIDGET_BORDER_THICKNESS = 5;
 
-static constexpr inline hui::Event::MouseButton INIT_DRAG_WINDOW_BUTTON_   = hui::Event::MouseButton::Middle;
-static constexpr inline hui::Event::MouseButton INIT_SELECT_WINDOW_BUTTON_ = hui::Event::MouseButton::Left;
+static constexpr inline hui::Event::MouseButton    INIT_DRAG_WINDOW_BUTTON_     = hui::Event::MouseButton::Middle;
+static constexpr inline hui::Event::MouseButton    INIT_SELECT_WINDOW_BUTTON_   = hui::Event::MouseButton::Left;
+static constexpr inline hui::Event::KeyboardButton INIT_UNSELECT_WINDOW_BUTTON_ = hui::Event::KeyboardButton::Escape;
 
 static constexpr inline double CAMERA_MOVE_SPEED   = 1;
 static constexpr inline double CAMERA_ROTATE_SPEED = 0.1;

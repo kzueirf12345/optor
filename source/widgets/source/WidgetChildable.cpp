@@ -57,6 +57,30 @@ bool optor::WidgetChildable::OnMouseRelease(const hui::Event& event) {
     });
 }
 
+bool optor::WidgetChildable::OnKeyboardPress(const hui::Event& event) {
+    for (auto childIt = children_.rbegin(); childIt != children_.rend(); ++childIt) {
+        if (ERROR_HANDLE(&optor::Widget::OnKeyboardPress, *childIt, event)) {
+            return true;
+        }
+    }
+
+    return ERROR_HANDLE([this, &event](){
+        return optor::Widget::OnKeyboardPress(event);
+    });
+}
+
+bool optor::WidgetChildable::OnKeyboardRelease(const hui::Event& event) {
+    for (auto childIt = children_.rbegin(); childIt != children_.rend(); ++childIt) {
+        if (ERROR_HANDLE(&optor::Widget::OnKeyboardRelease, *childIt, event)) {
+            return true;
+        }
+    }
+
+    return ERROR_HANDLE([this, &event](){
+        return optor::Widget::OnKeyboardRelease(event);
+    });
+}
+
 void optor::WidgetChildable::OnIdle() {
     for (auto childIt = children_.rbegin(); childIt != children_.rend(); ++childIt) {
         ERROR_HANDLE(&optor::Widget::OnIdle, *childIt);

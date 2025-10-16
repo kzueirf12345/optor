@@ -23,10 +23,12 @@ class WidgetChildable: public Widget {
 
         virtual void Draw(hui::Window* window) override;
 
-        virtual bool OnMouseMove   (const hui::Event& event) override;
-        virtual bool OnMousePress  (const hui::Event& event) override;
-        virtual bool OnMouseRelease(const hui::Event& event) override;
-        virtual void OnIdle        ()                        override;
+        virtual bool OnMouseMove      (const hui::Event& event) override;
+        virtual bool OnMousePress     (const hui::Event& event) override;
+        virtual bool OnMouseRelease   (const hui::Event& event) override;
+        virtual bool OnKeyboardPress  (const hui::Event& event) override;
+        virtual bool OnKeyboardRelease(const hui::Event& event) override;
+        virtual void OnIdle           ()                        override;
 
         optor::Widget* AddChild(std::unique_ptr<Widget> child);
 

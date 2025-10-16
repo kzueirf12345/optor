@@ -2,6 +2,7 @@
 #include "hui/Renderer.hpp"
 #include "hui/Sprite.hpp"
 #include "hui/Vector.hpp"
+#include "optics/Camera.hpp"
 #include "optics/Scene.hpp"
 #include "widgets/Widget.hpp"
 #include "global/Global.hpp"
@@ -43,21 +44,10 @@ void optor::SceneWidget::Draw(hui::Window* window) {
 
 bool optor::SceneWidget::OnMouseMove(const hui::Event& event) {
     const hui::Vector2d mouseCoord = event.GetMouseCoord();
-    const hui::Vector2d mouseOffset = mouseCoord - state_->prevMouseCoord;
+    const hui::Vector2d mouseOffset = (mouseCoord - state_->prevMouseCoord) * optor::CAMERA_ROTATE_SPEED;
 
     if (state_->selectedWidget == this) {
-        if (mouseOffset.x > 0) {
-            scene_.GetCamera().Rotate(optor::RotateDirection::RIGHT, mouseOffset.x * optor::CAMERA_ROTATE_SPEED);
-        } else if (mouseOffset.x < 0) {
-            scene_.GetCamera().Rotate(optor::RotateDirection::LEFT, -mouseOffset.x * optor::CAMERA_ROTATE_SPEED);
-        }
-        
-        if (mouseOffset.y < 0) {
-            scene_.GetCamera().Rotate(optor::RotateDirection::UP,   -mouseOffset.y * optor::CAMERA_ROTATE_SPEED);
-        } else if (mouseOffset.y > 0) {
-            scene_.GetCamera().Rotate(optor::RotateDirection::DOWN,  mouseOffset.y * optor::CAMERA_ROTATE_SPEED);
-        }
-
+        ERROR_HANDLE(&optor::SceneWidget::RotateCamera, this, mouseOffset);
         return true;
     }
 
@@ -72,7 +62,36 @@ bool optor::SceneWidget::OnMouseMove(const hui::Event& event) {
     return false;
 }
 
-void optor::SceneWidget::OnIdle() {
+void optor::SceneWidget::RotateCamera(const hui::Vector2d& mouseOffset) {
+    double speed = 0;
+    optor::RotateDirection dir = optor::RotateDirection::RIGHT;
+
+    if (mouseOffset.x > 0) {
+        dir = optor::RotateDirection::RIGHT, 
+        speed = mouseOffset.x;
+    } else {
+        dir = optor::RotateDirection::LEFT, 
+        speed = -mouseOffset.x;
+    }
+
+    if (speed) {
+        ERROR_HANDLE(&optor::Camera::Rotate, scene_.GetCamera(), dir, speed);
+    }
+    
+    if (mouseOffset.y < 0) {
+        dir = optor::RotateDirection::UP, 
+        speed = -mouseOffset.y;
+    } else {
+        dir = optor::RotateDirection::DOWN, 
+        speed = mouseOffset.y;
+    }
+
+    if (speed) {
+        ERROR_HANDLE(&optor::Camera::Rotate, scene_.GetCamera(), dir, speed);
+    }
+}
+
+void optor::SceneWidget::OnIdle() { 
     ERROR_HANDLE([this](){
         optor::Widget::OnIdle();
     });

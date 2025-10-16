@@ -5,7 +5,6 @@
 #include "hui/Vector.hpp"
 #include "hui/Window.hpp"
 #include "common/ErrorHandler.hpp"
-#include "optics/Scene.hpp"
 #include "widgets/SceneWidget.hpp"
 #include "widgets/Widget.hpp"
 #include "global/Global.hpp"
@@ -61,9 +60,6 @@ int main() {
     ERROR_HANDLE([sphere2](){
         dynamic_cast<optor::Sphere*>(sphere2)->SetColor(optor::color::AccentRed);
     });
-
-
-
 
     while (ERROR_HANDLE(&hui::Window::isOpen, window)) {
 

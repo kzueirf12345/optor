@@ -57,6 +57,14 @@ void optor::WidgetManager::HandleEvents(hui::Window* window) {
                 ERROR_HANDLE(&optor::WidgetChildable::OnMouseRelease, desktop_, event);
                 break;
 
+            case hui::Event::Type::KeyPressed:
+                ERROR_HANDLE(&optor::WidgetChildable::OnKeyboardPress, desktop_, event);
+                break;
+
+            case hui::Event::Type::KeyReleased:
+                ERROR_HANDLE(&optor::WidgetChildable::OnKeyboardRelease, desktop_, event);
+                break;
+
             default:
                 break;
         }

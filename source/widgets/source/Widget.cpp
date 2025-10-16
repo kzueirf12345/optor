@@ -14,7 +14,8 @@ optor::Widget::Widget(hui::RectangleShape rect, optor::WidgetsState* state)
         dragButton_{optor::INIT_DRAG_WINDOW_BUTTON_}, 
         isFreeDraggable_{false},
         isSelectable_{true}, 
-        selectButton_{optor::INIT_SELECT_WINDOW_BUTTON_}
+        selectButton_{optor::INIT_SELECT_WINDOW_BUTTON_},
+        unselectButton_{optor::INIT_UNSELECT_WINDOW_BUTTON_}
 {
     ERROR_HANDLE(&hui::RectangleShape::SetFillColor,        &rect_, optor::color::WindowBackground);
     ERROR_HANDLE(&hui::RectangleShape::SetOutlineColor,     &rect_, optor::color::WindowBorder);
@@ -74,6 +75,10 @@ void optor::Widget::SetSelectButton(hui::Event::MouseButton selectButton) noexce
     selectButton_ = selectButton;
 }
 
+void optor::Widget::SetUnselectButton(hui::Event::KeyboardButton unselectButton) noexcept {
+    unselectButton_ = unselectButton;
+}
+
 
 hui::Vector2d optor::Widget::AbsCoord() const {
     hui::Vector2d absCoord = rect_.GetPosition();
@@ -128,6 +133,20 @@ bool optor::Widget::OnMouseRelease(const hui::Event& event) {
         return true;
     };
 
+    return false;
+}
+
+bool optor::Widget::OnKeyboardPress  (const hui::Event& event) {
+    if (state_->selectedWidget == this
+     && event.GetKeyboardButton() == unselectButton_) {
+        state_->selectedWidget = nullptr;
+        return true;
+    };
+
+    return false;
+}
+
+bool optor::Widget::OnKeyboardRelease(const hui::Event& event) {
     return false;
 }
 

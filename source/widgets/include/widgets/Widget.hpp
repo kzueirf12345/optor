@@ -20,10 +20,12 @@ namespace optor
         virtual void Draw       (hui::Window* window);
         virtual void SetPosition(const hui::Vector2d& position);
         
-        virtual bool OnMouseMove   (const hui::Event& event);
-        virtual bool OnMousePress  (const hui::Event& event);
-        virtual bool OnMouseRelease(const hui::Event& event);
-        virtual void OnIdle        ();
+        virtual bool OnMouseMove      (const hui::Event& event);
+        virtual bool OnMousePress     (const hui::Event& event);
+        virtual bool OnMouseRelease   (const hui::Event& event);
+        virtual bool OnKeyboardPress  (const hui::Event& event);
+        virtual bool OnKeyboardRelease(const hui::Event& event);
+        virtual void OnIdle           ();
 
         void SetBackgroundColor (const hui::Color& color);
         void SetBorderColor     (const hui::Color& color);
@@ -34,6 +36,7 @@ namespace optor
         void SetDragButton      (hui::Event::MouseButton dragButton)        noexcept;
         void SetIsSelectable    (const bool isSelectable)                   noexcept;
         void SetSelectButton    (hui::Event::MouseButton selectButton)      noexcept;
+        void SetUnselectButton  (hui::Event::KeyboardButton unselectButton) noexcept;
         
         [[nodiscard]] hui::Vector2d AbsCoord() const;  
 
@@ -50,6 +53,7 @@ namespace optor
 
         bool isSelectable_;
         hui::Event::MouseButton selectButton_;
+        hui::Event::KeyboardButton unselectButton_;
 
         bool OnMe(const hui::Vector2d& absCoord) const;
         void Drag(const hui::Vector2d& shift);

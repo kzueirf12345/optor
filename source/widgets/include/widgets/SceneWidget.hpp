@@ -2,6 +2,7 @@
 #define OPTOR_SOURCE_WIDGETS_INCLUDE_WIDGETS_RENDER_WIDGET_HPP
 
 #include "hui/Renderer.hpp"
+#include "hui/Vector.hpp"
 #include "hui/Window.hpp"
 #include "optics/Scene.hpp"
 #include "widgets/Widget.hpp"
@@ -26,6 +27,8 @@ class SceneWidget: public optor::Widget {
         optor::Scene scene_;
 
         hui::Renderer renderer_;
+
+        void RotateCamera(const hui::Vector2d& mouseOffset);
 
     private:
 };
