@@ -1,9 +1,11 @@
 #ifndef OPTOR_SOURCE_OPTICS_INCLUDE_OPTICS_SCENE_HPP
 #define OPTOR_SOURCE_OPTICS_INCLUDE_OPTICS_SCENE_HPP
 
-#include "hui/TexturedShape.hpp"
-#include "optics/OpticObj.hpp"
 #include <memory>
+
+#include "hui/TexturedShape.hpp"
+#include "optics/Camera.hpp"
+#include "optics/OpticObj.hpp"
 
 namespace optor 
 {
@@ -17,8 +19,13 @@ class Scene: public hui::TexturedShape {
 
         optor::OpticObj* AddObj(std::unique_ptr<optor::OpticObj> obj);
 
+        [[nodiscard]] const optor::Camera& GetCamera() const noexcept;
+        [[nodiscard]]       optor::Camera& GetCamera()       noexcept;
+
     private:
         std::vector<std::unique_ptr<optor::OpticObj>> objs_;
+
+        optor::Camera camera_;
 };
 
 }

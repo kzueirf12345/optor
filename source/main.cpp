@@ -47,10 +47,29 @@ int main() {
         return dynamic_cast<optor::Scene*>(scene)->AddObj(
             std::make_unique<optor::Sphere>(
                 1,
-                hui::Vector3d(0, 1, -3)
+                hui::Vector3d(0, 0, 3)
             )
         );
     });
+
+    ERROR_HANDLE([sphere1](){
+        dynamic_cast<optor::Sphere*>(sphere1)->SetColor(optor::color::AccentCyan);
+    });
+
+    auto* sphere2 = ERROR_HANDLE([scene](){
+        return dynamic_cast<optor::Scene*>(scene)->AddObj(
+            std::make_unique<optor::Sphere>(
+                0.5,
+                hui::Vector3d(0, -2, 4)
+            )
+        );
+    });
+
+    ERROR_HANDLE([sphere2](){
+        dynamic_cast<optor::Sphere*>(sphere2)->SetColor(optor::color::AccentRed);
+    });
+
+
 
 
     while (ERROR_HANDLE(&hui::Window::isOpen, window)) {

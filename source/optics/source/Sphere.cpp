@@ -1,6 +1,7 @@
 #include <optional>
 
 #include "optics/Sphere.hpp"
+#include "hui/Color.hpp"
 #include "hui/Vector.hpp"
 #include "global/Global.hpp"
 #include "common/ErrorHandler.hpp"
@@ -12,7 +13,8 @@ optor::Sphere::Sphere(double radius)
 optor::Sphere::Sphere(double radius, const hui::Vector3d& center)
     :   radius_{radius},
         center_{center},
-        radius2_{radius * radius}
+        radius2_{radius * radius},
+        color_{optor::color::Transparent}
 {}
 
 bool optor::Sphere::IsContainsDot(const hui::Vector3d& dot) const noexcept {
@@ -43,10 +45,18 @@ std::optional<double> optor::Sphere::IntersectRay(const hui::Vector3d& rayBegin,
     return std::nullopt;
 }
 
-uint32_t optor::Sphere::TraceRay(const hui::Vector3d& rayBegin, 
+std::optional<hui::Color> optor::Sphere::TraceRay(const hui::Vector3d& rayBegin, 
                                  const hui::Vector3d& rayDirection) const {
     if (ERROR_HANDLE(&optor::Sphere::IntersectRay, this, rayBegin, rayDirection)) {
-        return optor::color::TextPrimary.GetInt();
+        return color_;
     }
-    return optor::color::Transparent.GetInt();
+    return std::nullopt;
+}
+
+hui::Color optor::Sphere::GetColor() const noexcept {
+    return color_;
+}
+
+void optor::Sphere::SetColor(const hui::Color& color) {
+    color_ = color;
 }

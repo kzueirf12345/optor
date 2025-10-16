@@ -1,5 +1,6 @@
 add_library(common STATIC
     source/ErrorHandler.cpp
+    source/Utils.cpp
 )
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")

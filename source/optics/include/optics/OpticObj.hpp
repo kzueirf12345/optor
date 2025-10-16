@@ -4,6 +4,7 @@
 #include <optional>
 #include <cstdint>
 
+#include "hui/Color.hpp"
 #include "hui/Vector.hpp"
 
 namespace optor 
@@ -13,17 +14,17 @@ class OpticObj {
     public:
         virtual ~OpticObj() = default;
         
-        [[nodiscard]] virtual bool                  IsContainsDot(
-                                                        const hui::Vector3d& dot
-                                                    ) const noexcept = 0;
-        [[nodiscard]] virtual std::optional<double> IntersectRay(
-                                                        const hui::Vector3d& rayBegin, 
-                                                        const hui::Vector3d& rayDirection
-                                                    ) const          = 0;
-        [[nodiscard]] virtual uint32_t              TraceRay(
-                                                        const hui::Vector3d& rayBegin, 
-                                                        const hui::Vector3d& rayDirection
-                                                    ) const          = 0;
+        [[nodiscard]] virtual bool                      IsContainsDot(
+                                                            const hui::Vector3d& dot
+                                                        ) const noexcept = 0;
+        [[nodiscard]] virtual std::optional<double>     IntersectRay(
+                                                            const hui::Vector3d& rayBegin, 
+                                                            const hui::Vector3d& rayDirection
+                                                        ) const          = 0;
+        [[nodiscard]] virtual std::optional<hui::Color> TraceRay(
+                                                            const hui::Vector3d& rayBegin, 
+                                                            const hui::Vector3d& rayDirection
+                                                        ) const          = 0;
 
     protected:
     private:

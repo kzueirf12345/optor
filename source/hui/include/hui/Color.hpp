@@ -14,8 +14,8 @@ class Color {
         Color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255);
         ~Color();
 
-        Color           (const Color&) = delete;
-        Color& operator=(const Color&) = delete;
+        Color           (const Color& other);
+        Color& operator=(const Color& other);
         
         Color           (Color&& other) noexcept;
         Color& operator=(Color&& other) noexcept;

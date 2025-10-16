@@ -1,9 +1,10 @@
 #include <cassert>
-
-#include <SFML/Graphics/Color.hpp>
 #include <memory>
 
+#include <SFML/Graphics/Color.hpp>
+
 #include "hui/Color.hpp"
+#include "common/ErrorHandler.hpp"
 
 class hui::ColorImpl : public sf::Color {
     public:
@@ -12,8 +13,20 @@ class hui::ColorImpl : public sf::Color {
         ColorImpl(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha)
             :   sf::Color(red, green, blue, alpha)
         {}
+        ColorImpl(uint32_t color) 
+            :   sf::Color(color)
+        {}
     private:
 };
+
+hui::Color::Color(const hui::Color& other) 
+    : impl_(std::make_unique<hui::ColorImpl>(other.GetInt()))
+{}
+hui::Color& hui::Color::operator=(const hui::Color& other)
+{
+    hui::Color::SetInt(other.GetInt());
+    return *this;
+}
 
 hui::Color::Color() 
     : impl_(std::make_unique<hui::ColorImpl>())
