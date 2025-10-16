@@ -45,6 +45,7 @@ namespace color
 #endif /*OPTOR_PALETE_NAME*/
 
 static const hui::Color Transparent(0x0, 0x0, 0x0, 0x0);
+static const hui::Color White(0xff, 0xff, 0xff, 0xff);
 
 }
 
@@ -62,6 +63,8 @@ static constexpr inline hui::Event::KeyboardButton INIT_UNSELECT_WINDOW_BUTTON_ 
 
 static constexpr inline double CAMERA_MOVE_SPEED   = 1;
 static constexpr inline double CAMERA_ROTATE_SPEED = 0.1;
+
+static constexpr inline double GLOBAL_AMBIENT_COEF = 0.4;
 
 }
 

@@ -2,12 +2,15 @@
 #define OPTOR_SOURCE_OPTICS_INCLUDE_OPTICS_OPTICS_OBJ_HPP
 
 #include <optional>
+#include <vector>
 
 #include "hui/Color.hpp"
 #include "hui/Vector.hpp"
 
 namespace optor 
 {
+
+class Light;
 
 class OpticObj {
     public:
@@ -21,8 +24,9 @@ class OpticObj {
                                                             const hui::Vector3d& rayDirection
                                                         ) const          = 0;
         [[nodiscard]] virtual std::optional<hui::Color> TraceRay(
-                                                            const hui::Vector3d& rayBegin, 
-                                                            const hui::Vector3d& rayDirection
+                                                            const hui::Vector3d& rayDir,
+                                                            const hui::Vector3d& cameraPos, 
+                                                            const std::vector<optor::Light*>& lights
                                                         ) const          = 0;
 
     protected:

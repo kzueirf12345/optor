@@ -295,6 +295,15 @@ Vector3<T> hui::Vector3<T>::Clump(const hui::Vector3<T>& minVec,
     };
 }
 
+template <typename T>
+Vector3<T> Product(const Vector3<T>& first, const Vector3<T>& second) {
+    return {
+        first.x * second.x,
+        first.y * second.y,
+        first.z * second.z
+    };
+}
+
 void TransformVector(hui::Vector3d* Vector, const hui::Transform Transform, 
                      hui::Axis Axis, const float AngleRadians = 0.01);
 

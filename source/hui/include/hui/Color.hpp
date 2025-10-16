@@ -3,6 +3,8 @@
 
 #include <memory>
 
+#include "hui/Vector.hpp"
+
 namespace hui 
 {
 
@@ -12,6 +14,7 @@ class Color {
     public:
         Color();
         Color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255);
+        explicit Color(const hui::Vector3d& normilizedColor, uint8_t alpha = 255);
         ~Color();
 
         Color           (const Color& other);
@@ -20,11 +23,12 @@ class Color {
         Color           (Color&& other) noexcept;
         Color& operator=(Color&& other) noexcept;
 
-        [[nodiscard]] uint8_t  GetRed()   const noexcept;
-        [[nodiscard]] uint8_t  GetGreen() const noexcept;
-        [[nodiscard]] uint8_t  GetBlue()  const noexcept;
-        [[nodiscard]] uint8_t  GetAlpha() const noexcept;
-        [[nodiscard]] uint32_t GetInt()   const noexcept;
+        [[nodiscard]] uint8_t       GetRed()        const noexcept;
+        [[nodiscard]] uint8_t       GetGreen()      const noexcept;
+        [[nodiscard]] uint8_t       GetBlue()       const noexcept;
+        [[nodiscard]] uint8_t       GetAlpha()      const noexcept;
+        [[nodiscard]] uint32_t      GetInt()        const noexcept;
+        [[nodiscard]] hui::Vector3d GetNormalized() const noexcept;
 
         void SetRed     (uint8_t  red)    noexcept;
         void SetGreen   (uint8_t  green)  noexcept;

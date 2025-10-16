@@ -5,6 +5,7 @@
 #include "hui/Vector.hpp"
 #include "hui/Window.hpp"
 #include "common/ErrorHandler.hpp"
+#include "optics/Light.hpp"
 #include "widgets/SceneWidget.hpp"
 #include "widgets/Widget.hpp"
 #include "global/Global.hpp"
@@ -28,7 +29,7 @@ int main() {
         &optor::WidgetChildable::AddChild, 
         manager.GetDesktop(), 
         std::make_unique<optor::SceneWidget>(
-            hui::RectangleShape({500, 500}),
+            hui::RectangleShape({1200, 700}),
             manager.GetState()
         )
     ));
@@ -45,7 +46,7 @@ int main() {
     });
 
     ERROR_HANDLE([sphere1](){
-        dynamic_cast<optor::Sphere*>(sphere1)->SetColor(optor::color::AccentCyan);
+        dynamic_cast<optor::Sphere*>(sphere1)->SetAmbientColor(optor::color::AccentCyan);
     });
 
     auto* sphere2 = ERROR_HANDLE([sceneWidget](){
@@ -58,7 +59,20 @@ int main() {
     });
 
     ERROR_HANDLE([sphere2](){
-        dynamic_cast<optor::Sphere*>(sphere2)->SetColor(optor::color::AccentRed);
+        dynamic_cast<optor::Sphere*>(sphere2)->SetAmbientColor(optor::color::AccentRed);
+    });
+
+    auto* light1 = ERROR_HANDLE([sceneWidget](){
+        return sceneWidget->AddObj(
+            std::make_unique<optor::Light>(
+                0.1,
+                hui::Vector3d(-3, 0, -1)
+            )
+        );
+    });
+
+    ERROR_HANDLE([light1](){
+        dynamic_cast<optor::Sphere*>(light1)->SetAmbientColor(optor::color::AccentGreen);
     });
 
     while (ERROR_HANDLE(&hui::Window::isOpen, window)) {

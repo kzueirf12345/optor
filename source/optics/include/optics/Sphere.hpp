@@ -23,16 +23,24 @@ class Sphere: public optor::OpticObj {
                                                             const hui::Vector3d& rayDirection
                                                         ) const          override final;
         [[nodiscard]] virtual std::optional<hui::Color> TraceRay(
-                                                            const hui::Vector3d& rayBegin, 
-                                                            const hui::Vector3d& rayDirection
-                                                        ) const          override final;
+                                                            const hui::Vector3d& rayDir,
+                                                            const hui::Vector3d& cameraPos, 
+                                                            const std::vector<optor::Light*>& lights
+                                                        ) const          override;
 
-        [[nodiscard]] hui::Color GetColor() const noexcept;
+        [[nodiscard]] hui::Color GetAmbientColor() const noexcept;
+        [[nodiscard]] hui::Color GetDiffColor()    const noexcept;
+        [[nodiscard]] hui::Color GetSpecColor()    const noexcept;
 
-        void SetColor(const hui::Color& color);
+        void SetAmbientColor(const hui::Color& color);
+        void SetDiffColor   (const hui::Color& color);
+        void SetSpecColor   (const hui::Color& color);
 
     protected:
-        hui::Color color_;
+        hui::Vector3d ambientColor_;
+        hui::Vector3d diffColor_;
+        hui::Vector3d specColor_;
+
         hui::Vector3d center_;
         double radius_;
         double radius2_;

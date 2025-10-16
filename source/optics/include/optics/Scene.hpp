@@ -5,6 +5,7 @@
 
 #include "hui/TexturedShape.hpp"
 #include "optics/Camera.hpp"
+#include "optics/Light.hpp"
 #include "optics/OpticObj.hpp"
 
 namespace optor 
@@ -17,13 +18,14 @@ class Scene: public hui::Textured {
 
         virtual void Update();
 
-        optor::OpticObj* AddObj(std::unique_ptr<optor::OpticObj> obj);
+        optor::OpticObj* AddObj  (std::unique_ptr<optor::OpticObj> obj);
 
         [[nodiscard]] const optor::Camera& GetCamera() const noexcept;
         [[nodiscard]]       optor::Camera& GetCamera()       noexcept;
 
     private:
         std::vector<std::unique_ptr<optor::OpticObj>> objs_;
+        std::vector<optor::Light*> lights_;
 
         optor::Camera camera_;
 };

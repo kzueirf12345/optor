@@ -4,6 +4,7 @@
 #include <SFML/Graphics/Color.hpp>
 
 #include "hui/Color.hpp"
+#include "hui/Vector.hpp"
 
 class hui::ColorImpl : public sf::Color {
     public:
@@ -33,6 +34,15 @@ hui::Color::Color()
 
 hui::Color::Color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha)
     : impl_(std::make_unique<hui::ColorImpl>(red, green, blue, alpha))
+{}
+
+hui::Color::Color(const hui::Vector3d& normilizedColor, uint8_t alpha) 
+    : hui::Color(
+        normilizedColor.x * 255, 
+        normilizedColor.y * 255, 
+        normilizedColor.z * 255, 
+        alpha
+    )
 {}
 
 hui::Color::~Color() = default;
@@ -71,6 +81,11 @@ uint8_t  hui::Color::GetAlpha() const noexcept {
 uint32_t hui::Color::GetInt()   const noexcept {
     const auto* const impl = static_cast<const hui::ColorImpl*>(GetImpl());
     return impl->toInteger();
+}
+
+hui::Vector3d hui::Color::GetNormalized() const noexcept {
+    const auto* const impl = static_cast<const hui::ColorImpl*>(GetImpl());
+    return hui::Vector3d(impl->r, impl->g, impl->b) / 255.;
 }
 
 

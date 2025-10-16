@@ -39,14 +39,16 @@ void optor::Scene::Update() {
                 const std::optional<hui::Color> color = ERROR_HANDLE(
                     &optor::OpticObj::TraceRay, 
                     obj, 
+                    rayDir,
                     camera_.GetPosition(), 
-                    rayDir
+                    lights_
                 );
                 if (color.has_value() && pixelBuffer_[pixelIndex] == optor::color::Transparent.GetInt())
                 {
                     pixelBuffer_[pixelIndex] =  color.value().GetInt();
                 }
             }
+
         }
     }
 
@@ -59,6 +61,15 @@ optor::OpticObj* optor::Scene::AddObj(std::unique_ptr<optor::OpticObj> obj) {
     ERROR_HANDLE([this, &obj](){
         objs_.push_back(std::move(obj));
     });
+
+    optor::OpticObj* const objPtr = objs_.back().get();
+    optor::Light*    const lightPtr = dynamic_cast<optor::Light*>(objPtr);
+
+    if (lightPtr) {
+        ERROR_HANDLE([this, lightPtr](){
+            lights_.push_back(lightPtr);
+        });
+    }
     return objs_.back().get();
 }
 
