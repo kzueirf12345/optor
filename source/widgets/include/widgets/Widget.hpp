@@ -31,19 +31,25 @@ namespace optor
         void SetParent          (optor::Widget* parent)                     noexcept;  
         void SetIsDraggable     (const bool isDraggable)                    noexcept;
         void SetIsFreeDraggable (const bool isFreeDraggable)                noexcept;
-        void SetDraggableButton (hui::Event::MouseButton draggableButton)   noexcept;
+        void SetDragButton      (hui::Event::MouseButton dragButton)        noexcept;
+        void SetIsSelectable    (const bool isSelectable)                   noexcept;
+        void SetSelectButton    (hui::Event::MouseButton selectButton)      noexcept;
         
         [[nodiscard]] hui::Vector2d AbsCoord() const;  
 
         [[nodiscard]] hui::Vector2d GetSize() const;
+
     protected:
         hui::RectangleShape rect_;
         optor::Widget* parent_;
         optor::WidgetsState* const state_;
 
         bool isDraggable_;
-        hui::Event::MouseButton draggableButton_;
+        hui::Event::MouseButton dragButton_;
         bool isFreeDraggable_;
+
+        bool isSelectable_;
+        hui::Event::MouseButton selectButton_;
 
         bool OnMe(const hui::Vector2d& absCoord) const;
         void Drag(const hui::Vector2d& shift);

@@ -49,15 +49,18 @@ static const hui::Color Transparent(0x0, 0x0, 0x0, 0x0);
 }
 
 
-static constexpr inline double PROGRAM_WIDTH = 1400;
+static constexpr inline double PROGRAM_WIDTH  = 1400;
 static constexpr inline double PROGRAM_HEIGHT = 900;
+
+static constexpr inline unsigned int FRAME_LIMIT = 20;
 
 static constexpr inline double INIT_WIDGET_BORDER_THICKNESS = 5;
 
-static constexpr inline hui::Event::MouseButton INIT_DRAGGABLE_BUTTON_ = hui::Event::MouseButton::Middle;
+static constexpr inline hui::Event::MouseButton INIT_DRAG_WINDOW_BUTTON_   = hui::Event::MouseButton::Middle;
+static constexpr inline hui::Event::MouseButton INIT_SELECT_WINDOW_BUTTON_ = hui::Event::MouseButton::Left;
 
-static constexpr inline double CAMERA_MOVE_SPEED = 1;
-static constexpr inline double CAMERA_ROTATE_SPEED = 1;
+static constexpr inline double CAMERA_MOVE_SPEED   = 1;
+static constexpr inline double CAMERA_ROTATE_SPEED = 0.1;
 
 }
 

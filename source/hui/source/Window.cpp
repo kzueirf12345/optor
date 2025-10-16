@@ -82,6 +82,12 @@ bool hui::Window::PoolEvent(hui::Event* event) {
     );
 }
 
+void hui::Window::SetFrameLimit(unsigned int limit) {
+    ERROR_HANDLE([&](){
+        impl_->setFramerateLimit(limit);
+    });
+}
+
 hui::Vector2d hui::Window::GetSize() const {
     const sf::Vector2u res(ERROR_HANDLE(&sf::RenderWindow::getSize, impl_));
     return {static_cast<double>(res.x), static_cast<double>(res.y)};

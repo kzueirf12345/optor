@@ -53,6 +53,7 @@ void optor::Camera::Move(MoveDirection direction, double speed) {
 }
 
 void optor::Camera::Rotate(RotateDirection direction, double speed) {
+
     switch (direction) {
         case RotateDirection::LEFT:
             yaw_ -= speed;
@@ -68,7 +69,7 @@ void optor::Camera::Rotate(RotateDirection direction, double speed) {
             break;
     }
 
-    std::clamp(pitch_, MIN_PITCH, MAX_PITCH);
+    pitch_ = std::clamp(pitch_, MIN_PITCH, MAX_PITCH);
 
     ERROR_HANDLE(&optor::Camera::UpdateVectors, this);
 }

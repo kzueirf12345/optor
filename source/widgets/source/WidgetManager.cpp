@@ -23,6 +23,7 @@ optor::WidgetManager::WidgetManager()
 
     state_.hoveredWidget = desktop_.get();
     state_.draggedWidget = nullptr;
+    state_.selectedWidget = nullptr;
     state_.prevMouseCoord = {0, 0}; // TODO normal
 }
 

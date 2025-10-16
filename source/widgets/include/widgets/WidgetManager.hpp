@@ -14,6 +14,7 @@ class WidgetChildable;
 struct WidgetsState {
     const optor::Widget* hoveredWidget;
     const optor::Widget* draggedWidget;
+    const optor::Widget* selectedWidget;
     hui::Vector2d        prevMouseCoord;
 };
     

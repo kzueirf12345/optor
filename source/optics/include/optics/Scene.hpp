@@ -10,7 +10,7 @@
 namespace optor 
 {
 
-class Scene: public hui::TexturedShape {
+class Scene: public hui::Textured {
     public:
         explicit Scene(const hui::Vector2d& boxSize);
         Scene(const hui::Vector2d& boxSize, const hui::Vector2d& position);

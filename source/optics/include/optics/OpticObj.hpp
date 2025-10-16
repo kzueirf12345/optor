@@ -2,7 +2,6 @@
 #define OPTOR_SOURCE_OPTICS_INCLUDE_OPTICS_OPTICS_OBJ_HPP
 
 #include <optional>
-#include <cstdint>
 
 #include "hui/Color.hpp"
 #include "hui/Vector.hpp"

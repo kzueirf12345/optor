@@ -5,11 +5,11 @@
 #include "common/ErrorHandler.hpp"
 #include "hui/Sprite.hpp"
 
-hui::TexturedShape::TexturedShape(const hui::Vector2d& boxSize) 
-    :   hui::TexturedShape(boxSize, {0, 0})
+hui::Textured::Textured(const hui::Vector2d& boxSize) 
+    :   hui::Textured(boxSize, {0, 0})
 {}
 
-hui::TexturedShape::TexturedShape(const hui::Vector2d& boxSize, const hui::Vector2d& position)
+hui::Textured::Textured(const hui::Vector2d& boxSize, const hui::Vector2d& position)
     :   boxSize_{boxSize}, 
         texture_{ERROR_HANDLE([this](){
             return hui::Texture(boxSize_);
@@ -27,22 +27,22 @@ hui::TexturedShape::TexturedShape(const hui::Vector2d& boxSize, const hui::Vecto
 }
 
 
-hui::TexturedShape::~TexturedShape() = default;
+hui::Textured::~Textured() = default;
 
-const void* hui::TexturedShape::GetImpl() const noexcept {
+const void* hui::Textured::GetImpl() const noexcept {
     return sprite_.GetImpl();
 }
-void* hui::TexturedShape::GetImpl() noexcept {
+void* hui::Textured::GetImpl() noexcept {
     return sprite_.GetImpl();
 }
 
-void hui::TexturedShape::Update() {
+void hui::Textured::Update() {
     ERROR_HANDLE([this](){
         texture_.Update(pixelBuffer_);
     });
 }
 
-void hui::TexturedShape::SetPosition(const hui::Vector2d& position) { // FIXME
+void hui::Textured::SetPosition(const hui::Vector2d& position) { // FIXME
     ERROR_HANDLE([this, &position](){
         sprite_.SetPosition(
             {position.x, position.y}
@@ -50,7 +50,7 @@ void hui::TexturedShape::SetPosition(const hui::Vector2d& position) { // FIXME
     );
 }
 
-hui::Vector2d hui::TexturedShape::GetPosition() const { // FIXME
+hui::Vector2d hui::Textured::GetPosition() const { // FIXME
     return ERROR_HANDLE(
         &hui::Sprite::GetPosition, 
         sprite_

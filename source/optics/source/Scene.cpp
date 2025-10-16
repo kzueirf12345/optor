@@ -12,7 +12,7 @@ optor::Scene::Scene(const hui::Vector2d& boxSize)
 {}
 
 optor::Scene::Scene(const hui::Vector2d& boxSize, const hui::Vector2d& position) 
-    : hui::TexturedShape(boxSize, position), camera_{}
+    : hui::Textured(boxSize, position), camera_{}
 {
     for (size_t y = 0; y < boxSize_.y; ++y) {
         for (size_t x = 0; x < boxSize_.x; ++x) {
@@ -33,6 +33,8 @@ void optor::Scene::Update() {
                 boxSize_
             );
 
+            pixelBuffer_[pixelIndex] = optor::color::Transparent.GetInt();
+
             for (auto& obj : objs_) { // FIXME check перекрывание
                 const std::optional<hui::Color> color = ERROR_HANDLE(
                     &optor::OpticObj::TraceRay, 
@@ -49,7 +51,7 @@ void optor::Scene::Update() {
     }
 
     ERROR_HANDLE([this](){
-        hui::TexturedShape::Update();
+        hui::Textured::Update();
     });
 }
 

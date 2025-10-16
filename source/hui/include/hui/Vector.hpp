@@ -258,11 +258,11 @@ bool operator!=(const Vector3<T>& left, const Vector3<T>& right) noexcept {
 }
 
 template <typename T>
-Vector3<T> operator*(const Vector3<T>& left, const Vector3<T>& right) noexcept{
+Vector3<T> operator*(const Vector3<T>& left, const Vector3<T>& right) noexcept {
     return Vector3<T>(
-        left.y * right.z - right.y * left.z, 
-        left.z * right.x - right.x * left.z,
-        left.x * right.y - right.x * left.y
+        left.y * right.z - left.z * right.y,
+        left.z * right.x - left.x * right.z,  
+        left.x * right.y - left.y * right.x
     );
 }
 

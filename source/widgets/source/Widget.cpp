@@ -7,8 +7,14 @@
 #include "global/Global.hpp"
 
 optor::Widget::Widget(hui::RectangleShape rect, optor::WidgetsState* state)
-    :   rect_{std::move(rect)}, parent_{nullptr}, state_{state}, isDraggable_{true}, 
-        draggableButton_{optor::INIT_DRAGGABLE_BUTTON_}, isFreeDraggable_{false}
+    :   rect_{std::move(rect)}, 
+        parent_{nullptr}, 
+        state_{state}, 
+        isDraggable_{true}, 
+        dragButton_{optor::INIT_DRAG_WINDOW_BUTTON_}, 
+        isFreeDraggable_{false},
+        isSelectable_{true}, 
+        selectButton_{optor::INIT_SELECT_WINDOW_BUTTON_}
 {
     ERROR_HANDLE(&hui::RectangleShape::SetFillColor,        &rect_, optor::color::WindowBackground);
     ERROR_HANDLE(&hui::RectangleShape::SetOutlineColor,     &rect_, optor::color::WindowBorder);
@@ -56,8 +62,16 @@ void optor::Widget::SetIsFreeDraggable(const bool isFreeDraggable) noexcept {
     isFreeDraggable_ = isFreeDraggable;
 }
 
-void optor::Widget::SetDraggableButton(hui::Event::MouseButton draggableButton) noexcept {
-    draggableButton_ = draggableButton;
+void optor::Widget::SetDragButton(hui::Event::MouseButton dragButton) noexcept {
+    dragButton_ = dragButton;
+}
+
+void optor::Widget::SetIsSelectable(const bool isSelectable) noexcept {
+    isSelectable_ = isSelectable;
+}
+
+void optor::Widget::SetSelectButton(hui::Event::MouseButton selectButton) noexcept {
+    selectButton_ = selectButton;
 }
 
 
@@ -92,8 +106,15 @@ bool optor::Widget::OnMouseMove(const hui::Event& event) {
 bool optor::Widget::OnMousePress(const hui::Event& event) {
     if (state_->hoveredWidget == this 
      && isDraggable_ 
-     && event.GetMouseButton() == draggableButton_) {
+     && event.GetMouseButton() == dragButton_) {
         state_->draggedWidget = this;
+        return true;
+    };
+
+    if (state_->hoveredWidget == this 
+     && isSelectable_ 
+     && event.GetMouseButton() == selectButton_) {
+        state_->selectedWidget = this;
         return true;
     };
 
@@ -102,7 +123,7 @@ bool optor::Widget::OnMousePress(const hui::Event& event) {
 
 bool optor::Widget::OnMouseRelease(const hui::Event& event) {
     if (state_->draggedWidget == this
-     && event.GetMouseButton() == draggableButton_) {
+     && event.GetMouseButton() == dragButton_) {
         state_->draggedWidget = nullptr;
         return true;
     };

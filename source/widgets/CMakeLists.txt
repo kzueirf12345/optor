@@ -1,7 +1,7 @@
 add_library(widgets STATIC
     source/Widget.cpp
     source/WidgetChildable.cpp
-    source/RenderWidget.cpp
+    source/SceneWidget.cpp
     source/WidgetManager.cpp
 )
 
@@ -35,4 +35,5 @@ target_link_libraries(widgets
         common
         hui
         global
+        optics
 )

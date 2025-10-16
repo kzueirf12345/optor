@@ -34,6 +34,8 @@ class Window : public hui::Renderer {
         [[nodiscard]] bool isOpen() const;
                       void Close();
                       bool PoolEvent(hui::Event* event);
+        void               SetFrameLimit(unsigned int limit);
+
 
         [[nodiscard]] hui::Vector2d GetSize() const;
 

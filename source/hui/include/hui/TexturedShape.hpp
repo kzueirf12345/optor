@@ -10,12 +10,12 @@
 namespace hui 
 {
 
-class TexturedShape: public hui::Drawable, public hui::Transformable {
+class Textured: public hui::Drawable, public hui::Transformable {
     public:
-        explicit TexturedShape(const hui::Vector2d& boxSize);
-        TexturedShape(const hui::Vector2d& boxSize, const hui::Vector2d& position);
+        explicit Textured(const hui::Vector2d& boxSize);
+        Textured(const hui::Vector2d& boxSize, const hui::Vector2d& position);
 
-        virtual ~TexturedShape();
+        virtual ~Textured();
 
         [[nodiscard]] virtual const void* GetImpl() const noexcept override final;
         [[nodiscard]] virtual       void* GetImpl()       noexcept override final;

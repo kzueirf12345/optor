@@ -4,7 +4,6 @@
 #include <SFML/Graphics/Color.hpp>
 
 #include "hui/Color.hpp"
-#include "common/ErrorHandler.hpp"
 
 class hui::ColorImpl : public sf::Color {
     public:
