@@ -1,4 +1,5 @@
 #include "widgets/SceneWidget.hpp"
+#include "hui/Event.hpp"
 #include "hui/Renderer.hpp"
 #include "hui/Sprite.hpp"
 #include "hui/Vector.hpp"
@@ -58,6 +59,79 @@ bool optor::SceneWidget::OnMouseMove(const hui::Event& event) {
         return true;
     }
 
+
+    return false;
+}
+
+bool optor::SceneWidget::OnKeyboardPress(const hui::Event& event) {
+    if (state_->selectedWidget == this) {
+        switch (event.GetKeyboardButton()) {
+            case hui::Event::KeyboardButton::W: {
+                ERROR_HANDLE(&optor::Scene::SetMoveDir, scene_, optor::MoveDirection::FORWARD);
+                return true;
+            }
+
+            case hui::Event::KeyboardButton::S: {
+                ERROR_HANDLE(&optor::Scene::SetMoveDir, scene_, optor::MoveDirection::BACKWARD);
+                return true;
+            }
+
+            case hui::Event::KeyboardButton::A: {
+                ERROR_HANDLE(&optor::Scene::SetMoveDir, scene_, optor::MoveDirection::LEFT);
+                return true;
+            }
+
+            case hui::Event::KeyboardButton::D: {
+                ERROR_HANDLE(&optor::Scene::SetMoveDir, scene_, optor::MoveDirection::RIGHT);
+                return true;
+            }
+
+            case hui::Event::KeyboardButton::Space: {
+                ERROR_HANDLE(&optor::Scene::SetMoveDir, scene_, optor::MoveDirection::UP);
+                return true;
+            }
+
+            case hui::Event::KeyboardButton::LControl: {
+                ERROR_HANDLE(&optor::Scene::SetMoveDir, scene_, optor::MoveDirection::DOWN);
+                return true;
+            }
+
+            default:
+                break;
+        }
+    }
+
+    if (ERROR_HANDLE([this, &event](){
+            return optor::Widget::OnKeyboardPress(event);
+        })
+    ) {
+        return true;
+    }
+
+
+    return false;
+}
+
+bool optor::SceneWidget::OnKeyboardRelease(const hui::Event& event) {
+    if (state_->selectedWidget == this) {
+        if (event.GetKeyboardButton() == hui::Event::KeyboardButton::W
+         || event.GetKeyboardButton() == hui::Event::KeyboardButton::S
+         || event.GetKeyboardButton() == hui::Event::KeyboardButton::A
+         || event.GetKeyboardButton() == hui::Event::KeyboardButton::D
+         || event.GetKeyboardButton() == hui::Event::KeyboardButton::Space
+         || event.GetKeyboardButton() == hui::Event::KeyboardButton::LControl
+        ) {
+            ERROR_HANDLE(&optor::Scene::SetMoveDir, scene_, optor::MoveDirection::UNKNOWN);
+            return true;
+        }
+    }
+
+    if (ERROR_HANDLE([this, &event](){
+            return optor::Widget::OnKeyboardRelease(event);
+        })
+    ) {
+        return true;
+    }
 
     return false;
 }

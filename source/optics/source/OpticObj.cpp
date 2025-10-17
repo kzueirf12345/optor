@@ -22,6 +22,10 @@ double optor::OpticObj::GetShininess() const noexcept {
     return shininess_;
 }
 
+double optor::OpticObj::GetReflection() const noexcept {
+    return reflection_;
+}
+
 void optor::OpticObj::SetAmbientColor(const hui::Color& color) {
     ambientColor_ = color.GetNormalized();
 }
@@ -36,4 +40,8 @@ void optor::OpticObj::SetSpecColor(const hui::Color& color) {
 
 void optor::OpticObj::SetShininess(const double shininess) {
     shininess_ = shininess;
+}
+
+void optor::OpticObj::SetReflection(const double reflection) {
+    reflection_ = reflection;
 }

@@ -78,6 +78,19 @@ int main() {
         light1->SetAmbientColor(optor::color::AccentGreen);
     });
 
+    auto* light2 = ERROR_HANDLE([sceneWidget](){
+        return sceneWidget->AddObj(
+            std::make_unique<optor::Light>(
+                0.1,
+                hui::Vector3d(3, 0, -1)
+            )
+        );
+    });
+
+    ERROR_HANDLE([light2](){
+        light2->SetAmbientColor(optor::color::AccentYellow);
+    });
+
     while (ERROR_HANDLE(&hui::Window::isOpen, window)) {
 
         ERROR_HANDLE(&optor::WidgetManager::HandleEvents, &manager, &window);

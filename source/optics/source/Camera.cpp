@@ -1,4 +1,5 @@
 #include <cmath>
+#include <stdexcept>
 
 #include "optics/Camera.hpp"
 #include "common/ErrorHandler.hpp"
@@ -31,11 +32,11 @@ optor::Camera::Camera(const hui::Vector3d& position, const hui::Vector3d& target
 
 void optor::Camera::Move(MoveDirection direction, double speed) {
     switch (direction) {
-        case MoveDirection::FORWARD:
-            position_ += front_ * speed;
+        case MoveDirection::FORWARD: // REVIEW
+            position_ -= front_ * speed;
             break;
         case MoveDirection::BACKWARD:
-            position_ -= front_ * speed;
+            position_ += front_ * speed;
             break;
         case MoveDirection::LEFT:
             position_ -= right_ * speed;
@@ -48,6 +49,10 @@ void optor::Camera::Move(MoveDirection direction, double speed) {
             break;
         case MoveDirection::DOWN:
             position_ -= worldUp_ * speed;
+            break;
+        case MoveDirection::UNKNOWN:
+        default:
+            throw std::overflow_error("Unkown deriction");
             break;
     }
 }

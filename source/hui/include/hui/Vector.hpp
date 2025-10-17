@@ -172,7 +172,7 @@ class Vector3 {
         [[nodiscard]] T Len2() const noexcept;
         [[nodiscard]] T Len()  const;
         [[nodiscard]] Vector3<T> Mirror(hui::Axis axis) const noexcept;
-        [[nodiscard]] Vector3<T> Clump(const hui::Vector3<T>& minVec, 
+        [[nodiscard]] Vector3<T> Clamp(const hui::Vector3<T>& minVec, 
                                        const hui::Vector3<T>& maxVec) const;
 
         Vector3<T> operator-() const noexcept{
@@ -286,7 +286,7 @@ Vector3<T> hui::Vector3<T>::Mirror(hui::Axis axis) const noexcept{
 }
 
 template <typename T>
-Vector3<T> hui::Vector3<T>::Clump(const hui::Vector3<T>& minVec, 
+Vector3<T> hui::Vector3<T>::Clamp(const hui::Vector3<T>& minVec, 
                                                       const hui::Vector3<T>& maxVec) const {
     return {
         std::max(std::min(this->x, maxVec.x), minVec.x),

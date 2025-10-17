@@ -7,6 +7,7 @@ namespace optor
 {
 
 enum class MoveDirection {
+    UNKNOWN = -1,
     FORWARD,
     BACKWARD,
     LEFT,

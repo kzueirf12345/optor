@@ -15,7 +15,7 @@ optor::Scene::Scene(const hui::Vector2d& boxSize)
 {}
 
 optor::Scene::Scene(const hui::Vector2d& boxSize, const hui::Vector2d& position) 
-    : hui::Textured(boxSize, position), camera_{}
+    : hui::Textured(boxSize, position), camera_{}, moveDir_{optor::MoveDirection::UNKNOWN}
 {
     for (size_t y = 0; y < boxSize_.y; ++y) {
         for (size_t x = 0; x < boxSize_.x; ++x) {
@@ -25,6 +25,10 @@ optor::Scene::Scene(const hui::Vector2d& boxSize, const hui::Vector2d& position)
 }
 
 void optor::Scene::Update() {
+    if (moveDir_ != optor::MoveDirection::UNKNOWN) {
+        ERROR_HANDLE(&optor::Camera::Move, camera_, moveDir_, optor::CAMERA_MOVE_SPEED);
+    }
+
     for (size_t y = 0; y < boxSize_.y; ++y) {
         for (size_t x = 0; x < boxSize_.x; ++x) {
             const size_t pixelIndex = y * boxSize_.x + x;
@@ -117,7 +121,7 @@ std::optional<hui::Color> optor::Scene::TraceRay(const hui::Vector3d rayDir, con
 
     const hui::Vector3d resultColor(ambientPart + diffPart + specPart);
 
-    return hui::Color(resultColor.Clump({0, 0, 0}, {1, 1, 1}));
+    return hui::Color(resultColor.Clamp({0, 0, 0}, {1, 1, 1}));
 }
 
 bool optor::Scene::IsEclipse(const optor::OpticObj* obj, const optor::Light* light, 
@@ -168,4 +172,12 @@ const optor::Camera& optor::Scene::GetCamera() const noexcept {
 }
 optor::Camera& optor::Scene::GetCamera()       noexcept {
     return camera_;
+}
+
+void optor::Scene::SetMoveDir(optor::MoveDirection moveDir) {
+    moveDir_ = moveDir;
+}
+
+optor::MoveDirection optor::Scene::GetMoveDir() const noexcept {
+    return moveDir_;
 }

@@ -28,17 +28,20 @@ class OpticObj {
         [[nodiscard]] hui::Color GetDiffColor()    const noexcept;
         [[nodiscard]] hui::Color GetSpecColor()    const noexcept;
         [[nodiscard]] double     GetShininess()    const noexcept;
+        [[nodiscard]] double     GetReflection()   const noexcept;
 
         void SetAmbientColor(const hui::Color& color);
         void SetDiffColor   (const hui::Color& color);
         void SetSpecColor   (const hui::Color& color);
         void SetShininess   (const double      shininess);
+        void SetReflection  (const double      reflection);
 
     protected:
         hui::Vector3d ambientColor_;
         hui::Vector3d diffColor_;
         hui::Vector3d specColor_;
         double shininess_;
+        double reflection_;
 
     private:
 };

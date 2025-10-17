@@ -19,10 +19,14 @@ class Scene: public hui::Textured {
 
         virtual void Update();
 
-        optor::OpticObj* AddObj  (std::unique_ptr<optor::OpticObj> obj);
+        optor::OpticObj* AddObj(std::unique_ptr<optor::OpticObj> obj);
 
         [[nodiscard]] const optor::Camera& GetCamera() const noexcept;
         [[nodiscard]]       optor::Camera& GetCamera()       noexcept;
+
+        void SetMoveDir(optor::MoveDirection moveDir);
+
+        [[nodiscard]] optor::MoveDirection GetMoveDir() const noexcept;
 
     private:
         std::vector<std::unique_ptr<optor::OpticObj>> objs_;
@@ -30,10 +34,12 @@ class Scene: public hui::Textured {
 
         optor::Camera camera_;
 
+        optor::MoveDirection moveDir_;
+
         std::optional<hui::Color> TraceRay(const hui::Vector3d rayDir, const optor::OpticObj* obj, 
                                            double* dist);
-        bool IsEclipse(const optor::OpticObj* obj, const optor::Light* light,
-                          const hui::Vector3d& intersectPoint);
+        bool                      IsEclipse(const optor::OpticObj* obj, const optor::Light* light,
+                                            const hui::Vector3d& intersectPoint);
 };
 
 }
