@@ -1,5 +1,6 @@
 #include <cassert>
 #include <limits>
+#include <optional>
 
 #include "optics/Scene.hpp"
 #include "common/ErrorHandler.hpp"
@@ -115,19 +116,29 @@ hui::Vector3d optor::Scene::CalculateLighting(const optor::OpticObj::Intersectio
         result += diffuse + specular;
     }
     
-    //
-    // if (material.GetReflection() > 0.0) {
-    //     hui::Vector3d reflectDir = Reflect(-viewDir, normal);
-    //     hui::Color reflectionColor = TraceRay(point + reflectDir * 0.001, reflectDir, depth + 1);
-    //     result = result * (1 - material.GetReflection()) + reflectionColor * material.GetReflection();
-    // }
+    const double reflectivity = material.GetReflectivity();
+    if (reflectivity > 0) {
+        const hui::Vector3d reflectDir = Reflect(-viewDir, normal);
+        const hui::Vector3d reflectionColor = TraceRay(point + reflectDir * 0.001, reflectDir, depth + 1);
+        result = result * (1 - reflectivity) + reflectionColor * reflectivity;
+    }
+
+    const double transparency = material.GetTransparency();
+    const double refractivity = material.GetRefractivity();
+
+    if (transparency > 0) {
+        const auto refractDir = Refract(-viewDir, normal, refractivity);
+        if (refractDir.has_value()) {
+            const hui::Vector3d refractedColor = TraceRay(point + refractDir.value() * 0.001, refractDir.value(), depth + 1);
+            result = result * (1 - transparency) + refractedColor * transparency;
+        }
+    }
     
     return result.Clamp({0, 0, 0}, {1, 1, 1});
 }
 
 bool optor::Scene::IsInShadow(const hui::Vector3d& point, const hui::Vector3d& lightDir, double lightDistance, const optor::OpticObj* obj) const {
     hui::Vector3d shadowOrigin = point + lightDir * 0.001;
-    
     
     for (const auto& curObj : objs_) {
         auto intersection = curObj->IntersectRay(shadowOrigin, lightDir);
@@ -142,6 +153,34 @@ bool optor::Scene::IsInShadow(const hui::Vector3d& point, const hui::Vector3d& l
 hui::Vector3d optor::Scene::Reflect(const hui::Vector3d& incident, const hui::Vector3d& normal) const {
     return incident - normal * 2.0 * (incident ^ normal);
 }
+
+std::optional<hui::Vector3d> optor::Scene::Refract(const hui::Vector3d& incident, 
+                                                   const hui::Vector3d& normal, 
+                                                   double eta) const {
+    assert(incident.Len2() == 1);
+    assert(normal.Len2() == 1);
+
+    double cosi = incident ^ normal;
+    double etai = 1.0, etat = eta;
+    hui::Vector3d n = normal;
+
+    if (cosi < 0) {
+        cosi = -cosi;
+    } else {
+        std::swap(etai, etat);
+        n = -normal;
+    }
+
+    double etaRatio = etai / etat;
+    double k = 1.0 - etaRatio * etaRatio * (1.0 - cosi * cosi);
+
+    if (k < 0.0) {
+        return std::nullopt;
+    }
+
+    return !(incident * etaRatio + n * (etaRatio * cosi - std::sqrt(k)));
+}
+
 
 optor::OpticObj* optor::Scene::AddObj(std::unique_ptr<optor::OpticObj> obj) {
     ERROR_HANDLE([this, &obj](){

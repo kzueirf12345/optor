@@ -49,6 +49,9 @@ class Scene: public hui::Textured {
         bool IsInShadow(const hui::Vector3d& point, const hui::Vector3d& lightDir, double lightDistance, const optor::OpticObj* obj) const;
 
         hui::Vector3d Reflect(const hui::Vector3d& incident, const hui::Vector3d& normal) const;
+        std::optional<hui::Vector3d> Refract(const hui::Vector3d& incident, 
+                                             const hui::Vector3d& normal, 
+                                             double eta) const;
 };
 
 }

@@ -12,15 +12,15 @@ optor::Material::Material()
 {}
 
 optor::Material::Material(const hui::Vector3d& ambient, const hui::Vector3d& diffuse, 
-                          const hui::Vector3d& specular, double shininess)
+                          const hui::Vector3d& specular, double shininess, double reflectivity, 
+                          double refractivity, double transparency)
     :   ambient_{ambient},
         diffuse_{diffuse},
         specular_{specular},
         shininess_{shininess},
-        reflectivity_{0},
-        refractivity_{0},
-        transparency_{0}
-
+        reflectivity_{reflectivity},
+        refractivity_{refractivity},
+        transparency_{transparency}
 {}
 
 hui::Vector3d optor::Material::GetAmbientColor() const noexcept { return ambient_; }

@@ -10,7 +10,8 @@ class Material {
     public:
         Material();
         Material(const hui::Vector3d& ambient, const hui::Vector3d& diffuse, 
-                 const hui::Vector3d& specular, double shininess);
+                 const hui::Vector3d& specular, double shininess, double reflectivity, 
+                 double refractivity, double transparency);
 
         [[nodiscard]] hui::Vector3d GetAmbientColor() const noexcept;
         [[nodiscard]] hui::Vector3d GetDiffuseColor() const noexcept;

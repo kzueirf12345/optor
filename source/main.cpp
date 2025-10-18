@@ -14,10 +14,11 @@
 #include "widgets/WidgetManager.hpp"
 #include "optics/Sphere.hpp"
 
-const optor::Material LIGHT({1, 1, 1}, {0, 0, 0}, {0, 0, 0}, 0);
-const optor::Material RED_PLASTICK({0.1, 0, 0}, {0.7, 0.1, 0.1}, {1, 1, 1}, 32);
-const optor::Material GREEN_METAL({0, 0.1, 0}, {0.1, 0.8, 0.1}, {1, 1, 1}, 128);
-const optor::Material BLUE_GLASS({0, 0, 0.1}, {0.1, 0.1, 0.6}, {1, 1, 1}, 256);
+const optor::Material LIGHT         ({1, 1, 1},          {0, 0, 0},       {0, 0, 0},        0,     0,   0,   0);
+const optor::Material IVORY         ({0.1, 0.1, 0.1},    {0.4, 0.4, 0.3}, {1.0, 1.0, 1.0}, 50.0,   0.1, 1.0, 0.0);
+const optor::Material GLASS         ({0.05, 0.05, 0.05}, {0.6, 0.7, 0.8}, {1.0, 1.0, 1.0}, 125.0,  0.1, 1.5, 0.8);
+const optor::Material RED_RUBBER    ({0.05, 0.01, 0.01}, {0.3, 0.1, 0.1}, {0.3, 0.3, 0.3}, 10.0,   0.0, 1.0, 0.0);
+const optor::Material MIRROR        ({0.05, 0.05, 0.05}, {1.0, 1.0, 1.0}, {1.0, 1.0, 1.0}, 1425.0, 0.8, 1.0, 0.0);
 
 int main() {
 
@@ -70,10 +71,10 @@ int main() {
         return sceneWidget->AddObj(std::make_unique<optor::Light>(0.2, hui::Vector3d(30, 20, 30), optor::color::White.GetNormalized(), 1));
     }));
 
-    ERROR_HANDLE([sphere1](){sphere1->SetMaterial(RED_PLASTICK);});
-    ERROR_HANDLE([sphere2](){sphere2->SetMaterial(GREEN_METAL);});
-    ERROR_HANDLE([sphere3](){sphere3->SetMaterial(BLUE_GLASS);});
-    ERROR_HANDLE([sphere4](){sphere4->SetMaterial(BLUE_GLASS);});
+    ERROR_HANDLE([sphere1](){sphere1->SetMaterial(IVORY);});
+    ERROR_HANDLE([sphere2](){sphere2->SetMaterial(GLASS);});
+    ERROR_HANDLE([sphere3](){sphere3->SetMaterial(RED_RUBBER);});
+    ERROR_HANDLE([sphere4](){sphere4->SetMaterial(MIRROR);});
     ERROR_HANDLE([light1](){light1->SetMaterial(LIGHT);});
     ERROR_HANDLE([light2](){light2->SetMaterial(LIGHT);});
     ERROR_HANDLE([light3](){light3->SetMaterial(LIGHT);});
