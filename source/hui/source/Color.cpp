@@ -1,123 +1,163 @@
-#include <cassert>
-#include <memory>
-
-#include <SFML/Graphics/Color.hpp>
-
 #include "hui/Color.hpp"
-#include "hui/Vector.hpp"
+#include <algorithm>
 
-class hui::ColorImpl : public sf::Color {
-    public:
-        ColorImpl()
-        {}
-        ColorImpl(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha)
-            :   sf::Color(red, green, blue, alpha)
-        {}
-        ColorImpl(uint32_t color) 
-            :   sf::Color(color)
-        {}
-    private:
-};
-
-hui::Color::Color(const hui::Color& other) 
-    : impl_(std::make_unique<hui::ColorImpl>(other.GetInt()))
-{}
-hui::Color& hui::Color::operator=(const hui::Color& other)
+namespace hui 
 {
-    hui::Color::SetInt(other.GetInt());
+
+Color::Color() : red_(0), green_(0), blue_(0), alpha_(255) {}
+
+Color::Color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) 
+    : red_(red), green_(green), blue_(blue), alpha_(alpha) {}
+
+Color::Color(const hui::Vector3d& normalizedColor, uint8_t alpha)
+    : alpha_(alpha)
+{
+    red_ = static_cast<uint8_t>(normalizedColor.x * 255);
+    green_ = static_cast<uint8_t>(normalizedColor.y * 255);
+    blue_ = static_cast<uint8_t>(normalizedColor.z * 255);
+}
+
+Color::~Color() = default;
+
+Color::Color(const Color& other) = default;
+
+Color& Color::operator=(const Color& other) = default;
+
+Color::Color(Color&& other) noexcept = default;
+
+Color& Color::operator=(Color&& other) noexcept = default;
+
+uint8_t Color::GetRed() const noexcept { return red_; }
+
+uint8_t Color::GetGreen() const noexcept { return green_; }
+
+uint8_t Color::GetBlue() const noexcept { return blue_; }
+
+uint8_t Color::GetAlpha() const noexcept { return alpha_; }
+
+uint32_t Color::GetInt() const noexcept {
+    return (static_cast<uint32_t>(red_) << 24) |
+           (static_cast<uint32_t>(green_) << 16) |
+           (static_cast<uint32_t>(blue_) << 8) |
+           static_cast<uint32_t>(alpha_);
+}
+
+uint32_t Color::GetABGR() const noexcept {
+    return (static_cast<uint32_t>(alpha_) << 24) |
+           (static_cast<uint32_t>(blue_) << 16) |
+           (static_cast<uint32_t>(green_) << 8) |
+           static_cast<uint32_t>(red_);
+}
+
+hui::Vector3d Color::GetNormalized() const noexcept {
+    return hui::Vector3d(
+        static_cast<double>(red_) / 255.0,
+        static_cast<double>(green_) / 255.0,
+        static_cast<double>(blue_) / 255.0
+    );
+}
+
+void Color::SetRed(uint8_t red) noexcept { red_ = red; }
+
+void Color::SetGreen(uint8_t green) noexcept { green_ = green; }
+
+void Color::SetBlue(uint8_t blue) noexcept { blue_ = blue; }
+
+void Color::SetAlpha(uint8_t alpha) noexcept { alpha_ = alpha; }
+
+void Color::SetInt(uint32_t color) noexcept {
+    red_ = static_cast<uint8_t>((color >> 24) & 0xFF);
+    green_ = static_cast<uint8_t>((color >> 16) & 0xFF);
+    blue_ = static_cast<uint8_t>((color >> 8) & 0xFF);
+    alpha_ = static_cast<uint8_t>(color & 0xFF);
+}
+
+bool Color::operator==(const Color& other) const noexcept {
+    return red_ == other.red_ && 
+           green_ == other.green_ && 
+           blue_ == other.blue_ && 
+           alpha_ == other.alpha_;
+}
+
+bool Color::operator!=(const Color& other) const noexcept {
+    return !(*this == other);
+}
+
+Color Color::operator+(const Color& other) const noexcept {
+    return Color(
+        static_cast<uint8_t>(std::min(255, int(red_) + int(other.red_))),
+        static_cast<uint8_t>(std::min(255, int(green_) + int(other.green_))),
+        static_cast<uint8_t>(std::min(255, int(blue_) + int(other.blue_))),
+        static_cast<uint8_t>(std::min(255, int(alpha_) + int(other.alpha_)))
+    );
+}
+
+Color Color::operator-(const Color& other) const noexcept {
+    return Color(
+        static_cast<uint8_t>(std::max(0, int(red_) - int(other.red_))),
+        static_cast<uint8_t>(std::max(0, int(green_) - int(other.green_))),
+        static_cast<uint8_t>(std::max(0, int(blue_) - int(other.blue_))),
+        static_cast<uint8_t>(std::max(0, int(alpha_) - int(other.alpha_)))
+    );
+}
+
+Color Color::operator*(float scalar) const noexcept {
+    return Color(
+        static_cast<uint8_t>(std::min(255.0f, red_ * scalar)),
+        static_cast<uint8_t>(std::min(255.0f, green_ * scalar)),
+        static_cast<uint8_t>(std::min(255.0f, blue_ * scalar)),
+        static_cast<uint8_t>(std::min(255.0f, alpha_ * scalar))
+    );
+}
+
+Color Color::operator/(float scalar) const noexcept {
+    if (scalar == 0.0f) return *this;
+    return Color(
+        static_cast<uint8_t>(std::max(0.0f, red_ / scalar)),
+        static_cast<uint8_t>(std::max(0.0f, green_ / scalar)),
+        static_cast<uint8_t>(std::max(0.0f, blue_ / scalar)),
+        static_cast<uint8_t>(std::max(0.0f, alpha_ / scalar))
+    );
+}
+
+Color& Color::operator+=(const Color& other) noexcept {
+    *this = *this + other;
     return *this;
 }
 
-hui::Color::Color() 
-    : impl_(std::make_unique<hui::ColorImpl>())
-{}
-
-hui::Color::Color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha)
-    : impl_(std::make_unique<hui::ColorImpl>(red, green, blue, alpha))
-{}
-
-hui::Color::Color(const hui::Vector3d& normilizedColor, uint8_t alpha) 
-    : hui::Color(
-        normilizedColor.x * 255, 
-        normilizedColor.y * 255, 
-        normilizedColor.z * 255, 
-        alpha
-    )
-{}
-
-hui::Color::~Color() = default;
-
-hui::Color::Color                (Color&& other) noexcept = default;
-hui::Color& hui::Color::operator=(Color&& other) noexcept = default;
-
-const void* hui::Color::GetImpl() const noexcept {
-    return impl_.get();
+Color& Color::operator-=(const Color& other) noexcept {
+    *this = *this - other;
+    return *this;
 }
 
-void* hui::Color::GetImpl() noexcept {
-    return impl_.get();
+Color& Color::operator*=(float scalar) noexcept {
+    *this = *this * scalar;
+    return *this;
 }
 
-uint8_t  hui::Color::GetRed()   const noexcept {
-    const auto* const impl = static_cast<const hui::ColorImpl*>(GetImpl());
-    return impl->r;
+Color& Color::operator/=(float scalar) noexcept {
+    *this = *this / scalar;
+    return *this;
 }
 
-uint8_t  hui::Color::GetGreen() const noexcept {
-    const auto* const impl = static_cast<const hui::ColorImpl*>(GetImpl());
-    return impl->g;
+Color Color::Blend(const Color& other) const noexcept {
+    if (alpha_ == 0) return other;
+    if (other.alpha_ == 0) return *this;
+    
+    double alpha1 = alpha_ / 255.0;
+    double alpha2 = other.alpha_ / 255.0;
+    double alpha = alpha1 + alpha2 * (1.0 - alpha1);
+    
+    return Color(
+        static_cast<uint8_t>((red_ * alpha1 + other.red_ * alpha2 * (1.0 - alpha1)) / alpha),
+        static_cast<uint8_t>((green_ * alpha1 + other.green_ * alpha2 * (1.0 - alpha1)) / alpha),
+        static_cast<uint8_t>((blue_ * alpha1 + other.blue_ * alpha2 * (1.0 - alpha1)) / alpha),
+        static_cast<uint8_t>(alpha * 255)
+    );
 }
 
-uint8_t  hui::Color::GetBlue()  const noexcept {
-    const auto* const impl = static_cast<const hui::ColorImpl*>(GetImpl());
-    return impl->b;
+Color operator*(float scalar, const Color& color) noexcept {
+    return color * scalar;
 }
 
-uint8_t  hui::Color::GetAlpha() const noexcept {
-    const auto* const impl = static_cast<const hui::ColorImpl*>(GetImpl());
-    return impl->a;
-}
-
-uint32_t hui::Color::GetInt()   const noexcept {
-    const auto* const impl = static_cast<const hui::ColorImpl*>(GetImpl());
-    return impl->toInteger();
-}
-
-hui::Vector3d hui::Color::GetNormalized() const noexcept {
-    const auto* const impl = static_cast<const hui::ColorImpl*>(GetImpl());
-    return hui::Vector3d(impl->r, impl->g, impl->b) / 255.;
-}
-
-
-void hui::Color::SetRed     (uint8_t  red)    noexcept {
-    auto* const impl = static_cast<hui::ColorImpl*>(GetImpl());
-    impl->r = red;
-}
-
-void hui::Color::SetGreen   (uint8_t  green)  noexcept {
-    auto* const impl = static_cast<hui::ColorImpl*>(GetImpl());
-    impl->g = green;
-}
-
-void hui::Color::SetBlue    (uint8_t  blue)   noexcept {
-    auto* const impl = static_cast<hui::ColorImpl*>(GetImpl());
-    impl->b = blue;
-}
-
-void hui::Color::SetAlpha   (uint8_t  alpha)  noexcept {
-    auto* const impl = static_cast<hui::ColorImpl*>(GetImpl());
-    impl->a = alpha;
-}
-
-static uint8_t GetColorPart_(uint32_t color, size_t num) noexcept {
-    assert(num < 4);
-    return (color >> (8 * (3 - num))) & 0xFF;
-}
-
-void hui::Color::SetInt     (uint32_t color)  noexcept {
-    auto* const impl = static_cast<hui::ColorImpl*>(GetImpl());
-    impl->r = GetColorPart_(color, 0);
-    impl->g = GetColorPart_(color, 1);
-    impl->b = GetColorPart_(color, 2);
-    impl->a = GetColorPart_(color, 3);
-}
+} // namespace hui

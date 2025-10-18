@@ -3,7 +3,7 @@ add_library(optics STATIC
     source/Camera.cpp
     source/Light.cpp
     source/Sphere.cpp
-    source/OpticObj.cpp
+    source/Material.cpp
 )
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")

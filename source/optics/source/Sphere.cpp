@@ -1,3 +1,4 @@
+#include <cmath>
 #include <optional>
 
 #include "optics/Sphere.hpp"
@@ -17,34 +18,48 @@ bool optor::Sphere::IsContainsDot(const hui::Vector3d& dot) const noexcept {
     return dot.Len2() <= radius2_;
 }
 
-std::optional<double> optor::Sphere::IntersectRay(const hui::Vector3d& rayBegin, 
-                                                  const hui::Vector3d& rayDirection) const {
-    const hui::Vector3d oc = rayBegin - center_;
+std::optional<optor::OpticObj::Intersection> 
+optor::Sphere::IntersectRay(const hui::Vector3d& rayBegin, const hui::Vector3d& rayDirection) const 
+{
+    hui::Vector3d oc = rayBegin - center_;
+    double a = rayDirection.Len2();
+    double b = 2.0 * (oc ^ rayDirection);
+    double c = oc.Len2() - radius2_;
     
-    const double a = rayDirection.Len2();
-    const double b = 2.0 * (oc ^ rayDirection);
-    const double c = oc.Len2() - radius2_;
-    
-    const double discriminant = b * b - 4 * a * c;
+    double discriminant = b * b - 4 * a * c;
     
     if (discriminant < 0) {
         return std::nullopt;
     }
     
-    const double sqrtD = std::sqrt(discriminant);
-    const double t1 = (-b - sqrtD) / (2 * a);
-    const double t2 = (-b + sqrtD) / (2 * a);
+    double sqrtd = std::sqrt(discriminant);
+    double t1 = (-b - sqrtd) / (2.0 * a);
+    double t2 = (-b + sqrtd) / (2.0 * a);
     
-    if (t1 > 0) return t1;
-    if (t2 > 0) return t2;
+    double t = (t1 > 0 && t2 > 0) ? std::min(t1, t2) : 
+               (t1 > 0)           ? t1 : 
+               (t2 > 0)           ? t2 : std::numeric_limits<double>::infinity();
+
+    if (t == std::numeric_limits<double>::infinity()) 
+        return std::nullopt;
     
-    return std::nullopt;
+    hui::Vector3d point = rayBegin + rayDirection * t;
+    hui::Vector3d normal = !(point - center_);
+    
+    return Intersection{t, point, normal, this};
 }
+
 
 hui::Vector3d optor::Sphere::GetNormal(const hui::Vector3d& dot) const {
     return !(dot - center_);
 }
 
-hui::Vector3d optor::Sphere::GetCenter() const noexcept {
-    return center_;
+const hui::Vector3d& optor::Sphere::GetCenter()  const noexcept {return center_;}
+double               optor::Sphere::GetRadius()  const noexcept {return radius_;}
+double               optor::Sphere::GetRadius2() const noexcept {return radius2_;}
+
+void optor::Sphere::SetCenter(const hui::Vector3d& center) { center_ = center; }
+void optor::Sphere::SetRadius(double radius) {
+    radius_ = radius;
+    radius2_ = radius * radius;
 }

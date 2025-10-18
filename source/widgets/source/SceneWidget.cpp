@@ -141,10 +141,10 @@ void optor::SceneWidget::RotateCamera(const hui::Vector2d& mouseOffset) {
     optor::RotateDirection dir = optor::RotateDirection::RIGHT;
 
     if (mouseOffset.x > 0) {
-        dir = optor::RotateDirection::RIGHT, 
+        dir = optor::RotateDirection::LEFT, 
         speed = mouseOffset.x;
     } else {
-        dir = optor::RotateDirection::LEFT, 
+        dir = optor::RotateDirection::RIGHT, 
         speed = -mouseOffset.x;
     }
 
@@ -153,10 +153,10 @@ void optor::SceneWidget::RotateCamera(const hui::Vector2d& mouseOffset) {
     }
     
     if (mouseOffset.y < 0) {
-        dir = optor::RotateDirection::UP, 
+        dir = optor::RotateDirection::DOWN, 
         speed = -mouseOffset.y;
     } else {
-        dir = optor::RotateDirection::DOWN, 
+        dir = optor::RotateDirection::UP, 
         speed = mouseOffset.y;
     }
 

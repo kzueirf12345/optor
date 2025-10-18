@@ -6,12 +6,18 @@
 #include "hui/Window.hpp"
 #include "common/ErrorHandler.hpp"
 #include "optics/Light.hpp"
+#include "optics/Material.hpp"
 #include "widgets/SceneWidget.hpp"
 #include "widgets/Widget.hpp"
 #include "global/Global.hpp"
 #include "widgets/WidgetChildable.hpp"
 #include "widgets/WidgetManager.hpp"
 #include "optics/Sphere.hpp"
+
+const optor::Material LIGHT({1, 1, 1}, {0, 0, 0}, {0, 0, 0}, 0);
+const optor::Material RED_PLASTICK({0.1, 0, 0}, {0.7, 0.1, 0.1}, {1, 1, 1}, 32);
+const optor::Material GREEN_METAL({0, 0.1, 0}, {0.1, 0.8, 0.1}, {1, 1, 1}, 128);
+const optor::Material BLUE_GLASS({0, 0, 0.1}, {0.1, 0.1, 0.6}, {1, 1, 1}, 256);
 
 int main() {
 
@@ -37,59 +43,40 @@ int main() {
     ERROR_HANDLE(&optor::Widget::SetPosition, sceneWidget, hui::Vector2d(100, 100));
 
     auto* sphere1 = dynamic_cast<optor::Sphere*>(ERROR_HANDLE([sceneWidget](){
-        return sceneWidget->AddObj(
-            std::make_unique<optor::Sphere>(
-                1,
-                hui::Vector3d(0, 0, 3)
-            )
-        );
+        return sceneWidget->AddObj(std::make_unique<optor::Sphere>(2, hui::Vector3d(-3, 0, 16)));
     }));
-
-    ERROR_HANDLE([sphere1](){sphere1->SetAmbientColor(optor::color::AccentCyan);});
-    ERROR_HANDLE([sphere1](){sphere1->SetDiffColor(hui::Color(hui::Vector3d(0.85, 0.1, 0.1)));});
-    ERROR_HANDLE([sphere1](){sphere1->SetSpecColor(hui::Color(hui::Vector3d(1, 1, 1)));});
-    ERROR_HANDLE([sphere1](){sphere1->SetShininess(32);});
-    
 
     auto* sphere2 = dynamic_cast<optor::Sphere*>(ERROR_HANDLE([sceneWidget](){
-        return sceneWidget->AddObj(
-            std::make_unique<optor::Sphere>(
-                3,
-                hui::Vector3d(0, -1, 7)
-            )
-        );
+        return sceneWidget->AddObj(std::make_unique<optor::Sphere>(2, hui::Vector3d(-1, -1.5, 12)));
     }));
 
-    ERROR_HANDLE([sphere2](){sphere2->SetAmbientColor(optor::color::AccentRed);});
-    ERROR_HANDLE([sphere2](){sphere2->SetDiffColor(hui::Color(hui::Vector3d(0.85, 0.1, 0.1)));});
-    ERROR_HANDLE([sphere2](){sphere2->SetSpecColor(hui::Color(hui::Vector3d(1, 1, 1)));});
-    ERROR_HANDLE([sphere2](){sphere2->SetShininess(20);});
+    auto* sphere3 = dynamic_cast<optor::Sphere*>(ERROR_HANDLE([sceneWidget](){
+        return sceneWidget->AddObj(std::make_unique<optor::Sphere>(3, hui::Vector3d(1.5, -0.5, 18)));
+    }));
 
-    auto* light1 = ERROR_HANDLE([sceneWidget](){
-        return sceneWidget->AddObj(
-            std::make_unique<optor::Light>(
-                0.1,
-                hui::Vector3d(-3, 0, -1)
-            )
-        );
-    });
+    auto* sphere4 = dynamic_cast<optor::Sphere*>(ERROR_HANDLE([sceneWidget](){
+        return sceneWidget->AddObj(std::make_unique<optor::Sphere>(4, hui::Vector3d(7, 5, 18)));
+    }));
 
-    ERROR_HANDLE([light1](){
-        light1->SetAmbientColor(optor::color::AccentGreen);
-    });
+    auto* light1 = dynamic_cast<optor::Light*>(ERROR_HANDLE([sceneWidget](){
+        return sceneWidget->AddObj(std::make_unique<optor::Light>(1, hui::Vector3d(-20, 20, -20), optor::color::White.GetNormalized(), 1));
+    }));
 
-    auto* light2 = ERROR_HANDLE([sceneWidget](){
-        return sceneWidget->AddObj(
-            std::make_unique<optor::Light>(
-                0.1,
-                hui::Vector3d(3, 0, -1)
-            )
-        );
-    });
+    auto* light2 = dynamic_cast<optor::Light*>(ERROR_HANDLE([sceneWidget](){
+        return sceneWidget->AddObj(std::make_unique<optor::Light>(0.2, hui::Vector3d(30, 50, 25), optor::color::White.GetNormalized(), 1));
+    }));
 
-    ERROR_HANDLE([light2](){
-        light2->SetAmbientColor(optor::color::AccentYellow);
-    });
+    auto* light3 = dynamic_cast<optor::Light*>(ERROR_HANDLE([sceneWidget](){
+        return sceneWidget->AddObj(std::make_unique<optor::Light>(0.2, hui::Vector3d(30, 20, 30), optor::color::White.GetNormalized(), 1));
+    }));
+
+    ERROR_HANDLE([sphere1](){sphere1->SetMaterial(RED_PLASTICK);});
+    ERROR_HANDLE([sphere2](){sphere2->SetMaterial(GREEN_METAL);});
+    ERROR_HANDLE([sphere3](){sphere3->SetMaterial(BLUE_GLASS);});
+    ERROR_HANDLE([sphere4](){sphere4->SetMaterial(BLUE_GLASS);});
+    ERROR_HANDLE([light1](){light1->SetMaterial(LIGHT);});
+    ERROR_HANDLE([light2](){light2->SetMaterial(LIGHT);});
+    ERROR_HANDLE([light3](){light3->SetMaterial(LIGHT);});
 
     while (ERROR_HANDLE(&hui::Window::isOpen, window)) {
 

@@ -22,26 +22,30 @@ namespace color
 
     static const hui::Color TextPrimary(0xc0, 0xca, 0xf5);
     
-    static const hui::Color TextSecondary(0x78, 0x7c, 0x99);
-    static const hui::Color TextDisabled(0x54, 0x58, 0x76);
+    // Базовые цвета в стиле Tokyo Night
+    static const hui::Color Red(0xf7, 0x76, 0x8e);
+    static const hui::Color Green(0x9e, 0xce, 0x6a);
+    static const hui::Color Blue(0x7a, 0xa2, 0xf7);
+    static const hui::Color Yellow(0xe0, 0xaf, 0x68);
+    static const hui::Color Purple(0xbb, 0x9a, 0xf7);
+    static const hui::Color Cyan(0x7d, 0xcf, 0xff);
+    static const hui::Color Orange(0xff, 0x9e, 0x64);
+    static const hui::Color Pink(0xf5, 0x76, 0xc0);
     
-    static const hui::Color AccentBlue(0x7a, 0xa2, 0xf7);
-    static const hui::Color AccentCyan(0x7d, 0xcf, 0xff);
-    static const hui::Color AccentGreen(0x9e, 0xce, 0x6a);
-    static const hui::Color AccentYellow(0xe0, 0xaf, 0x68);
-    static const hui::Color AccentOrange(0xff, 0x9e, 0x64);
-    static const hui::Color AccentRed(0xf7, 0x76, 0x8e);
-    static const hui::Color AccentMagenta(0xbb, 0x9a, 0xf7);
+    // Дополнительные оттенки
+    static const hui::Color GrayLight(0x56, 0x5a, 0x89);
+    static const hui::Color Gray(0x41, 0x42, 0x5a);
+    static const hui::Color GrayDark(0x1a, 0x1b, 0x26);
+    static const hui::Color Black(0x16, 0x17, 0x20);
     
-    static const hui::Color ButtonBackground(0x1f, 0x20, 0x32);
-    static const hui::Color ButtonHover(0x28, 0x29, 0x40);
-    static const hui::Color ButtonActive(0x2e, 0x30, 0x4a);
-    
-    static const hui::Color InputBackground(0x16, 0x17, 0x20);
-    static const hui::Color InputBorder(0x3b, 0x3d, 0x54);
-    
-    static const hui::Color SelectionBackground(0x2e, 0x30, 0x4a);
-    static const hui::Color HighlightBackground(0x33, 0x35, 0x52);
+    // Семантические цвета
+    static const hui::Color Success(0x9e, 0xce, 0x6a);
+    static const hui::Color Warning(0xe0, 0xaf, 0x68);
+    static const hui::Color Error(0xf7, 0x76, 0x8e);
+    static const hui::Color Info(0x7a, 0xa2, 0xf7);
+
+    static const hui::Color Poison(0xbf, 0x00, 0xff);
+
 #endif /*OPTOR_PALETE_NAME*/
 
 static const hui::Color Transparent(0x0, 0x0, 0x0, 0x0);

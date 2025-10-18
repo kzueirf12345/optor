@@ -1,3 +1,4 @@
+#include <SFML/Graphics/Image.hpp>
 #include <memory>
 #include <cassert>
 
@@ -42,12 +43,48 @@ void* hui::Texture::GetImpl() noexcept {
     return impl_.get();
 }
 
+// void hui::Texture::Update(const std::vector<uint32_t>& pixels) {
+//     auto* const impl = static_cast<hui::TextureImpl*>(GetImpl());
+    
+//     // Преобразование в формат, ожидаемый SFML
+//     std::vector<uint8_t> rgbaPixels(pixels.size() * 4);
+//     for (size_t i = 0; i < pixels.size(); ++i) {
+//         rgbaPixels[i * 4 + 3] = (pixels[i] >> 0) & 0xFF;  // R
+//         rgbaPixels[i * 4 + 2] = (pixels[i] >> 8) & 0xFF;  // G
+//         rgbaPixels[i * 4 + 1] = (pixels[i] >> 16) & 0xFF; // B
+//         rgbaPixels[i * 4 + 0] = (pixels[i] >> 24) & 0xFF; // A
+//     }
+    
+//     ERROR_HANDLE([impl, &rgbaPixels](){
+//         impl->update(rgbaPixels.data());
+//     });
+// }
+
 void hui::Texture::Update(const std::vector<uint32_t>& pixels) {
     auto* const impl = static_cast<hui::TextureImpl*>(GetImpl());
     ERROR_HANDLE([impl, &pixels](){
         impl->update(reinterpret_cast<const std::uint8_t*>(pixels.data()));
     });
+
+    // const sf::Image img = impl->copyToImage();
+
+    // for (size_t y = 0; y < img.getSize().y; ++y) {
+    //     for (size_t x = 0; x < img.getSize().x; ++x) {
+    //         if (img.getPixel(x, y).toInteger() != 255) std::cerr << "0x" << std::hex << img.getPixel(x, y).toInteger() << " ";
+    //     }
+    // }
+
+    // for (size_t i = 0; i < impl->copyToImage().; ++i) {
+    //     std::cerr << "0x" << std::hex <<  pixels[i] << " ";
+    // }
 }
+
+/*!SECTION
+    for (size_t i = 0; i < pixels.size(); ++i) {
+        if (pixels[i] != 255) std::cerr << "0x" << std::hex <<  pixels[i] << " ";
+        // exit(0);
+    }
+*/
 
 void hui::Texture::SetImpl(void* impl) noexcept {
     assert(impl);

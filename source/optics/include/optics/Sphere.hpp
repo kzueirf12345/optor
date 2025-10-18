@@ -14,17 +14,19 @@ class Sphere: public optor::OpticObj {
         Sphere(double radius);
         Sphere(double radius, const hui::Vector3d& center);
 
-        [[nodiscard]] virtual bool                      IsContainsDot(
-                                                            const hui::Vector3d& dot
-                                                        ) const noexcept override final;
-        [[nodiscard]] virtual std::optional<double>     IntersectRay(
-                                                            const hui::Vector3d& rayBegin, 
-                                                            const hui::Vector3d& rayDirection
-                                                        ) const          override final;
+        [[nodiscard]] bool IsContainsDot(const hui::Vector3d& dot) const noexcept override;
+        
+        [[nodiscard]] std::optional<Intersection> 
+            IntersectRay(const hui::Vector3d& rayBegin, const hui::Vector3d& rayDirection) const override;
 
-        [[nodiscard]] virtual hui::Vector3d GetNormal(const hui::Vector3d& dot) const override final;
+        [[nodiscard]] hui::Vector3d GetNormal(const hui::Vector3d& dot) const override;
 
-        [[nodiscard]] hui::Vector3d GetCenter() const noexcept;
+        [[nodiscard]] const hui::Vector3d& GetCenter()  const noexcept;
+        [[nodiscard]] double               GetRadius()  const noexcept;
+        [[nodiscard]] double               GetRadius2() const noexcept;
+
+        void SetCenter(const hui::Vector3d& center);
+        void SetRadius(double radius);
 
     protected:
         hui::Vector3d center_;
