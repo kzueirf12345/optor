@@ -12,13 +12,20 @@
 #include "global/Global.hpp"
 #include "widgets/WidgetChildable.hpp"
 #include "widgets/WidgetManager.hpp"
-#include "optics/Sphere.hpp"
+#include "optics/Sphere.hpp" 
+#include "optics/Plane.hpp"
 
-const optor::Material LIGHT         ({1, 1, 1},          {0, 0, 0},       {0, 0, 0},        0,     0,   0,   0);
-const optor::Material IVORY         ({0.1, 0.1, 0.1},    {0.4, 0.4, 0.3}, {1.0, 1.0, 1.0}, 50.0,   0.1, 1.0, 0.0);
-const optor::Material GLASS         ({0.05, 0.05, 0.05}, {0.6, 0.7, 0.8}, {1.0, 1.0, 1.0}, 125.0,  0.1, 1.5, 0.8);
-const optor::Material RED_RUBBER    ({0.05, 0.01, 0.01}, {0.3, 0.1, 0.1}, {0.3, 0.3, 0.3}, 10.0,   0.0, 1.0, 0.0);
-const optor::Material MIRROR        ({0.05, 0.05, 0.05}, {1.0, 1.0, 1.0}, {1.0, 1.0, 1.0}, 1425.0, 0.8, 1.0, 0.0);
+const optor::Material LIGHT          ({1, 1, 1},          {0, 0, 0},       {0, 0, 0},          0,      0,   0,   0);
+const optor::Material IVORY          ({0.1, 0.1, 0.1},    {0.4, 0.4, 0.3}, {1.0, 1.0, 1.0},    50.0,   0.1, 1.0, 0.0);
+const optor::Material GLASS          ({0.05, 0.05, 0.05}, {0.6, 0.7, 0.8}, {1.0, 1.0, 1.0},    125.0,  0.1, 1.5, 0.8);
+const optor::Material RED_RUBBER     ({0.05, 0.01, 0.01}, {0.3, 0.1, 0.1}, {0.3, 0.3, 0.3},    10.0,   0.0, 1.0, 0.0);
+const optor::Material MIRROR         ({0.05, 0.05, 0.05}, {1.0, 1.0, 1.0}, {1.0, 1.0, 1.0},    1425.0, 0.8, 1.0, 0.0);
+const optor::Material WOOD           ({0.05, 0.03, 0.01}, {0.4, 0.25, 0.1},{0.2, 0.2, 0.2},    25.0,   0.0, 1.0, 0.0);
+const optor::Material STEEL          ({0.1, 0.1, 0.1},    {0.5, 0.5, 0.5}, {0.7, 0.7, 0.7},    200.0,  0.6, 1.0, 0.0);
+const optor::Material PLASTIC        ({0.02, 0.02, 0.02}, {0.3, 0.3, 0.3}, {0.1, 0.1, 0.1},    15.0,   0.0, 1.0, 0.0);
+const optor::Material FABRIC         ({0.03, 0.02, 0.02}, {0.4, 0.2, 0.2}, {0.05, 0.05, 0.05}, 5.0,    0.0, 1.0, 0.0);
+const optor::Material MATTE_GLASS    ({0.05, 0.05, 0.05}, {0.5, 0.5, 0.55},{0.3, 0.3, 0.3},    50.0,   0.1, 1.3, 0.5);
+
 
 int main() {
 
@@ -78,6 +85,15 @@ int main() {
     ERROR_HANDLE([light1](){light1->SetMaterial(LIGHT);});
     ERROR_HANDLE([light2](){light2->SetMaterial(LIGHT);});
     ERROR_HANDLE([light3](){light3->SetMaterial(LIGHT);});
+
+    auto* floorPlane = dynamic_cast<optor::Plane*>(ERROR_HANDLE([sceneWidget](){
+        return sceneWidget->AddObj(std::make_unique<optor::Plane>(
+            hui::Vector3d(0, -4, 0),
+            hui::Vector3d(0, 1, 0)
+        ));
+    }));
+
+    ERROR_HANDLE([floorPlane](){ floorPlane->SetMaterial(WOOD); }); 
 
     while (ERROR_HANDLE(&hui::Window::isOpen, window)) {
 

@@ -14,10 +14,6 @@ optor::Sphere::Sphere(double radius, const hui::Vector3d& center)
         radius2_{radius * radius}
 {}
 
-bool optor::Sphere::IsContainsDot(const hui::Vector3d& dot) const noexcept {
-    return dot.Len2() <= radius2_;
-}
-
 std::optional<optor::OpticObj::Intersection> 
 optor::Sphere::IntersectRay(const hui::Vector3d& rayBegin, const hui::Vector3d& rayDirection) const 
 {
@@ -47,11 +43,6 @@ optor::Sphere::IntersectRay(const hui::Vector3d& rayBegin, const hui::Vector3d& 
     hui::Vector3d normal = !(point - center_);
     
     return Intersection{t, point, normal, this};
-}
-
-
-hui::Vector3d optor::Sphere::GetNormal(const hui::Vector3d& dot) const {
-    return !(dot - center_);
 }
 
 const hui::Vector3d& optor::Sphere::GetCenter()  const noexcept {return center_;}

@@ -22,12 +22,8 @@ class OpticObj {
         OpticObj() = default;
         virtual ~OpticObj() = default;
         
-        [[nodiscard]] virtual bool IsContainsDot(const hui::Vector3d& dot) const noexcept = 0;
-        
         [[nodiscard]] virtual std::optional<Intersection> 
             IntersectRay(const hui::Vector3d& rayBegin,const hui::Vector3d& rayDirection) const = 0;
-
-        [[nodiscard]] virtual hui::Vector3d GetNormal(const hui::Vector3d& dot) const = 0;
 
         [[nodiscard]] const Material& GetMaterial() const noexcept { return material_; }
         void SetMaterial(const Material& material) { material_ = material; }
