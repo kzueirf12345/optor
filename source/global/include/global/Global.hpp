@@ -53,6 +53,7 @@ static const hui::Color White(0xff, 0xff, 0xff, 0xff);
 
 }
 
+static constexpr inline double EPSILON = 1e-8;
 
 static constexpr inline double PROGRAM_WIDTH  = 1400;
 static constexpr inline double PROGRAM_HEIGHT = 900;

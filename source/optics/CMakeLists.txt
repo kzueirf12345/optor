@@ -5,6 +5,7 @@ add_library(optics STATIC
     source/Sphere.cpp
     source/Material.cpp
     source/Plane.cpp
+    source/Triangle.cpp
 )
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")

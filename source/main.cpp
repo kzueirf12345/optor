@@ -14,6 +14,7 @@
 #include "widgets/WidgetManager.hpp"
 #include "optics/Sphere.hpp" 
 #include "optics/Plane.hpp"
+#include "optics/Triangle.hpp"
 
 const optor::Material LIGHT          ({1, 1, 1},          {0, 0, 0},       {0, 0, 0},          0,      0,   0,   0);
 const optor::Material IVORY          ({0.1, 0.1, 0.1},    {0.4, 0.4, 0.3}, {1.0, 1.0, 1.0},    50.0,   0.1, 1.0, 0.0);
@@ -25,7 +26,6 @@ const optor::Material STEEL          ({0.1, 0.1, 0.1},    {0.5, 0.5, 0.5}, {0.7,
 const optor::Material PLASTIC        ({0.02, 0.02, 0.02}, {0.3, 0.3, 0.3}, {0.1, 0.1, 0.1},    15.0,   0.0, 1.0, 0.0);
 const optor::Material FABRIC         ({0.03, 0.02, 0.02}, {0.4, 0.2, 0.2}, {0.05, 0.05, 0.05}, 5.0,    0.0, 1.0, 0.0);
 const optor::Material MATTE_GLASS    ({0.05, 0.05, 0.05}, {0.5, 0.5, 0.55},{0.3, 0.3, 0.3},    50.0,   0.1, 1.3, 0.5);
-
 
 int main() {
 
@@ -94,6 +94,17 @@ int main() {
     }));
 
     ERROR_HANDLE([floorPlane](){ floorPlane->SetMaterial(WOOD); }); 
+
+    auto* triangle = dynamic_cast<optor::Triangle*>(ERROR_HANDLE([sceneWidget](){
+        return sceneWidget->AddObj(std::make_unique<optor::Triangle>(
+            hui::Vector3d(5, -1, 12),   // v0
+            hui::Vector3d(8, -1, 12),   // v1
+            hui::Vector3d(14, 5, 16)   // v2
+        ));
+    }));
+
+    ERROR_HANDLE([triangle](){ triangle->SetMaterial(STEEL); });
+
 
     while (ERROR_HANDLE(&hui::Window::isOpen, window)) {
 
