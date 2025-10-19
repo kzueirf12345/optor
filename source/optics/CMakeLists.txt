@@ -8,6 +8,7 @@ add_library(optics STATIC
     source/Triangle.cpp
     source/OpticObj.cpp
     source/TriangleMesh.cpp
+    source/FinitPlane.cpp
 )
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")

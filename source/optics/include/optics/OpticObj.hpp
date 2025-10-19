@@ -26,8 +26,8 @@ class OpticObj {
         [[nodiscard]] virtual std::optional<Intersection> 
             IntersectRay(const hui::Vector3d& rayBegin,const hui::Vector3d& rayDirection) const = 0;
 
-        [[nodiscard]] const Material& GetMaterial() const noexcept { return material_; }
-        void SetMaterial(const Material& material) { material_ = material; }
+        [[nodiscard]] virtual const Material& GetMaterial() const noexcept { return material_; }
+        virtual void SetMaterial(const Material& material) { material_ = material; }
 
     protected:
         optor::Material material_;
