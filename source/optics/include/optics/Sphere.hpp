@@ -4,6 +4,7 @@
 #include <optional>
 
 #include "hui/Vector.hpp"
+#include "optics/Material.hpp"
 #include "optics/OpticObj.hpp"
 
 namespace optor 
@@ -13,6 +14,7 @@ class Sphere: public optor::OpticObj {
     public:
         Sphere(double radius);
         Sphere(double radius, const hui::Vector3d& center);
+        Sphere(double radius, const hui::Vector3d& center, const Material& material);
         
         [[nodiscard]] std::optional<Intersection> 
             IntersectRay(const hui::Vector3d& rayBegin, const hui::Vector3d& rayDirection) const override;

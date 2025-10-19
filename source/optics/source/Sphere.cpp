@@ -3,6 +3,7 @@
 
 #include "optics/Sphere.hpp"
 #include "hui/Vector.hpp"
+#include "optics/OpticObj.hpp"
 
 optor::Sphere::Sphere(double radius)
     :   optor::Sphere::Sphere(radius, {0, 0, 0})
@@ -10,6 +11,13 @@ optor::Sphere::Sphere(double radius)
 
 optor::Sphere::Sphere(double radius, const hui::Vector3d& center)
     :   radius_{radius},
+        center_{center},
+        radius2_{radius * radius}
+{}
+
+optor::Sphere::Sphere(double radius, const hui::Vector3d& center, const Material& material)
+    :   optor::OpticObj(material),
+        radius_{radius},
         center_{center},
         radius2_{radius * radius}
 {}

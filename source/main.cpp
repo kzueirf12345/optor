@@ -15,6 +15,7 @@
 #include "optics/Sphere.hpp" 
 #include "optics/Plane.hpp"
 #include "optics/Triangle.hpp"
+#include "optics/TriangleMesh.hpp"
 
 const optor::Material LIGHT          ({1, 1, 1},          {0, 0, 0},       {0, 0, 0},          0,      0,   0,   0);
 const optor::Material IVORY          ({0.1, 0.1, 0.1},    {0.4, 0.4, 0.3}, {1.0, 1.0, 1.0},    50.0,   0.1, 1.0, 0.0);
@@ -51,59 +52,56 @@ int main() {
     ERROR_HANDLE(&optor::Widget::SetPosition, sceneWidget, hui::Vector2d(100, 100));
 
     auto* sphere1 = dynamic_cast<optor::Sphere*>(ERROR_HANDLE([sceneWidget](){
-        return sceneWidget->AddObj(std::make_unique<optor::Sphere>(2, hui::Vector3d(-3, 0, 16)));
+        return sceneWidget->AddObj(std::make_unique<optor::Sphere>(2, hui::Vector3d(-3, 0, 16), IVORY));
     }));
 
     auto* sphere2 = dynamic_cast<optor::Sphere*>(ERROR_HANDLE([sceneWidget](){
-        return sceneWidget->AddObj(std::make_unique<optor::Sphere>(2, hui::Vector3d(-1, -1.5, 12)));
+        return sceneWidget->AddObj(std::make_unique<optor::Sphere>(2, hui::Vector3d(-1, -1.5, 12), GLASS));
     }));
 
     auto* sphere3 = dynamic_cast<optor::Sphere*>(ERROR_HANDLE([sceneWidget](){
-        return sceneWidget->AddObj(std::make_unique<optor::Sphere>(3, hui::Vector3d(1.5, -0.5, 18)));
+        return sceneWidget->AddObj(std::make_unique<optor::Sphere>(3, hui::Vector3d(1.5, -0.5, 18), RED_RUBBER));
     }));
 
     auto* sphere4 = dynamic_cast<optor::Sphere*>(ERROR_HANDLE([sceneWidget](){
-        return sceneWidget->AddObj(std::make_unique<optor::Sphere>(4, hui::Vector3d(7, 5, 18)));
+        return sceneWidget->AddObj(std::make_unique<optor::Sphere>(4, hui::Vector3d(7, 5, 18), MIRROR));
     }));
 
     auto* light1 = dynamic_cast<optor::Light*>(ERROR_HANDLE([sceneWidget](){
-        return sceneWidget->AddObj(std::make_unique<optor::Light>(1, hui::Vector3d(-20, 20, -20), optor::color::White.GetNormalized(), 1));
+        return sceneWidget->AddObj(std::make_unique<optor::Light>(1, hui::Vector3d(-20, 20, -20), LIGHT, optor::color::White.GetNormalized()));
     }));
 
     auto* light2 = dynamic_cast<optor::Light*>(ERROR_HANDLE([sceneWidget](){
-        return sceneWidget->AddObj(std::make_unique<optor::Light>(0.2, hui::Vector3d(30, 50, 25), optor::color::White.GetNormalized(), 1));
+        return sceneWidget->AddObj(std::make_unique<optor::Light>(0.2, hui::Vector3d(30, 50, 25), LIGHT, optor::color::White.GetNormalized()));
     }));
 
     auto* light3 = dynamic_cast<optor::Light*>(ERROR_HANDLE([sceneWidget](){
-        return sceneWidget->AddObj(std::make_unique<optor::Light>(0.2, hui::Vector3d(30, 20, 30), optor::color::White.GetNormalized(), 1));
+        return sceneWidget->AddObj(std::make_unique<optor::Light>(0.2, hui::Vector3d(30, 20, 30), LIGHT, optor::color::White.GetNormalized()));
     }));
-
-    ERROR_HANDLE([sphere1](){sphere1->SetMaterial(IVORY);});
-    ERROR_HANDLE([sphere2](){sphere2->SetMaterial(GLASS);});
-    ERROR_HANDLE([sphere3](){sphere3->SetMaterial(RED_RUBBER);});
-    ERROR_HANDLE([sphere4](){sphere4->SetMaterial(MIRROR);});
-    ERROR_HANDLE([light1](){light1->SetMaterial(LIGHT);});
-    ERROR_HANDLE([light2](){light2->SetMaterial(LIGHT);});
-    ERROR_HANDLE([light3](){light3->SetMaterial(LIGHT);});
 
     auto* floorPlane = dynamic_cast<optor::Plane*>(ERROR_HANDLE([sceneWidget](){
-        return sceneWidget->AddObj(std::make_unique<optor::Plane>(
-            hui::Vector3d(0, -4, 0),
-            hui::Vector3d(0, 1, 0)
-        ));
+        return sceneWidget->AddObj(std::make_unique<optor::Plane>(hui::Vector3d(0, -4, 0), hui::Vector3d(0, 1, 0), WOOD));
     }));
-
-    ERROR_HANDLE([floorPlane](){ floorPlane->SetMaterial(WOOD); }); 
 
     auto* triangle = dynamic_cast<optor::Triangle*>(ERROR_HANDLE([sceneWidget](){
         return sceneWidget->AddObj(std::make_unique<optor::Triangle>(
-            hui::Vector3d(5, -1, 12),   // v0
-            hui::Vector3d(8, -1, 12),   // v1
-            hui::Vector3d(14, 5, 16)   // v2
+            hui::Vector3d(5, -1, 12),
+            hui::Vector3d(8, -1, 12),
+            hui::Vector3d(14, 5, 16),
+            STEEL
         ));
     }));
 
-    ERROR_HANDLE([triangle](){ triangle->SetMaterial(STEEL); });
+    auto mesh = std::make_unique<optor::TriangleMesh>(FABRIC);
+
+    mesh->AddTriangle({{-2, -1, -2}, {-3, -3, -1}, {-1, -3, -1}});
+    mesh->AddTriangle({{-2, -1, -2}, {-1, -3, -1}, {-1, -3, -3}});
+    mesh->AddTriangle({{-2, -1, -2}, {-1, -3, -3}, {-3, -3, -3}});
+    mesh->AddTriangle({{-2, -1, -2}, {-3, -3, -3}, {-3, -3, -1}});
+    mesh->AddTriangle({{-3, -3, -1}, {-1, -3, -1}, {-1, -3, -3}});
+    mesh->AddTriangle({{-3, -3, -1}, {-1, -3, -3}, {-3, -3, -3}});
+
+    sceneWidget->AddObj(std::move(mesh));
 
 
     while (ERROR_HANDLE(&hui::Window::isOpen, window)) {

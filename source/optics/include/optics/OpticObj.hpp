@@ -20,6 +20,7 @@ class OpticObj {
         };
 
         OpticObj() = default;
+        explicit OpticObj(const Material& material);
         virtual ~OpticObj() = default;
         
         [[nodiscard]] virtual std::optional<Intersection> 

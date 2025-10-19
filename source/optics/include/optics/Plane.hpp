@@ -10,8 +10,8 @@ namespace optor
 
 class Plane : public OpticObj {
     public:
-        Plane() = default;
         Plane(const hui::Vector3d& point, const hui::Vector3d& normal);
+        Plane(const hui::Vector3d& point, const hui::Vector3d& normal, const Material& material);
 
         [[nodiscard]] std::optional<Intersection> 
             IntersectRay(const hui::Vector3d& rayBegin, const hui::Vector3d& rayDirection) const override;

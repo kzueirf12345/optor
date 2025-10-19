@@ -1,10 +1,17 @@
 #include <cmath>
 
 #include "global/Global.hpp"
+#include "optics/OpticObj.hpp"
 #include "optics/Triangle.hpp"
 
 optor::Triangle::Triangle(const hui::Vector3d& v0, const hui::Vector3d& v1, const hui::Vector3d& v2)
     : v0_(v0), v1_(v1), v2_(v2)
+{
+    normal_ = !((v1_ - v0_) * (v2_ - v0_));
+}
+
+optor::Triangle::Triangle(const hui::Vector3d& v0, const hui::Vector3d& v1, const hui::Vector3d& v2, const Material& material)
+    : optor::OpticObj(material), v0_(v0), v1_(v1), v2_(v2)
 {
     normal_ = !((v1_ - v0_) * (v2_ - v0_));
 }

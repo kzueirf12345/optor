@@ -3,6 +3,7 @@
 
 #include <optional>
 #include "hui/Vector.hpp"
+#include "optics/Material.hpp"
 #include "optics/OpticObj.hpp"
 
 namespace optor {
@@ -10,6 +11,7 @@ namespace optor {
 class Triangle : public OpticObj {
 public:
     Triangle(const hui::Vector3d& v0, const hui::Vector3d& v1, const hui::Vector3d& v2);
+    Triangle(const hui::Vector3d& v0, const hui::Vector3d& v1, const hui::Vector3d& v2, const Material& material);
 
     [[nodiscard]] std::optional<Intersection> 
     IntersectRay(const hui::Vector3d& rayOrigin, const hui::Vector3d& rayDir) const override;

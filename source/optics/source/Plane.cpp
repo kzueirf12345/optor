@@ -1,8 +1,13 @@
 #include "optics/Plane.hpp"
+#include "optics/OpticObj.hpp"
 #include <cmath>
 
 optor::Plane::Plane(const hui::Vector3d& point, const hui::Vector3d& normal)
     : point_{point}, normal_{!normal}
+{}
+
+optor::Plane::Plane(const hui::Vector3d& point, const hui::Vector3d& normal, const Material& material)
+    : optor::OpticObj(material), point_{point}, normal_{!normal}
 {}
 
 std::optional<optor::OpticObj::Intersection> 
