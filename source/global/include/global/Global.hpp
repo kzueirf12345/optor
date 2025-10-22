@@ -3,6 +3,7 @@
 
 #include "hui/Color.hpp"
 #include "hui/Event.hpp"
+#include "optics/Material.hpp"
 
 namespace optor 
 {
@@ -22,7 +23,6 @@ namespace color
 
     static const hui::Color TextPrimary(0xc0, 0xca, 0xf5);
     
-    // Базовые цвета в стиле Tokyo Night
     static const hui::Color Red(0xf7, 0x76, 0x8e);
     static const hui::Color Green(0x9e, 0xce, 0x6a);
     static const hui::Color Blue(0x7a, 0xa2, 0xf7);
@@ -32,13 +32,11 @@ namespace color
     static const hui::Color Orange(0xff, 0x9e, 0x64);
     static const hui::Color Pink(0xf5, 0x76, 0xc0);
     
-    // Дополнительные оттенки
     static const hui::Color GrayLight(0x56, 0x5a, 0x89);
     static const hui::Color Gray(0x41, 0x42, 0x5a);
     static const hui::Color GrayDark(0x1a, 0x1b, 0x26);
     static const hui::Color Black(0x16, 0x17, 0x20);
     
-    // Семантические цвета
     static const hui::Color Success(0x9e, 0xce, 0x6a);
     static const hui::Color Warning(0xe0, 0xaf, 0x68);
     static const hui::Color Error(0xf7, 0x76, 0x8e);
@@ -51,6 +49,20 @@ namespace color
 static const hui::Color Transparent(0x0, 0x0, 0x0, 0x0);
 static const hui::Color White(0xff, 0xff, 0xff, 0xff);
 
+}
+
+namespace materials 
+{
+    const optor::Material LIGHT          ({1, 1, 1},          {0, 0, 0},       {0, 0, 0},          0,      0,   0,   0);
+    const optor::Material IVORY          ({0.1, 0.1, 0.1},    {0.4, 0.4, 0.3}, {1.0, 1.0, 1.0},    50.0,   0.1, 1.0, 0.0);
+    const optor::Material GLASS          ({0.05, 0.05, 0.05}, {0.6, 0.7, 0.8}, {1.0, 1.0, 1.0},    125.0,  0.1, 1.5, 0.8);
+    const optor::Material RED_RUBBER     ({0.05, 0.01, 0.01}, {0.3, 0.1, 0.1}, {0.3, 0.3, 0.3},    10.0,   0.0, 1.0, 0.0);
+    const optor::Material MIRROR         ({0.05, 0.05, 0.05}, {1.0, 1.0, 1.0}, {1.0, 1.0, 1.0},    1425.0, 0.8, 1.0, 0.0);
+    const optor::Material WOOD           ({0.05, 0.03, 0.01}, {0.4, 0.25, 0.1},{0.2, 0.2, 0.2},    25.0,   0.0, 1.0, 0.0);
+    const optor::Material STEEL          ({0.1, 0.1, 0.1},    {0.5, 0.5, 0.5}, {0.7, 0.7, 0.7},    200.0,  0.6, 1.0, 0.0);
+    const optor::Material PLASTIC        ({0.02, 0.02, 0.02}, {0.3, 0.3, 0.3}, {0.1, 0.1, 0.1},    15.0,   0.0, 1.0, 0.0);
+    const optor::Material FABRIC         ({0.03, 0.02, 0.02}, {0.4, 0.2, 0.2}, {0.05, 0.05, 0.05}, 5.0,    0.0, 1.0, 0.0);
+    const optor::Material MATTE_GLASS    ({0.05, 0.05, 0.05}, {0.5, 0.5, 0.55},{0.3, 0.3, 0.3},    50.0,   0.1, 1.3, 0.5);
 }
 
 static constexpr inline double EPSILON = 1e-8;

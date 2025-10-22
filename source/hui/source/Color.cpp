@@ -140,24 +140,8 @@ Color& Color::operator/=(float scalar) noexcept {
     return *this;
 }
 
-Color Color::Blend(const Color& other) const noexcept {
-    if (alpha_ == 0) return other;
-    if (other.alpha_ == 0) return *this;
-    
-    double alpha1 = alpha_ / 255.0;
-    double alpha2 = other.alpha_ / 255.0;
-    double alpha = alpha1 + alpha2 * (1.0 - alpha1);
-    
-    return Color(
-        static_cast<uint8_t>((red_ * alpha1 + other.red_ * alpha2 * (1.0 - alpha1)) / alpha),
-        static_cast<uint8_t>((green_ * alpha1 + other.green_ * alpha2 * (1.0 - alpha1)) / alpha),
-        static_cast<uint8_t>((blue_ * alpha1 + other.blue_ * alpha2 * (1.0 - alpha1)) / alpha),
-        static_cast<uint8_t>(alpha * 255)
-    );
-}
-
 Color operator*(float scalar, const Color& color) noexcept {
     return color * scalar;
 }
 
-} // namespace hui
+}

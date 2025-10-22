@@ -41,29 +41,23 @@ class Color {
         void SetAlpha(uint8_t alpha) noexcept;
         void SetInt(uint32_t color) noexcept;
 
-        // Операторы сравнения
         bool operator==(const Color& other) const noexcept;
         bool operator!=(const Color& other) const noexcept;
 
-        // Арифметические операторы
         Color operator+(const Color& other) const noexcept;
         Color operator-(const Color& other) const noexcept;
         Color operator*(float scalar) const noexcept;
         Color operator/(float scalar) const noexcept;
 
-        // Составные операторы присваивания
         Color& operator+=(const Color& other) noexcept;
         Color& operator-=(const Color& other) noexcept;
         Color& operator*=(float scalar) noexcept;
         Color& operator/=(float scalar) noexcept;
 
-        // Дополнительные методы
-        Color Blend(const Color& other) const noexcept;
 };
 
-// Внешний оператор умножения
 Color operator*(float scalar, const Color& color) noexcept;
 
-} // namespace hui
+}
 
 #endif /*OPTOR_SOURCE_HUI_INCLUDE_HUI_COLOR_HPP*/
