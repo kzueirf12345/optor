@@ -4,6 +4,7 @@
 #include <optional>
 
 #include "hui/Vector.hpp"
+#include "optics/Material.hpp"
 #include "optics/OpticObj.hpp"
 
 namespace optor 
@@ -13,18 +14,18 @@ class Sphere: public optor::OpticObj {
     public:
         Sphere(double radius);
         Sphere(double radius, const hui::Vector3d& center);
+        Sphere(double radius, const hui::Vector3d& center, const Material& material);
+        
+        [[nodiscard]] std::optional<Intersection> 
+            IntersectRay(const hui::Vector3d& rayBegin, const hui::Vector3d& rayDirection) const override;
 
-        [[nodiscard]] virtual bool                      IsContainsDot(
-                                                            const hui::Vector3d& dot
-                                                        ) const noexcept override final;
-        [[nodiscard]] virtual std::optional<double>     IntersectRay(
-                                                            const hui::Vector3d& rayBegin, 
-                                                            const hui::Vector3d& rayDirection
-                                                        ) const          override final;
 
-        [[nodiscard]] virtual hui::Vector3d GetNormal(const hui::Vector3d& dot) const override final;
+        [[nodiscard]] const hui::Vector3d& GetCenter()  const noexcept;
+        [[nodiscard]] double               GetRadius()  const noexcept;
+        [[nodiscard]] double               GetRadius2() const noexcept;
 
-        [[nodiscard]] hui::Vector3d GetCenter() const noexcept;
+        void SetCenter(const hui::Vector3d& center);
+        void SetRadius(double radius);
 
     protected:
         hui::Vector3d center_;

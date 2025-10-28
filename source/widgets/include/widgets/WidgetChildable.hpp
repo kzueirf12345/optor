@@ -12,7 +12,7 @@ namespace optor
 
 class WidgetChildable: public Widget {
     public:
-        explicit WidgetChildable(hui::RectangleShape rect, optor::WidgetsState* state);
+        WidgetChildable(hui::RectangleShape rect, optor::WidgetsState* state);
 
         WidgetChildable           (const WidgetChildable&) = delete;
         WidgetChildable& operator=(const WidgetChildable&) = delete;

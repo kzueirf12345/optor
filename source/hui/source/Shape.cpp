@@ -39,6 +39,22 @@ void* hui::Shape::GetImpl() noexcept {
 }
 
 
+uint32_t hui::Shape::GetFillColor() const noexcept {
+    sf::Color color = ERROR_HANDLE(
+        &sf::Shape::getFillColor, 
+        *static_cast<const hui::ShapeImpl*>(GetImpl())
+    );
+
+    return color.toInteger();
+}
+
+double hui::Shape::GetOutlineThinkness() const noexcept {
+    return ERROR_HANDLE(
+        &sf::Shape::getOutlineThickness, 
+        *static_cast<const hui::ShapeImpl*>(GetImpl())
+    );
+}
+
 void hui::Shape::SetFillColor       (const hui::Color& color) {
     ERROR_HANDLE(
         &sf::Shape::setFillColor, 

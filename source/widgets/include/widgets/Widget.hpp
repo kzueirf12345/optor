@@ -11,9 +11,9 @@
 namespace optor 
 {
 
-    class Widget {
+class Widget {
     public:
-        explicit Widget(hui::RectangleShape rect, optor::WidgetsState* state);
+        Widget(hui::RectangleShape rect, optor::WidgetsState* state);
 
         virtual ~Widget() = default;
 

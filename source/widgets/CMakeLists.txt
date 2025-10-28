@@ -3,6 +3,9 @@ add_library(widgets STATIC
     source/WidgetChildable.cpp
     source/SceneWidget.cpp
     source/WidgetManager.cpp
+    source/WidgetButton.cpp
+    source/WidgetButtonCamera.cpp
+    source/WidgetButtonText.cpp
 )
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")

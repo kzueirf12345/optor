@@ -3,7 +3,7 @@
 
 #include "hui/Vector.hpp"
 
-namespace optor 
+namespace optor
 {
 
 enum class MoveDirection {

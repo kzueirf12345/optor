@@ -3,45 +3,34 @@
 
 #include <optional>
 
-#include "hui/Color.hpp"
 #include "hui/Vector.hpp"
+#include "optics/Material.hpp"
 
 namespace optor 
 {
 
+
 class OpticObj {
     public:
-        OpticObj();
+        struct Intersection {
+            double distance;
+            hui::Vector3d point;
+            hui::Vector3d normal;
+            const OpticObj* object;
+        };
+
+        OpticObj() = default;
+        explicit OpticObj(const Material& material);
         virtual ~OpticObj() = default;
         
-        [[nodiscard]] virtual bool                      IsContainsDot(
-                                                            const hui::Vector3d& dot
-                                                        ) const noexcept = 0;
-        [[nodiscard]] virtual std::optional<double>     IntersectRay(
-                                                            const hui::Vector3d& rayBegin, 
-                                                            const hui::Vector3d& rayDirection
-                                                        ) const          = 0;
+        [[nodiscard]] virtual std::optional<Intersection> 
+            IntersectRay(const hui::Vector3d& rayBegin,const hui::Vector3d& rayDirection) const = 0;
 
-        [[nodiscard]] virtual hui::Vector3d GetNormal(const hui::Vector3d& dot) const = 0;
-
-        [[nodiscard]] hui::Color GetAmbientColor() const noexcept;
-        [[nodiscard]] hui::Color GetDiffColor()    const noexcept;
-        [[nodiscard]] hui::Color GetSpecColor()    const noexcept;
-        [[nodiscard]] double     GetShininess()    const noexcept;
-        [[nodiscard]] double     GetReflection()   const noexcept;
-
-        void SetAmbientColor(const hui::Color& color);
-        void SetDiffColor   (const hui::Color& color);
-        void SetSpecColor   (const hui::Color& color);
-        void SetShininess   (const double      shininess);
-        void SetReflection  (const double      reflection);
+        [[nodiscard]] virtual const Material& GetMaterial() const noexcept { return material_; }
+        virtual void SetMaterial(const Material& material) { material_ = material; }
 
     protected:
-        hui::Vector3d ambientColor_;
-        hui::Vector3d diffColor_;
-        hui::Vector3d specColor_;
-        double shininess_;
-        double reflection_;
+        optor::Material material_;
 
     private:
 };

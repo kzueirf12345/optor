@@ -23,10 +23,9 @@ class Scene: public hui::Textured {
 
         [[nodiscard]] const optor::Camera& GetCamera() const noexcept;
         [[nodiscard]]       optor::Camera& GetCamera()       noexcept;
+        [[nodiscard]] optor::MoveDirection GetMoveDir() const noexcept;
 
         void SetMoveDir(optor::MoveDirection moveDir);
-
-        [[nodiscard]] optor::MoveDirection GetMoveDir() const noexcept;
 
     private:
         std::vector<std::unique_ptr<optor::OpticObj>> objs_;
@@ -36,10 +35,23 @@ class Scene: public hui::Textured {
 
         optor::MoveDirection moveDir_;
 
-        std::optional<hui::Color> TraceRay(const hui::Vector3d rayDir, const optor::OpticObj* obj, 
-                                           double* dist);
-        bool                      IsEclipse(const optor::OpticObj* obj, const optor::Light* light,
-                                            const hui::Vector3d& intersectPoint);
+        int maxRecursionDepth_; 
+        hui::Vector3d bgColor_;
+        
+        hui::Vector3d TraceRay(const hui::Vector3d& origin, const hui::Vector3d& direction, int depth = 0) const;
+
+        std::optional<optor::OpticObj::Intersection> 
+        FindClosestIntersection(const hui::Vector3d& origin, const hui::Vector3d& direction) const;
+
+        hui::Vector3d CalculateLighting(const optor::OpticObj::Intersection& intersection, 
+                                        const hui::Vector3d& rayOrigin, int depth = 0) const;
+
+        bool IsInShadow(const hui::Vector3d& point, const hui::Vector3d& lightDir, double lightDistance, const optor::OpticObj* obj) const;
+
+        hui::Vector3d Reflect(const hui::Vector3d& incident, const hui::Vector3d& normal) const;
+        std::optional<hui::Vector3d> Refract(const hui::Vector3d& incident, 
+                                             const hui::Vector3d& normal, 
+                                             double eta) const;
 };
 
 }

@@ -1,3 +1,4 @@
+#include <SFML/Graphics/Image.hpp>
 #include <memory>
 #include <cassert>
 
@@ -41,6 +42,7 @@ const void* hui::Texture::GetImpl() const noexcept {
 void* hui::Texture::GetImpl() noexcept {
     return impl_.get();
 }
+
 
 void hui::Texture::Update(const std::vector<uint32_t>& pixels) {
     auto* const impl = static_cast<hui::TextureImpl*>(GetImpl());
