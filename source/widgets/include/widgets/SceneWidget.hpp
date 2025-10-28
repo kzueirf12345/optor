@@ -22,6 +22,9 @@ class SceneWidget: public optor::Widget {
         virtual void OnIdle() override final;
 
         optor::OpticObj* AddObj(std::unique_ptr<optor::OpticObj> obj);
+
+        [[nodiscard]] const optor::Camera& GetCamera() const noexcept;
+        [[nodiscard]]       optor::Camera& GetCamera()       noexcept;
         
     protected:
         optor::Scene scene_;

@@ -178,3 +178,6 @@ optor::OpticObj* optor::SceneWidget::AddObj(std::unique_ptr<optor::OpticObj> obj
     auto* objPtr = ERROR_HANDLE(&optor::Scene::AddObj, &scene_, std::move(obj));
     return objPtr;
 }
+
+const optor::Camera& optor::SceneWidget::GetCamera() const noexcept { return scene_.GetCamera(); }
+      optor::Camera& optor::SceneWidget::GetCamera()       noexcept { return scene_.GetCamera(); }

@@ -1,5 +1,7 @@
-#include "hui/Color.hpp"
 #include <algorithm>
+
+#include "common/ErrorHandler.hpp"
+#include "hui/Color.hpp"
 
 namespace hui 
 {
@@ -15,6 +17,14 @@ Color::Color(const hui::Vector3d& normalizedColor, uint8_t alpha)
     red_ = static_cast<uint8_t>(normalizedColor.x * 255);
     green_ = static_cast<uint8_t>(normalizedColor.y * 255);
     blue_ = static_cast<uint8_t>(normalizedColor.z * 255);
+}
+
+Color::Color(uint32_t color)
+    : Color::Color()
+{
+    ERROR_HANDLE([this, color](){
+        Color::SetInt(color);
+    });
 }
 
 Color::~Color() = default;
@@ -66,9 +76,9 @@ void Color::SetBlue(uint8_t blue) noexcept { blue_ = blue; }
 void Color::SetAlpha(uint8_t alpha) noexcept { alpha_ = alpha; }
 
 void Color::SetInt(uint32_t color) noexcept {
-    red_ = static_cast<uint8_t>((color >> 24) & 0xFF);
+    red_   = static_cast<uint8_t>((color >> 24) & 0xFF);
     green_ = static_cast<uint8_t>((color >> 16) & 0xFF);
-    blue_ = static_cast<uint8_t>((color >> 8) & 0xFF);
+    blue_  = static_cast<uint8_t>((color >> 8) & 0xFF);
     alpha_ = static_cast<uint8_t>(color & 0xFF);
 }
 

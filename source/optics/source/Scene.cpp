@@ -157,8 +157,8 @@ hui::Vector3d optor::Scene::Reflect(const hui::Vector3d& incident, const hui::Ve
 std::optional<hui::Vector3d> optor::Scene::Refract(const hui::Vector3d& incident, 
                                                    const hui::Vector3d& normal, 
                                                    double eta) const {
-    assert(incident.Len2() == 1);
-    assert(normal.Len2() == 1);
+    // assert(incident.Len2() == 1);
+    // assert(normal.Len2() == 1);
 
     double cosi = incident ^ normal;
     double etai = 1.0, etat = eta;

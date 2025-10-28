@@ -22,6 +22,8 @@ class Shape: public hui::Drawable, public hui::Transformable {
         Shape           (Shape&& other) noexcept;
         Shape& operator=(Shape&& other) noexcept;
 
+        [[nodiscard]] uint32_t GetFillColor() const noexcept;
+
         void SetFillColor       (const hui::Color& color);
         void SetOutlineColor    (const hui::Color& color);
         void SetOutlineThickness(double thickness);

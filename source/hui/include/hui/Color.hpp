@@ -19,6 +19,7 @@ class Color {
         Color();
         Color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255);
         explicit Color(const hui::Vector3d& normalizedColor, uint8_t alpha = 255);
+        explicit Color(uint32_t color);
         ~Color();
 
         Color(const Color& other);
