@@ -12,6 +12,7 @@
 #include "widgets/Widget.hpp"
 #include "global/Global.hpp"
 #include "widgets/WidgetButton.hpp"
+#include "widgets/WidgetButtonText.hpp"
 #include "widgets/WidgetChildable.hpp"
 #include "widgets/WidgetManager.hpp"
 #include "optics/Sphere.hpp" 
@@ -43,6 +44,7 @@ int main() {
     });
 
     ERROR_HANDLE(CreateScene, &manager);
+
     
     while (ERROR_HANDLE(&hui::Window::isOpen, window)) {
 
@@ -72,6 +74,7 @@ void CreateScene(optor::WidgetManager* manager) {
 
     ERROR_HANDLE(&optor::Widget::SetPosition, sceneWidget, hui::Vector2d(100, 100));
 
+
     auto* cameraButtons = dynamic_cast<optor::WidgetChildable*>(ERROR_HANDLE(
         &optor::WidgetChildable::AddChild, 
         manager->GetDesktop(), 
@@ -83,12 +86,25 @@ void CreateScene(optor::WidgetManager* manager) {
 
     ERROR_HANDLE(&optor::Widget::SetPosition, cameraButtons, hui::Vector2d(1350, 50));
 
+    // auto* tempTextButton = dynamic_cast<optor::WidgetButtonText*>(ERROR_HANDLE(
+    //     &optor::WidgetChildable::AddChild, 
+    //     cameraButtons, 
+    //     std::make_unique<optor::WidgetButtonText>(
+    //         hui::RectangleShape({100, 100}),
+    //         manager->GetState(),
+    //         "LOL"
+    //     )
+    // ));
+
+    // ERROR_HANDLE(&optor::Widget::SetPosition, tempTextButton, hui::Vector2d(25, 25));
+
     auto* leftButton = dynamic_cast<optor::WidgetButtonCamera*>(ERROR_HANDLE(
         &optor::WidgetChildable::AddChild, 
         cameraButtons, 
         std::make_unique<optor::WidgetButtonCamera>(
             hui::RectangleShape({200, 100}),
             manager->GetState(),
+            "left",
             &sceneWidget->GetCamera(),
             optor::MoveDirection::LEFT
         )
@@ -102,6 +118,7 @@ void CreateScene(optor::WidgetManager* manager) {
         std::make_unique<optor::WidgetButtonCamera>(
             hui::RectangleShape({200, 100}),
             manager->GetState(),
+            "right",
             &sceneWidget->GetCamera(),
             optor::MoveDirection::RIGHT
         )
@@ -115,6 +132,7 @@ void CreateScene(optor::WidgetManager* manager) {
         std::make_unique<optor::WidgetButtonCamera>(
             hui::RectangleShape({200, 100}),
             manager->GetState(),
+            "up",
             &sceneWidget->GetCamera(),
             optor::MoveDirection::UP
         )
@@ -128,6 +146,7 @@ void CreateScene(optor::WidgetManager* manager) {
         std::make_unique<optor::WidgetButtonCamera>(
             hui::RectangleShape({200, 100}),
             manager->GetState(),
+            "down",
             &sceneWidget->GetCamera(),
             optor::MoveDirection::DOWN
         )
@@ -141,6 +160,7 @@ void CreateScene(optor::WidgetManager* manager) {
         std::make_unique<optor::WidgetButtonCamera>(
             hui::RectangleShape({200, 100}),
             manager->GetState(),
+            "forward",
             &sceneWidget->GetCamera(),
             optor::MoveDirection::FORWARD
         )
@@ -154,6 +174,7 @@ void CreateScene(optor::WidgetManager* manager) {
         std::make_unique<optor::WidgetButtonCamera>(
             hui::RectangleShape({200, 100}),
             manager->GetState(),
+            "backword",
             &sceneWidget->GetCamera(),
             optor::MoveDirection::BACKWARD
         )

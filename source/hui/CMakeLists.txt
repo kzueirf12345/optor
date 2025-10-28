@@ -5,11 +5,15 @@ add_library(hui STATIC
     
     source/Drawable.cpp
     source/Transformable.cpp
+
     source/Shape.cpp
     source/RectangleShape.cpp
     source/Texture.cpp
     source/Sprite.cpp
     source/TexturedShape.cpp
+
+    source/Font.cpp
+    source/Text.cpp
     
     source/Event.cpp
     source/Renderer.cpp

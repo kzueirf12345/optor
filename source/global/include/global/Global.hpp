@@ -4,6 +4,7 @@
 #include "hui/Color.hpp"
 #include "hui/Event.hpp"
 #include "optics/Material.hpp"
+#include "hui/Font.hpp"
 
 namespace optor 
 {
@@ -83,6 +84,11 @@ static constexpr inline double CAMERA_MOVE_SPEED   = 1;
 static constexpr inline double CAMERA_ROTATE_SPEED = 0.1;
 
 static constexpr inline double GLOBAL_AMBIENT_COEF = 0.4;
+
+
+static const inline std::string FONT_PATH = "./assets/TokyoNight.ttf";
+
+static const inline hui::Font FONT(FONT_PATH);
 
 }
 

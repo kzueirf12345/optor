@@ -6,8 +6,9 @@
 #include "widgets/WidgetButton.hpp"
 
 optor::WidgetButtonCamera::WidgetButtonCamera(hui::RectangleShape rect, optor::WidgetsState* state, 
+                                              const std::string& text,
                                               optor::Camera* camera, MoveDirection dir)
-    :   optor::WidgetButton(std::move(rect), state), camera_(camera), dir_{dir}
+    :   optor::WidgetButtonText(std::move(rect), state, text), camera_(camera), dir_{dir}
 {}
 
 void optor::WidgetButtonCamera::OnIdle() {

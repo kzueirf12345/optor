@@ -1,22 +1,20 @@
 #ifndef OPTOR_SOURCE_WIDGETS_INCLUDE_WIDGETS_WIDGET_BUTTON_CAMERA_HPP
 #define OPTOR_SOURCE_WIDGETS_INCLUDE_WIDGETS_WIDGET_BUTTON_CAMERA_HPP
 
-#include "hui/Color.hpp"
 #include "optics/Camera.hpp"
-#include "widgets/WidgetButton.hpp"
+#include "widgets/WidgetButtonText.hpp"
 
 namespace optor 
 {
 
-class WidgetButtonCamera: public WidgetButton {
+class WidgetButtonCamera: public WidgetButtonText {
     public:
-        WidgetButtonCamera(hui::RectangleShape rect, optor::WidgetsState* state, 
+        WidgetButtonCamera(hui::RectangleShape rect, optor::WidgetsState* state, const std::string& text,
                            optor::Camera* camera, MoveDirection dir);
         
         virtual void OnIdle() override;
 
     private:
-
         optor::Camera* camera_;
         MoveDirection dir_;
 };
