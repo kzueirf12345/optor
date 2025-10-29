@@ -5,7 +5,7 @@
 #include "optics/Scene.hpp"
 #include "common/ErrorHandler.hpp"
 #include "global/Global.hpp"
-#include "hui/TexturedShape.hpp"
+#include "hui/Textured.hpp"
 #include "hui/Vector.hpp"
 #include "optics/Camera.hpp"
 #include "optics/Light.hpp"
