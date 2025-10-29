@@ -12,6 +12,8 @@ class WidgetOpticObjs : public WidgetChildable {
         WidgetOpticObjs(const hui::Vector2d& size, optor::WidgetsState* state, const optor::Scene& scene);
 
         void Scroll(double percentage);
+
+        virtual void Draw(hui::Renderer* renderer) override;
     private:
 
 };

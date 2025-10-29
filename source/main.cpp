@@ -1,4 +1,6 @@
+#include <chrono>
 #include <cstdlib>
+#include <ctime>
 #include <memory>
 #include <cassert>
 
@@ -11,6 +13,7 @@
 #include "widgets/ScrollBar.hpp"
 #include "widgets/Widget.hpp"
 #include "global/Global.hpp"
+#include "widgets/WidgetButtonMoveOpticObj.hpp"
 #include "widgets/WidgetChildable.hpp"
 #include "widgets/WidgetManager.hpp"
 #include "optics/Sphere.hpp" 
@@ -44,6 +47,8 @@ int main() {
 
     ERROR_HANDLE(CreateScene, &manager);
 
+    int start = clock();
+    size_t cnt = 0;
     
     while (ERROR_HANDLE(&hui::Window::isOpen, window)) {
 
@@ -54,6 +59,14 @@ int main() {
         ERROR_HANDLE(&optor::WidgetManager::Draw, &manager, &window);
 
         ERROR_HANDLE(&hui::Window::Display, &window);
+
+        ++cnt;
+
+        if ((clock() - start) / (CLOCKS_PER_SEC) > 1) {
+            std::cerr << cnt << std::endl;
+            start = clock();
+            cnt = 0;
+        }
     }
 
     return EXIT_SUCCESS;
@@ -137,6 +150,20 @@ void CreateScene(optor::WidgetManager* manager) {
     }));
 
     ERROR_HANDLE(&CreateObjsList, manager, sceneWidget);
+
+    // auto* tempMoveButton = dynamic_cast<optor::WidgetButtonMoveOpticObj*>(ERROR_HANDLE(
+    //     &optor::WidgetChildable::AddChild, 
+    //     manager->GetDesktop(), 
+    //     std::make_unique<optor::WidgetButtonMoveOpticObj>(
+    //         hui::Vector2d{200, 100},
+    //         manager->GetState(),
+    //         "btn",
+    //         plane,
+    //         optor::MoveDirection::FORWARD
+    //     )
+    // ));
+
+    // ERROR_HANDLE(&optor::Widget::SetPosition, tempMoveButton, hui::Vector2d(0, 100));
 }
 
 static void CreateCameraButtons(optor::WidgetManager* manager, optor::SceneWidget* sceneWidget) {
@@ -244,7 +271,7 @@ static void CreateObjsList(optor::WidgetManager* manager, optor::SceneWidget* sc
         &optor::WidgetChildable::AddChild, 
         manager->GetDesktop(), 
         std::make_unique<optor::WidgetOpticObjs>(
-            hui::Vector2d{800, 200},
+            hui::Vector2d{800, 400},
             manager->GetState(), 
             sceneWidget->GetScene()
         )

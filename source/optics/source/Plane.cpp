@@ -11,7 +11,7 @@ optor::Plane::Plane(const hui::Vector3d& point, const hui::Vector3d& normal, con
 {}
 
 std::optional<optor::OpticObj::Intersection> 
-optor::Plane::IntersectRay(const hui::Vector3d& rayBegin, const hui::Vector3d& rayDirection) const 
+optor::Plane::IntersectRay(const hui::Vector3d& rayBegin, const hui::Vector3d& rayDirection)
 {
     const double denom = normal_ ^ rayDirection;
 

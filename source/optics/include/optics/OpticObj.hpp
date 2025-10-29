@@ -16,7 +16,7 @@ class OpticObj {
             double distance;
             hui::Vector3d point;
             hui::Vector3d normal;
-            const OpticObj* object;
+            OpticObj* object;
         };
 
         OpticObj() = default;
@@ -24,10 +24,12 @@ class OpticObj {
         virtual ~OpticObj() = default;
         
         [[nodiscard]] virtual std::optional<Intersection> 
-            IntersectRay(const hui::Vector3d& rayBegin,const hui::Vector3d& rayDirection) const = 0;
+            IntersectRay(const hui::Vector3d& rayBegin,const hui::Vector3d& rayDirection) = 0;
 
         [[nodiscard]] virtual const Material& GetMaterial() const noexcept { return material_; }
         virtual void SetMaterial(const Material& material) { material_ = material; }
+
+        virtual void Move(const hui::Vector3d& offset) = 0;
 
     protected:
         optor::Material material_;

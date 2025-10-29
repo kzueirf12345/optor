@@ -14,7 +14,7 @@ class Plane : public OpticObj {
         Plane(const hui::Vector3d& point, const hui::Vector3d& normal, const Material& material);
 
         [[nodiscard]] std::optional<Intersection> 
-            IntersectRay(const hui::Vector3d& rayBegin, const hui::Vector3d& rayDirection) const override;
+            IntersectRay(const hui::Vector3d& rayBegin, const hui::Vector3d& rayDirection) override;
 
         [[nodiscard]] const hui::Vector3d& GetPoint()  const noexcept;
         [[nodiscard]] const hui::Vector3d& GetNormal() const noexcept;

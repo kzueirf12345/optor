@@ -17,7 +17,7 @@ optor::Triangle::Triangle(const hui::Vector3d& v0, const hui::Vector3d& v1, cons
 }
 
 std::optional<optor::OpticObj::Intersection> 
-optor::Triangle::IntersectRay(const hui::Vector3d& rayOrigin, const hui::Vector3d& rayDirection) const 
+optor::Triangle::IntersectRay(const hui::Vector3d& rayOrigin, const hui::Vector3d& rayDirection) 
 {
     hui::Vector3d edgeA = v1_ - v0_;
     hui::Vector3d edgeB = v2_ - v0_;
@@ -54,3 +54,8 @@ const hui::Vector3d& optor::Triangle::GetNormal() const noexcept {
     return normal_;
 }
 
+void optor::Triangle::Move(const hui::Vector3d& offset) {
+    v0_ += offset;
+    v1_ += offset;
+    v2_ += offset;
+}

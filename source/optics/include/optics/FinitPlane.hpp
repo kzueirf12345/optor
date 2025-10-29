@@ -16,7 +16,7 @@ class FinitPlane final : public OpticObj {
                    const Material& material);
 
         [[nodiscard]] std::optional<Intersection> 
-            IntersectRay(const hui::Vector3d& rayOrigin,const hui::Vector3d& rayDir) const override;
+            IntersectRay(const hui::Vector3d& rayOrigin,const hui::Vector3d& rayDir) override;
 
         [[nodiscard]] hui::Vector3d GetCenter() const noexcept;
         [[nodiscard]] hui::Vector3d GetNormal() const noexcept;
@@ -28,6 +28,8 @@ class FinitPlane final : public OpticObj {
         void SetNormal  (const hui::Vector3d& normal);
         void SetSize    (const hui::Vector2d& size_);
         virtual void SetMaterial(const Material& material) override;
+
+        virtual void Move(const hui::Vector3d& offset) override final;
 
     private:
         hui::Vector3d center_;

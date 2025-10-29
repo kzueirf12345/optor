@@ -206,7 +206,7 @@ void optor::Scene::SetMoveDir(optor::MoveDirection moveDir) {
     moveDir_ = moveDir;
 }
 
-const optor::OpticObj* optor::Scene::GetObjAtPixel(const hui::Vector2d& pixel) {
+optor::OpticObj* optor::Scene::GetObjAtPixel(const hui::Vector2d& pixel) {
     const hui::Vector3d rayDirection = ERROR_HANDLE(&optor::Camera::GetRay, camera_, pixel, boxSize_);
     const hui::Vector3d rayOrigin = camera_.GetPosition();
 

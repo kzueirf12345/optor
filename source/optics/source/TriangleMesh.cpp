@@ -22,12 +22,12 @@ void optor::TriangleMesh::Clear() noexcept {
 }
 
 std::optional<optor::OpticObj::Intersection> 
-optor::TriangleMesh::IntersectRay(const hui::Vector3d& rayOrigin, const hui::Vector3d& rayDir) const 
+optor::TriangleMesh::IntersectRay(const hui::Vector3d& rayOrigin, const hui::Vector3d& rayDir)
 {
     std::optional<Intersection> closestHit;
     double minDist = std::numeric_limits<double>::max();
 
-    for (const auto& triangle : triangles_) 
+    for (auto& triangle : triangles_) 
     {
         auto hit = triangle.IntersectRay(rayOrigin, rayDir);
         if (hit && hit->distance < minDist) 
@@ -49,4 +49,10 @@ void optor::TriangleMesh::SetMaterial(const Material& material) {
     ERROR_HANDLE([this, &material](){
         optor::OpticObj::SetMaterial(material);
     });
+}
+
+void optor::TriangleMesh::Move(const hui::Vector3d& offset) {
+    for (auto& triangle : triangles_) {
+        ERROR_HANDLE(&optor::Triangle::Move, triangle, offset);
+    }
 }

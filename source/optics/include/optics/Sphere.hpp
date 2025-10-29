@@ -17,7 +17,7 @@ class Sphere: public optor::OpticObj {
         Sphere(double radius, const hui::Vector3d& center, const Material& material);
         
         [[nodiscard]] std::optional<Intersection> 
-            IntersectRay(const hui::Vector3d& rayBegin, const hui::Vector3d& rayDirection) const override;
+            IntersectRay(const hui::Vector3d& rayBegin, const hui::Vector3d& rayDirection) override;
 
 
         [[nodiscard]] const hui::Vector3d& GetCenter()  const noexcept;
@@ -26,6 +26,8 @@ class Sphere: public optor::OpticObj {
 
         void SetCenter(const hui::Vector3d& center);
         void SetRadius(double radius);
+
+        virtual void Move(const hui::Vector3d& offset) override final;
 
     protected:
         hui::Vector3d center_;

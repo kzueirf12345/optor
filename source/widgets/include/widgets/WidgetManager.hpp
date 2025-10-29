@@ -18,7 +18,7 @@ struct WidgetsState {
     const optor::Widget* selectedWidget;
     hui::Vector2d        prevMouseCoord;
 
-    const optor::OpticObj* selectedObj;
+    optor::OpticObj* selectedObj;
 };
     
 class WidgetManager {

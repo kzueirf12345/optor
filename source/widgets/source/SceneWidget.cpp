@@ -70,7 +70,7 @@ bool optor::SceneWidget::OnMouseMove(const hui::Event& event) {
 bool optor::SceneWidget::OnMousePress(const hui::Event& event) {
     const hui::Vector2d pixel = event.GetMouseCoord() - AbsCoord();
     if (event.GetMouseButton() == selectButton_) {
-        const auto* selectedObj = scene_.GetObjAtPixel(pixel);
+        auto* selectedObj = scene_.GetObjAtPixel(pixel);
         if (selectedObj) {
             state_->selectedObj = selectedObj;
         }

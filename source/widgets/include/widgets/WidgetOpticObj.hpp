@@ -17,6 +17,8 @@ class WidgetOpticObj : public Widget {
         void SetTextAlign(hui::Text::Align align) noexcept;
         void SetTextOffset(const hui::Vector2d& offset) noexcept;
 
+        const optor::OpticObj* GetObj() const noexcept;
+
     private:
         hui::Vector2d GetTextPosition() const;
 

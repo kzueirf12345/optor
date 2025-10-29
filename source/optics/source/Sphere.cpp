@@ -23,7 +23,7 @@ optor::Sphere::Sphere(double radius, const hui::Vector3d& center, const Material
 {}
 
 std::optional<optor::OpticObj::Intersection> 
-optor::Sphere::IntersectRay(const hui::Vector3d& rayBegin, const hui::Vector3d& rayDirection) const 
+optor::Sphere::IntersectRay(const hui::Vector3d& rayBegin, const hui::Vector3d& rayDirection) 
 {
     hui::Vector3d oc = rayBegin - center_;
     double a = rayDirection.Len2();
@@ -61,4 +61,8 @@ void optor::Sphere::SetCenter(const hui::Vector3d& center) { center_ = center; }
 void optor::Sphere::SetRadius(double radius) {
     radius_ = radius;
     radius2_ = radius * radius;
+}
+
+void optor::Sphere::Move(const hui::Vector3d& offset) {
+    center_ += offset;
 }

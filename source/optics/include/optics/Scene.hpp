@@ -29,7 +29,7 @@ class Scene: public hui::Textured {
 
         void SetMoveDir(optor::MoveDirection moveDir);
 
-        const OpticObj* GetObjAtPixel(const hui::Vector2d& pixel);
+        OpticObj* GetObjAtPixel(const hui::Vector2d& pixel);
 
     private:
         std::vector<std::unique_ptr<optor::OpticObj>> objs_;

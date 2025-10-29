@@ -14,9 +14,11 @@ public:
     Triangle(const hui::Vector3d& v0, const hui::Vector3d& v1, const hui::Vector3d& v2, const Material& material);
 
     [[nodiscard]] std::optional<Intersection> 
-    IntersectRay(const hui::Vector3d& rayOrigin, const hui::Vector3d& rayDir) const override;
+    IntersectRay(const hui::Vector3d& rayOrigin, const hui::Vector3d& rayDir) override;
 
     [[nodiscard]] const hui::Vector3d& GetNormal() const noexcept;
+
+    virtual void Move(const hui::Vector3d& offset) override final;
 
 private:
     hui::Vector3d v0_, v1_, v2_;

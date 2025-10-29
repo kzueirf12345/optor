@@ -44,6 +44,10 @@ void optor::WidgetOpticObj::SetTextOffset(const hui::Vector2d& offset) noexcept 
     textOffset_ = offset;
 }
 
+const optor::OpticObj* optor::WidgetOpticObj::GetObj() const noexcept {
+    return obj_;
+}
+
 hui::Vector2d optor::WidgetOpticObj::GetTextPosition() const {
     const hui::Vector2d buttonSize = texture_.GetSize();
     const hui::Vector2d textSize   = desc_.GetSize();

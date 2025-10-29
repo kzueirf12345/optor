@@ -49,7 +49,7 @@ void optor::FinitPlane::BuildMesh() {
 }
 
 std::optional<optor::OpticObj::Intersection> 
-optor::FinitPlane::IntersectRay(const hui::Vector3d& rayOrigin, const hui::Vector3d& rayDir) const {
+optor::FinitPlane::IntersectRay(const hui::Vector3d& rayOrigin, const hui::Vector3d& rayDir) {
     return ERROR_HANDLE(&optor::TriangleMesh::IntersectRay, mesh_, rayOrigin, rayDir);
 }
 
@@ -81,4 +81,10 @@ void optor::FinitPlane::SetMaterial(const Material& material) {
     ERROR_HANDLE([this, &material](){
         optor::OpticObj::SetMaterial(material);
     });
+}
+
+void optor::FinitPlane::Move(const hui::Vector3d& offset) {
+    center_ += offset;
+
+    ERROR_HANDLE(&optor::FinitPlane::BuildMesh, this);
 }
