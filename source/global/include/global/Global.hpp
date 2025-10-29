@@ -23,6 +23,11 @@ namespace color
     static const hui::Color WindowBorder(0x41, 0x42, 0x5a);
 
     static const hui::Color TextPrimary(0xc0, 0xca, 0xf5);
+
+    static const hui::Color ButtonReleased(0x28, 0x29, 0x3d);
+    static const hui::Color ButtonPressed(0x35, 0x36, 0x4e);
+    static const hui::Color ButtonIdle(0x24, 0x25, 0x36);
+    static const hui::Color ScrollBarThumb(0x41, 0x42, 0x5a);
     
     static const hui::Color Red(0xf7, 0x76, 0x8e);
     static const hui::Color Green(0x9e, 0xce, 0x6a);
@@ -89,6 +94,8 @@ static constexpr inline double GLOBAL_AMBIENT_COEF = 0.4;
 static const inline std::string FONT_PATH = "./assets/TokyoNight.ttf";
 
 static const inline hui::Font FONT(FONT_PATH);
+
+static constexpr inline double STRING_BLOCK_HEIGHT = 50.;
 
 }
 

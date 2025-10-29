@@ -97,8 +97,12 @@ hui::Vector2d optor::Widget::GetSize() const {
     return ERROR_HANDLE(&hui::Texture::GetSize, texture_);
 }
 
+hui::Vector2d optor::Widget::GetPosition() const {
+    return ERROR_HANDLE(&hui::Sprite::GetPosition, sprite_);
+}
+
 bool optor::Widget::OnMouseMove(const hui::Event& event) {
-    const hui::Vector2d mouseCoord = event.GetMouseCoord();
+    const hui::Vector2d mouseCoord = event.GetMouseShift();
 
     if (state_->draggedWidget == this) {
         ERROR_HANDLE(&optor::Widget::Drag, this, mouseCoord - state_->prevMouseCoord);

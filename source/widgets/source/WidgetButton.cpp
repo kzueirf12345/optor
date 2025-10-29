@@ -8,16 +8,16 @@ optor::WidgetButton::WidgetButton(const hui::Vector2d& size, optor::WidgetsState
     :   optor::Widget{size, state},
         isPressed_{false},
         pressButton_{optor::INIT_PRESS_BUTTON_BUTTON_},
-        pressedColor_(optor::color::Cyan),
-        releasedColor_(optor::color::WindowBackground)
+        pressedColor_(optor::color::ButtonPressed),
+        releasedColor_(optor::color::ButtonReleased)
 {
+    ERROR_HANDLE([this](){texture_.Fill(releasedColor_);});
     ERROR_HANDLE([this](){SetIsDraggable(false);});
 }
 
 bool optor::WidgetButton::OnMousePress  (const hui::Event& event) {
     if (state_->hoveredWidget == this && event.GetMouseButton() == pressButton_) {
         isPressed_ = true;
-        state_->selectedWidget = this;
         ERROR_HANDLE(&hui::Texture::Fill, texture_, pressedColor_);
         spriteIsValid_ = false;
         return true;
@@ -44,3 +44,18 @@ bool optor::WidgetButton::OnMouseRelease(const hui::Event& event) {
 
     return false;
 }
+
+void optor::WidgetButton::SetReleasedColor(const hui::Color& color) {
+    releasedColor_ = color;
+    if (!isPressed_) {
+        ERROR_HANDLE(&hui::Texture::Fill, texture_, releasedColor_);
+    }
+}
+void optor::WidgetButton::SetPressedColor (const hui::Color& color) {
+    pressedColor_ = color;
+    if (isPressed_) {
+        ERROR_HANDLE(&hui::Texture::Fill, texture_, pressedColor_);
+    }
+}
+
+bool optor::WidgetButton::IsPressed() const noexcept { return isPressed_; }

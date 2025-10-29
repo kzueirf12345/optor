@@ -8,6 +8,7 @@ add_library(widgets STATIC
     source/WidgetButtonText.cpp
     source/WidgetOpticObj.cpp
     source/WidgetOpticObjs.cpp
+    source/ScrollBar.cpp
 )
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")

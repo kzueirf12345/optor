@@ -10,6 +10,7 @@
 // #include "optics/Camera.hpp"
 #include "optics/Light.hpp"
 #include "widgets/SceneWidget.hpp"
+#include "widgets/ScrollBar.hpp"
 #include "widgets/Widget.hpp"
 #include "global/Global.hpp"
 // #include "widgets/WidgetButton.hpp"
@@ -232,14 +233,27 @@ void CreateScene(optor::WidgetManager* manager) {
             optor::materials::MIRROR
         ));
     }));
+    
 
     auto* opticObjs = dynamic_cast<optor::WidgetOpticObjs*>(ERROR_HANDLE(
         &optor::WidgetChildable::AddChild, 
         manager->GetDesktop(), 
         std::make_unique<optor::WidgetOpticObjs>(
-            hui::Vector2d{1500, 700},
+            hui::Vector2d{1500, 450},
             manager->GetState(), 
             sceneWidget->GetScene()
         )
     ));
+
+    auto* opticObjsScroll = dynamic_cast<optor::ScrollBar*>(ERROR_HANDLE(
+        &optor::WidgetChildable::AddChild, 
+        manager->GetDesktop(), 
+        std::make_unique<optor::ScrollBar>(
+            hui::Vector2d{1500, 100},
+            manager->GetState(), 
+            [&](double percentage){return opticObjs->Scroll(percentage);}
+        )
+    ));
+
+    opticObjsScroll->SetPosition({0, 550});
 }

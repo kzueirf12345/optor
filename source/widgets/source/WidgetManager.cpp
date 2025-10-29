@@ -46,7 +46,7 @@ void optor::WidgetManager::HandleEvents(hui::Window* window) {
 
             case hui::Event::Type::MouseMoved:
                 ERROR_HANDLE(&optor::WidgetChildable::OnMouseMove, desktop_, event);
-                state_.prevMouseCoord = event.GetMouseCoord();
+                state_.prevMouseCoord = event.GetMouseShift();
                 break;
 
             case hui::Event::Type::MouseButtonPressed:

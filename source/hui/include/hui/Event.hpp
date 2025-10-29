@@ -178,6 +178,7 @@ class Event {
         [[nodiscard]] hui::Event::MouseButton     GetMouseButton()    const;
         [[nodiscard]] hui::Event::MouseWheel      GetMouseWheel()     const;
         [[nodiscard]] hui::Event::KeyboardButton  GetKeyboardButton() const;
+        [[nodiscard]] hui::Vector2d               GetMouseShift()     const noexcept;
         [[nodiscard]] hui::Vector2d               GetMouseCoord()     const noexcept;
 
     private:

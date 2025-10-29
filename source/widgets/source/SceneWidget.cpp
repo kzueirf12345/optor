@@ -48,7 +48,7 @@ void optor::SceneWidget::Draw(hui::Renderer* renderer) {
 }
 
 bool optor::SceneWidget::OnMouseMove(const hui::Event& event) {
-    const hui::Vector2d mouseCoord = event.GetMouseCoord();
+    const hui::Vector2d mouseCoord = event.GetMouseShift();
     const hui::Vector2d mouseOffset = (mouseCoord - state_->prevMouseCoord) * optor::CAMERA_ROTATE_SPEED;
 
     if (state_->selectedWidget == this) {

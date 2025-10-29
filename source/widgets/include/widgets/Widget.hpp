@@ -40,12 +40,12 @@ class Widget {
         [[nodiscard]] hui::Vector2d AbsCoord() const;  
 
         [[nodiscard]] hui::Vector2d GetSize() const;
+        [[nodiscard]] hui::Vector2d GetPosition() const;
 
     protected:
         hui::Texture texture_;
         hui::Sprite sprite_;
         bool spriteIsValid_;
-
 
         optor::Widget* parent_;
         optor::WidgetsState* const state_;

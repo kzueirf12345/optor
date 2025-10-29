@@ -15,6 +15,11 @@ class WidgetButton: public Widget {
         virtual bool OnMousePress  (const hui::Event& event) override;
         virtual bool OnMouseRelease(const hui::Event& event) override;
 
+        void SetReleasedColor(const hui::Color& color);
+        void SetPressedColor (const hui::Color& color);
+
+        bool IsPressed() const noexcept;
+        
     protected:
         bool isPressed_;
         hui::Event::MouseButton pressButton_;

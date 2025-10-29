@@ -196,7 +196,12 @@ hui::Event::KeyboardButton  hui::Event::GetKeyboardButton() const {
 
 #undef CASE_RET_TYPE_
 
-hui::Vector2d hui::Event::GetMouseCoord() const noexcept {
+hui::Vector2d hui::Event::GetMouseShift() const noexcept {
     const auto* event = static_cast<const hui::EventImpl*>(GetImpl());
     return {static_cast<double>(event->mouseMove.x), static_cast<double>(event->mouseMove.y)};
+}
+
+hui::Vector2d hui::Event::GetMouseCoord() const noexcept {
+    const auto* event = static_cast<const hui::EventImpl*>(GetImpl());
+    return {static_cast<double>(event->mouseButton.x), static_cast<double>(event->mouseButton.y)};
 }
