@@ -73,8 +73,8 @@ namespace materials
 
 static constexpr inline double EPSILON = 1e-8;
 
-static constexpr inline double PROGRAM_WIDTH  = 2200;
-static constexpr inline double PROGRAM_HEIGHT = 900;
+static constexpr inline double PROGRAM_WIDTH  = 2300;
+static constexpr inline double PROGRAM_HEIGHT = 1100;
 
 static constexpr inline unsigned int FRAME_LIMIT = 20;
 

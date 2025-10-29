@@ -18,6 +18,7 @@ optor::WidgetButton::WidgetButton(const hui::Vector2d& size, optor::WidgetsState
 bool optor::WidgetButton::OnMousePress  (const hui::Event& event) {
     if (state_->hoveredWidget == this && event.GetMouseButton() == pressButton_) {
         isPressed_ = true;
+        if (isSelectable_) { state_->selectedWidget = this; }
         ERROR_HANDLE(&hui::Texture::Fill, texture_, pressedColor_);
         spriteIsValid_ = false;
         return true;

@@ -57,7 +57,7 @@ optor::ScrollBar::ScrollBar(const hui::Vector2d& size, optor::WidgetsState* stat
 
     thumbButton_.SetReleasedColor(optor::color::ScrollBarThumb);
 
-    SetBackgroundColor(optor::color::Poison);
+    SetBackgroundColor(optor::color::WindowBackground);
 }
 
 void optor::ScrollBar::Move(double shiftPercent) {
@@ -143,6 +143,15 @@ bool optor::ScrollBar::OnMouseMove(const hui::Event& event) {
 }
 
 bool optor::ScrollBar::OnMousePress(const hui::Event& event) {
+
+    if ((state_->hoveredWidget == this 
+      || state_->hoveredWidget == &incButton_ 
+      || state_->hoveredWidget == &decButton_
+      || state_->hoveredWidget == &thumbButton_)
+      && event.GetMouseButton() == CONTROL_BUTTON_) 
+    {
+        state_->selectedWidget = this;
+    }
     
     const bool childrenRes = Propagate(event, &optor::WidgetButton::OnMousePress);
 
