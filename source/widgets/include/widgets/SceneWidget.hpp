@@ -16,6 +16,7 @@ class SceneWidget: public optor::Widget {
         virtual void Draw(hui::Renderer* renderer) override final;
         
         virtual bool OnMouseMove   (const hui::Event& event) override;
+        virtual bool OnMousePress   (const hui::Event& event) override;
         virtual bool OnKeyboardPress  (const hui::Event& event) override;
         virtual bool OnKeyboardRelease(const hui::Event& event) override;
         virtual void OnIdle() override final;

@@ -5,6 +5,7 @@
 
 #include "hui/Vector.hpp"
 #include "hui/Window.hpp"
+#include "optics/OpticObj.hpp"
 
 namespace optor {
 
@@ -16,6 +17,8 @@ struct WidgetsState {
     const optor::Widget* draggedWidget;
     const optor::Widget* selectedWidget;
     hui::Vector2d        prevMouseCoord;
+
+    const optor::OpticObj* selectedObj;
 };
     
 class WidgetManager {

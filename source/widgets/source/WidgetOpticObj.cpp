@@ -93,6 +93,12 @@ void optor::WidgetOpticObj::Draw(hui::Renderer* renderer) {
     });
     sprite_.SetPosition(pos);
 
+    if (state_->selectedObj == obj_) {
+        desc_.SetFillColor(optor::color::Success);
+    } else {
+        desc_.SetFillColor(optor::color::TextPrimary);
+    }
+
     desc_.SetPosition(GetTextPosition());
 
     ERROR_HANDLE([this](){
@@ -111,3 +117,4 @@ void optor::WidgetOpticObj::Draw(hui::Renderer* renderer) {
 
     ERROR_HANDLE(&hui::Renderer::Draw, renderer, sprite);
 }
+

@@ -157,9 +157,6 @@ hui::Vector3d optor::Scene::Reflect(const hui::Vector3d& incident, const hui::Ve
 std::optional<hui::Vector3d> optor::Scene::Refract(const hui::Vector3d& incident, 
                                                    const hui::Vector3d& normal, 
                                                    double eta) const {
-    // assert(incident.Len2() == 1);
-    // assert(normal.Len2() == 1);
-
     double cosi = incident ^ normal;
     double etai = 1.0, etat = eta;
     hui::Vector3d n = normal;
@@ -207,6 +204,19 @@ optor::Camera& optor::Scene::GetCamera()       noexcept {
 
 void optor::Scene::SetMoveDir(optor::MoveDirection moveDir) {
     moveDir_ = moveDir;
+}
+
+const optor::OpticObj* optor::Scene::GetObjAtPixel(const hui::Vector2d& pixel) {
+    const hui::Vector3d rayDirection = ERROR_HANDLE(&optor::Camera::GetRay, camera_, pixel, boxSize_);
+    const hui::Vector3d rayOrigin = camera_.GetPosition();
+
+    auto closestIntersection = FindClosestIntersection(rayOrigin, rayDirection);
+    
+    if (closestIntersection) {
+        return closestIntersection->object;
+    }
+
+    return nullptr;
 }
 
 optor::MoveDirection optor::Scene::GetMoveDir() const noexcept {

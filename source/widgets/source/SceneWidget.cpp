@@ -67,6 +67,18 @@ bool optor::SceneWidget::OnMouseMove(const hui::Event& event) {
     return false;
 }
 
+bool optor::SceneWidget::OnMousePress(const hui::Event& event) {
+    const hui::Vector2d pixel = event.GetMouseCoord() - AbsCoord();
+    if (event.GetMouseButton() == selectButton_) {
+        const auto* selectedObj = scene_.GetObjAtPixel(pixel);
+        if (selectedObj) {
+            state_->selectedObj = selectedObj;
+        }
+    }
+
+    return optor::Widget::OnMousePress(event);
+}
+
 bool optor::SceneWidget::OnKeyboardPress(const hui::Event& event) {
     if (state_->selectedWidget == this) {
         switch (event.GetKeyboardButton()) {
