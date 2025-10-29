@@ -2,22 +2,21 @@
 #define OPTOR_SOURCE_WINDOWS_INCLUDE_WINDOWS_WIDNOW_HPP
 
 #include "hui/Event.hpp"
-#include "hui/RectangleShape.hpp"
+#include "hui/Texture.hpp"
 #include "hui/Vector.hpp"
-#include "hui/Window.hpp"
 #include "widgets/WidgetManager.hpp"
-#include <SFML/Window/Event.hpp>
+#include "hui/Sprite.hpp"
 
 namespace optor 
 {
 
 class Widget {
     public:
-        Widget(hui::RectangleShape rect, optor::WidgetsState* state);
+        Widget(const hui::Vector2d& size, optor::WidgetsState* state);
 
         virtual ~Widget() = default;
 
-        virtual void Draw       (hui::Window* window);
+        virtual void Draw       (hui::Renderer* renderer);
         virtual void SetPosition(const hui::Vector2d& position);
         
         virtual bool OnMouseMove      (const hui::Event& event);
@@ -28,8 +27,8 @@ class Widget {
         virtual void OnIdle           ();
 
         void SetBackgroundColor (const hui::Color& color);
-        void SetBorderColor     (const hui::Color& color);
-        void SetOutlineThickness(double thickness);
+        // void SetBorderColor     (const hui::Color& color);
+        // void SetOutlineThickness(double thickness);
         void SetParent          (optor::Widget* parent)                     noexcept;  
         void SetIsDraggable     (const bool isDraggable)                    noexcept;
         void SetIsFreeDraggable (const bool isFreeDraggable)                noexcept;
@@ -43,7 +42,11 @@ class Widget {
         [[nodiscard]] hui::Vector2d GetSize() const;
 
     protected:
-        hui::RectangleShape rect_;
+        hui::Texture texture_;
+        hui::Sprite sprite_;
+        bool spriteIsValid_;
+
+
         optor::Widget* parent_;
         optor::WidgetsState* const state_;
 

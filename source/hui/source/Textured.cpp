@@ -1,7 +1,7 @@
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Graphics/Transformable.hpp>
 
-#include "hui/TexturedShape.hpp"
+#include "hui/Textured.hpp"
 #include "common/ErrorHandler.hpp"
 #include "hui/Sprite.hpp"
 

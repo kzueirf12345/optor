@@ -2,12 +2,16 @@
 
 #include "widgets/Widget.hpp"
 #include "common/ErrorHandler.hpp"
-#include "hui/RectangleShape.hpp"
+#include "hui/Renderer.hpp"
+#include "hui/Sprite.hpp"
+#include "hui/Texture.hpp"
 #include "hui/Vector.hpp"
 #include "global/Global.hpp"
 
-optor::Widget::Widget(hui::RectangleShape rect, optor::WidgetsState* state)
-    :   rect_{std::move(rect)}, 
+optor::Widget::Widget(const hui::Vector2d& size, optor::WidgetsState* state)
+    :   texture_(size), 
+        sprite_{},
+        spriteIsValid_(false),
         parent_{nullptr}, 
         state_{state}, 
         isDraggable_{true}, 
@@ -17,39 +21,40 @@ optor::Widget::Widget(hui::RectangleShape rect, optor::WidgetsState* state)
         selectButton_{optor::INIT_SELECT_WINDOW_BUTTON_},
         unselectButton_{optor::INIT_UNSELECT_WINDOW_BUTTON_}
 {
-    ERROR_HANDLE(&hui::RectangleShape::SetFillColor,        &rect_, optor::color::WindowBackground);
-    ERROR_HANDLE(&hui::RectangleShape::SetOutlineColor,     &rect_, optor::color::WindowBorder);
-    ERROR_HANDLE(&hui::RectangleShape::SetOutlineThickness, &rect_, optor::INIT_WIDGET_BORDER_THICKNESS);
+    ERROR_HANDLE(&hui::Texture::Fill, &texture_, optor::color::WindowBackground);
+    // ERROR_HANDLE(&hui::RectangleShape::SetOutlineColor,     &rect_, optor::color::WindowBorder); // TODO
+    // ERROR_HANDLE(&hui::RectangleShape::SetOutlineThickness, &rect_, optor::INIT_WIDGET_BORDER_THICKNESS);
 }
 
-void optor::Widget::Draw(hui::Window* window) {
-    assert(window);
+void optor::Widget::Draw(hui::Renderer* renderer) {
+    assert(renderer);
 
-    const hui::Vector2d relCoord = rect_.GetPosition();
-    ERROR_HANDLE(&hui::RectangleShape::SetPosition, &rect_, std::move(AbsCoord()));
+    if (!spriteIsValid_) {
+        sprite_.SetTexture(texture_); // REVIEW
+        spriteIsValid_ = true;
+    }
 
-    ERROR_HANDLE([window, this](){
-        window->Draw(rect_);
+    ERROR_HANDLE([renderer, this](){
+        renderer->Draw(sprite_);
     });
-
-    ERROR_HANDLE(&hui::RectangleShape::SetPosition, &rect_, relCoord);
 }
 
 void optor::Widget::SetPosition(const hui::Vector2d& position) {
-    ERROR_HANDLE(&hui::RectangleShape::SetPosition, &rect_, position);
+    ERROR_HANDLE(&hui::Sprite::SetPosition, &sprite_, position);
 }
 
 void optor::Widget::SetBackgroundColor(const hui::Color& color) {
-    ERROR_HANDLE(&hui::RectangleShape::SetFillColor, &rect_, color);
+    ERROR_HANDLE(&hui::Texture::Fill, &texture_, color);
+    spriteIsValid_ = false;
 }
 
-void optor::Widget::SetBorderColor(const hui::Color& color) {
-    ERROR_HANDLE(&hui::RectangleShape::SetOutlineColor, &rect_, color);
-}
+// void optor::Widget::SetBorderColor(const hui::Color& color) {
+//     ERROR_HANDLE(&hui::RectangleShape::SetOutlineColor, &rect_, color);
+// }
 
-void optor::Widget::SetOutlineThickness(double thickness) {
-    ERROR_HANDLE(&hui::RectangleShape::SetOutlineThickness, &rect_, thickness);
-}
+// void optor::Widget::SetOutlineThickness(double thickness) {
+//     ERROR_HANDLE(&hui::RectangleShape::SetOutlineThickness, &rect_, thickness);
+// }
 
 void optor::Widget::SetParent(optor::Widget* parent) noexcept {
     parent_ = parent;
@@ -81,15 +86,15 @@ void optor::Widget::SetUnselectButton(hui::Event::KeyboardButton unselectButton)
 
 
 hui::Vector2d optor::Widget::AbsCoord() const {
-    hui::Vector2d absCoord = rect_.GetPosition();
+    hui::Vector2d absCoord = sprite_.GetPosition();
     for (const auto* ancestor = parent_; ancestor != nullptr; ancestor = ancestor->parent_) {
-        absCoord += ancestor->rect_.GetPosition();
+        absCoord += ancestor->sprite_.GetPosition();
     }
     return std::move(absCoord);
 }
 
 hui::Vector2d optor::Widget::GetSize() const {
-    return ERROR_HANDLE(&hui::RectangleShape::GetSize, rect_);
+    return ERROR_HANDLE(&hui::Texture::GetSize, texture_);
 }
 
 bool optor::Widget::OnMouseMove(const hui::Event& event) {
@@ -156,22 +161,22 @@ void optor::Widget::OnIdle() {
 
 bool optor::Widget::OnMe(const hui::Vector2d& absCoord) const {
     const hui::Vector2d leftCorner  = AbsCoord();
-    const hui::Vector2d rightCorner = leftCorner + rect_.GetSize();
+    const hui::Vector2d rightCorner = leftCorner + texture_.GetSize();
 
     return leftCorner.x <= absCoord.x && absCoord.x <= rightCorner.x 
         && leftCorner.y <= absCoord.y && absCoord.y <= rightCorner.y;
 }
 
 void optor::Widget::Drag(const hui::Vector2d& shift) {
-    ERROR_HANDLE(&hui::RectangleShape::SetPosition, &rect_, rect_.GetPosition() + shift);
+    ERROR_HANDLE(&hui::Sprite::SetPosition, &sprite_, sprite_.GetPosition() + shift);
 
     if (!isFreeDraggable_ && parent_){
         ERROR_HANDLE(
-            &hui::RectangleShape::SetPosition, 
-            &rect_, 
-            rect_.GetPosition().Clump(
+            &hui::Sprite::SetPosition, 
+            &sprite_, 
+            sprite_.GetPosition().Clump(
                 {0, 0},
-                parent_->rect_.GetSize() - rect_.GetSize()
+                parent_->texture_.GetSize() - texture_.GetSize()
             )
         );
     }

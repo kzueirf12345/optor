@@ -1,8 +1,8 @@
 #ifndef OPTOR_SOURCE_WIDGETS_INCLUDE_WIDGETS_WIDGET_BUTTON_TEXT_HPP
 #define OPTOR_SOURCE_WIDGETS_INCLUDE_WIDGETS_WIDGET_BUTTON_TEXT_HPP
 
+#include "hui/Renderer.hpp"
 #include "hui/Text.hpp"
-#include "optics/Camera.hpp"
 #include "widgets/WidgetButton.hpp"
 
 namespace optor 
@@ -11,9 +11,9 @@ namespace optor
 class WidgetButtonText: public WidgetButton {
     public:
 
-        WidgetButtonText(hui::RectangleShape rect, optor::WidgetsState* state, const std::string& text);
+        WidgetButtonText(const hui::Vector2d& size, optor::WidgetsState* state, const std::string& text);
 
-        virtual void Draw(hui::Window* window) override;
+        virtual void Draw(hui::Renderer* renderer) override;
 
         void SetTextAlign(hui::Text::Align align) noexcept;
         void SetTextOffset(const hui::Vector2d& offset) noexcept;
@@ -22,8 +22,7 @@ class WidgetButtonText: public WidgetButton {
         hui::Vector2d GetTextPosition() const;
 
     private:
-        optor::Camera* camera_;
-        MoveDirection dir_;
+        hui::Renderer renderer_;
 
         hui::Text text_;
         hui::Text::Align textAlign_;

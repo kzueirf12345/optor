@@ -10,7 +10,7 @@ add_library(hui STATIC
     source/RectangleShape.cpp
     source/Texture.cpp
     source/Sprite.cpp
-    source/TexturedShape.cpp
+    source/Textured.cpp
 
     source/Font.cpp
     source/Text.cpp

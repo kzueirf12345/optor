@@ -3,15 +3,17 @@
 #include "widgets/WidgetButtonText.hpp"
 #include "global/Global.hpp"
 #include "common/ErrorHandler.hpp"
+#include "hui/Renderer.hpp"
 #include "hui/Vector.hpp"
 #include "widgets/WidgetButton.hpp"
 
-optor::WidgetButtonText::WidgetButtonText(hui::RectangleShape rect, optor::WidgetsState* state, 
+optor::WidgetButtonText::WidgetButtonText(const hui::Vector2d& size, optor::WidgetsState* state, 
                                           const std::string& text)
-    : optor::WidgetButton(std::move(rect), state),
+    : optor::WidgetButton(size, state),
       text_{text},
       textAlign_{hui::Text::Align::Center},
-      textOffset_{0, 0}
+      textOffset_{0, 0},
+      renderer_(size)
 {
     ERROR_HANDLE([this](){
         text_.SetFont(FONT);
@@ -28,7 +30,7 @@ void optor::WidgetButtonText::SetTextOffset(const hui::Vector2d& offset) noexcep
 }
 
 hui::Vector2d optor::WidgetButtonText::GetTextPosition() const {
-    const hui::Vector2d buttonSize = rect_.GetSize();
+    const hui::Vector2d buttonSize = texture_.GetSize();
     const hui::Vector2d textSize   = text_.GetSize();
     hui::Vector2d pos;
 
@@ -62,23 +64,35 @@ hui::Vector2d optor::WidgetButtonText::GetTextPosition() const {
             break;
     }
 
-    return pos - hui::Vector2d(0, rect_.GetOutlineThinkness()) + textOffset_;
+    return pos + textOffset_;
 }
 
-void optor::WidgetButtonText::Draw(hui::Window* window) {
-    assert(window);
+void optor::WidgetButtonText::Draw(hui::Renderer* renderer) {
+    assert(renderer);
 
-    ERROR_HANDLE([this, window](){
-        optor::WidgetButton::Draw(window);
+    const hui::Vector2d pos = sprite_.GetPosition();
+
+    sprite_.SetPosition({0, 0});
+    ERROR_HANDLE([this](){
+        optor::WidgetButton::Draw(&renderer_);
+    });
+    sprite_.SetPosition(pos);
+
+    text_.SetPosition(GetTextPosition());
+
+    ERROR_HANDLE([this](){
+        renderer_.Draw(text_);
     });
 
-    const hui::Vector2d relCoord = GetTextPosition();
-    const hui::Vector2d textCoord = text_.GetPosition();
-    ERROR_HANDLE(&hui::Text::SetPosition, &text_, AbsCoord() + relCoord);
-
-    ERROR_HANDLE([window, this](){
-        window->Draw(text_);
+    ERROR_HANDLE([this](){
+        renderer_.Display();
     });
 
-    ERROR_HANDLE(&hui::Text::SetPosition, &text_, textCoord);
+    hui::Sprite sprite = ERROR_HANDLE([this](){
+        return hui::Sprite(ERROR_HANDLE(&hui::Renderer::GetTexture, renderer_));
+    });
+
+    ERROR_HANDLE(&hui::Sprite::SetPosition, &sprite, pos);
+
+    ERROR_HANDLE(&hui::Renderer::Draw, renderer, sprite);
 }

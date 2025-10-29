@@ -3,22 +3,42 @@
 
 #include "widgets/WidgetChildable.hpp"
 #include "common/ErrorHandler.hpp"
+#include "hui/Vector.hpp"
 #include "widgets/Widget.hpp"
 
-optor::WidgetChildable::WidgetChildable(hui::RectangleShape rect, optor::WidgetsState* state)
-    :   Widget{std::move(rect), state}, children_{}
+optor::WidgetChildable::WidgetChildable(const hui::Vector2d& size, optor::WidgetsState* state)
+    :   Widget{size, state}, children_{}, renderer_(size)
 {}
 
-void optor::WidgetChildable::Draw(hui::Window* window) {
-    assert(window);
+void optor::WidgetChildable::Draw(hui::Renderer* renderer) {
+    assert(renderer);
 
-    ERROR_HANDLE([this, window](){
-        optor::Widget::Draw(window);
+    const hui::Vector2d pos = sprite_.GetPosition();
+
+    sprite_.SetPosition({0, 0});
+    ERROR_HANDLE([this](){
+        optor::Widget::Draw(&renderer_);
     });
+    sprite_.SetPosition(pos);
 
     for (const auto& child : children_) {
-        ERROR_HANDLE(&optor::Widget::Draw, child, window);
+        ERROR_HANDLE([this, &child](){
+            child->Draw(&renderer_);
+        });
     }
+
+    ERROR_HANDLE([this](){
+        renderer_.Display();
+    });
+    
+    hui::Sprite sprite = ERROR_HANDLE([this](){
+        return hui::Sprite(ERROR_HANDLE(&hui::Renderer::GetTexture, renderer_));
+    });
+    sprite.SetPosition(pos);
+
+    ERROR_HANDLE([renderer, &sprite](){
+        renderer->Draw(sprite);
+    });
 }
 
 bool optor::WidgetChildable::OnMouseMove(const hui::Event& event) {

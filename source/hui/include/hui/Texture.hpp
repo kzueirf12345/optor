@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "hui/Vector.hpp"
+#include "hui/Color.hpp"
 
 namespace hui 
 {
@@ -27,8 +28,11 @@ class Texture {
         [[nodiscard]] virtual const void* GetImpl() const noexcept;
         [[nodiscard]] virtual       void* GetImpl()       noexcept;
 
+        [[nodiscard]] hui::Vector2d GetSize() const noexcept;
+
         void SetImpl(void* impl) noexcept;
         void Update(const std::vector<uint32_t>& pixels);
+        void Fill(const hui::Color& color);
 
     private:
         std::unique_ptr<TextureImpl> impl_;
