@@ -212,3 +212,7 @@ void optor::Scene::SetMoveDir(optor::MoveDirection moveDir) {
 optor::MoveDirection optor::Scene::GetMoveDir() const noexcept {
     return moveDir_;
 }
+
+const std::vector<std::unique_ptr<optor::OpticObj>>& optor::Scene::GetObjs() const noexcept {
+    return objs_;
+}

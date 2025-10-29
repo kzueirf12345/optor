@@ -25,6 +25,8 @@ class Scene: public hui::Textured {
         [[nodiscard]]       optor::Camera& GetCamera()       noexcept;
         [[nodiscard]] optor::MoveDirection GetMoveDir() const noexcept;
 
+        [[nodiscard]] const std::vector<std::unique_ptr<optor::OpticObj>>& GetObjs() const noexcept;
+
         void SetMoveDir(optor::MoveDirection moveDir);
 
     private:

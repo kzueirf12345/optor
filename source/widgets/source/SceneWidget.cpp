@@ -185,3 +185,4 @@ optor::OpticObj* optor::SceneWidget::AddObj(std::unique_ptr<optor::OpticObj> obj
 
 const optor::Camera& optor::SceneWidget::GetCamera() const noexcept { return scene_.GetCamera(); }
       optor::Camera& optor::SceneWidget::GetCamera()       noexcept { return scene_.GetCamera(); }
+const optor::Scene&  optor::SceneWidget::GetScene()  const noexcept { return scene_; }

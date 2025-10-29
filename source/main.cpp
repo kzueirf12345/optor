@@ -22,12 +22,11 @@
 // #include "optics/TriangleMesh.hpp"
 #include "optics/FinitPlane.hpp"
 #include "widgets/WidgetButtonCamera.hpp"
+#include "widgets/WidgetOpticObjs.hpp"
 
 /*!SECTION
 // TODO самоветящийся объект (когда попадает луч, тогда увеличивать яркость)
-// TODO кнопки двигания камеры
 // TODO прокручиваемый список объектов. Там выбираем объект и можем его двигать тооже на кнопки
-Дейл Роджерс 
 
 */
 
@@ -233,4 +232,14 @@ void CreateScene(optor::WidgetManager* manager) {
             optor::materials::MIRROR
         ));
     }));
+
+    auto* opticObjs = dynamic_cast<optor::WidgetOpticObjs*>(ERROR_HANDLE(
+        &optor::WidgetChildable::AddChild, 
+        manager->GetDesktop(), 
+        std::make_unique<optor::WidgetOpticObjs>(
+            hui::Vector2d{1500, 700},
+            manager->GetState(), 
+            sceneWidget->GetScene()
+        )
+    ));
 }

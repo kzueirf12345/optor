@@ -24,6 +24,7 @@ class SceneWidget: public optor::Widget {
 
         [[nodiscard]] const optor::Camera& GetCamera() const noexcept;
         [[nodiscard]]       optor::Camera& GetCamera()       noexcept;
+        [[nodiscard]] const optor::Scene&  GetScene()  const noexcept;
         
     protected:
         optor::Scene scene_;
