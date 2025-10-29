@@ -1,8 +1,11 @@
+#include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/Image.hpp>
+#include <SFML/System/Vector2.hpp>
 #include <memory>
 #include <cassert>
 
 #include <SFML/Graphics/Texture.hpp>
+#include <stdexcept>
 
 #include "hui/Texture.hpp"
 #include "common/ErrorHandler.hpp"
@@ -43,6 +46,14 @@ void* hui::Texture::GetImpl() noexcept {
     return impl_.get();
 }
 
+hui::Vector2d hui::Texture::GetSize() const noexcept {
+    const auto* const impl = static_cast<const hui::TextureImpl*>(GetImpl());
+    sf::Vector2u size = ERROR_HANDLE([impl](){
+        return impl->getSize();
+    });
+
+    return {static_cast<double>(size.x), static_cast<double>(size.y)};
+}
 
 void hui::Texture::Update(const std::vector<uint32_t>& pixels) {
     auto* const impl = static_cast<hui::TextureImpl*>(GetImpl());
@@ -55,4 +66,13 @@ void hui::Texture::SetImpl(void* impl) noexcept {
     assert(impl);
 
     impl_ = std::make_unique<hui::TextureImpl>(*static_cast<hui::TextureImpl*>(impl));
+}
+
+void hui::Texture::Fill(const hui::Color& color) {
+    auto* const impl = static_cast<hui::TextureImpl*>(GetImpl());
+    sf::Image image = {};
+    image.create(impl->getSize().x, impl->getSize().y, sf::Color(color.GetRed(), color.GetGreen(), color.GetBlue(), color.GetAlpha()));
+    if (!impl->loadFromImage(image)) {
+        throw std::runtime_error("Can't load texture from image");
+    }
 }

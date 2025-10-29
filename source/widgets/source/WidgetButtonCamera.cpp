@@ -2,13 +2,12 @@
 #include "global/Global.hpp"
 #include "optics/Camera.hpp"
 #include "common/ErrorHandler.hpp"
-#include "optics/Scene.hpp"
 #include "widgets/WidgetButton.hpp"
 
-optor::WidgetButtonCamera::WidgetButtonCamera(hui::RectangleShape rect, optor::WidgetsState* state, 
+optor::WidgetButtonCamera::WidgetButtonCamera(const hui::Vector2d& size, optor::WidgetsState* state, 
                                               const std::string& text,
                                               optor::Camera* camera, MoveDirection dir)
-    :   optor::WidgetButtonText(std::move(rect), state, text), camera_(camera), dir_{dir}
+    :   optor::WidgetButtonText(size, state, text), camera_(camera), dir_{dir}
 {}
 
 void optor::WidgetButtonCamera::OnIdle() {

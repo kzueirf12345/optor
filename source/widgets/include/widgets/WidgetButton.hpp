@@ -2,6 +2,7 @@
 #define OPTOR_SOURCE_WIDGETS_INCLUDE_WIDGETS_WIDGET_BUTTON_HPP
 
 #include "hui/Color.hpp"
+#include "hui/Vector.hpp"
 #include "widgets/Widget.hpp"
 
 namespace optor 
@@ -9,7 +10,7 @@ namespace optor
 
 class WidgetButton: public Widget {
     public:
-        WidgetButton(hui::RectangleShape rect, optor::WidgetsState* state);
+        WidgetButton(const hui::Vector2d& size, optor::WidgetsState* state);
         
         virtual bool OnMousePress  (const hui::Event& event) override;
         virtual bool OnMouseRelease(const hui::Event& event) override;

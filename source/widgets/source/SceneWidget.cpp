@@ -1,3 +1,5 @@
+#include <cassert>
+
 #include "widgets/SceneWidget.hpp"
 #include "hui/Event.hpp"
 #include "hui/Renderer.hpp"
@@ -9,22 +11,24 @@
 #include "global/Global.hpp"
 #include "common/ErrorHandler.hpp"
 
-optor::SceneWidget::SceneWidget(hui::RectangleShape rect, optor::WidgetsState* state) 
-    :   optor::Widget{std::move(rect), state},
-        renderer_{rect_.GetSize()},
-        scene_{rect_.GetSize()}
+optor::SceneWidget::SceneWidget(const hui::Vector2d& size, optor::WidgetsState* state) 
+    :   optor::Widget{size, state},
+        renderer_{size},
+        scene_{size}
 {
     ERROR_HANDLE(&optor::Scene::Update, scene_);
 }
 
-void optor::SceneWidget::Draw(hui::Window* window) {
-    ERROR_HANDLE([this, window](){
-        optor::Widget::Draw(window);
-    });
+void optor::SceneWidget::Draw(hui::Renderer* renderer) {
+    assert(renderer);
 
+    const hui::Vector2d pos = sprite_.GetPosition();
+
+    sprite_.SetPosition({0, 0});
     ERROR_HANDLE([this](){
-        renderer_.Clear(optor::color::WindowBackground);
+        optor::Widget::Draw(&renderer_);
     });
+    sprite_.SetPosition(pos);
     
     ERROR_HANDLE([this](){
         renderer_.Draw(scene_);
@@ -38,9 +42,9 @@ void optor::SceneWidget::Draw(hui::Window* window) {
         return hui::Sprite(ERROR_HANDLE(&hui::Renderer::GetTexture, renderer_));
     });
 
-    ERROR_HANDLE(&hui::Sprite::SetPosition, &sprite, AbsCoord());
+    ERROR_HANDLE(&hui::Sprite::SetPosition, &sprite, pos);
 
-    ERROR_HANDLE(&hui::Window::Draw, window, sprite);
+    ERROR_HANDLE(&hui::Renderer::Draw, renderer, sprite);
 }
 
 bool optor::SceneWidget::OnMouseMove(const hui::Event& event) {

@@ -4,15 +4,15 @@
 #include <deque>
 #include <memory>
 
+#include "hui/Renderer.hpp"
 #include "widgets/Widget.hpp"
-#include "hui/RectangleShape.hpp"
 
 namespace optor 
 {
 
 class WidgetChildable: public Widget {
     public:
-        WidgetChildable(hui::RectangleShape rect, optor::WidgetsState* state);
+        WidgetChildable(const hui::Vector2d& pos, optor::WidgetsState* state);
 
         WidgetChildable           (const WidgetChildable&) = delete;
         WidgetChildable& operator=(const WidgetChildable&) = delete;
@@ -21,7 +21,7 @@ class WidgetChildable: public Widget {
 
         virtual ~WidgetChildable() = default;
 
-        virtual void Draw(hui::Window* window) override;
+        virtual void Draw(hui::Renderer* renderer) override;
 
         virtual bool OnMouseMove      (const hui::Event& event) override;
         virtual bool OnMousePress     (const hui::Event& event) override;
@@ -37,6 +37,8 @@ class WidgetChildable: public Widget {
 
 
     protected:
+        hui::Renderer renderer_;
+
         std::deque<std::unique_ptr<Widget>> children_;
 
     private:

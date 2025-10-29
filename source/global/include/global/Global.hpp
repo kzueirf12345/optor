@@ -19,7 +19,7 @@ namespace color
 #if OPTOR_PALETE_NAME == TNC
     static const hui::Color ProgramBackground(0x16, 0x17, 0x20);
 
-    static const hui::Color WindowBackground(0x1a, 0x1b, 0x26);
+    static const hui::Color WindowBackground(0x20, 0x21, 0x2d);
     static const hui::Color WindowBorder(0x41, 0x42, 0x5a);
 
     static const hui::Color TextPrimary(0xc0, 0xca, 0xf5);

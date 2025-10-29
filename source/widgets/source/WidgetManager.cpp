@@ -5,7 +5,7 @@
 #include "global/Global.hpp"
 #include "common/ErrorHandler.hpp"
 #include "hui/Event.hpp"
-#include "hui/RectangleShape.hpp"
+#include "hui/Vector.hpp"
 #include "hui/Window.hpp"
 #include "widgets/WidgetChildable.hpp"
 #include "widgets/Widget.hpp"
@@ -14,8 +14,8 @@
 optor::WidgetManager::WidgetManager()
 {
     desktop_ = ERROR_HANDLE(
-        std::make_unique<optor::WidgetChildable, hui::RectangleShape, optor::WidgetsState*>, 
-        hui::RectangleShape({optor::PROGRAM_WIDTH, optor::PROGRAM_HEIGHT}),
+        std::make_unique<optor::WidgetChildable, const hui::Vector2d&, optor::WidgetsState*>, 
+        hui::Vector2d(optor::PROGRAM_WIDTH, optor::PROGRAM_HEIGHT),
         &state_
     );
     ERROR_HANDLE(&optor::Widget::SetBackgroundColor, desktop_, optor::color::ProgramBackground);

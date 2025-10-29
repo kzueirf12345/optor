@@ -3,7 +3,6 @@
 
 #include "hui/Renderer.hpp"
 #include "hui/Vector.hpp"
-#include "hui/Window.hpp"
 #include "optics/Scene.hpp"
 #include "widgets/Widget.hpp"
 
@@ -12,9 +11,9 @@ namespace optor
 
 class SceneWidget: public optor::Widget {
     public:
-        SceneWidget(hui::RectangleShape rect, optor::WidgetsState* state);
+        SceneWidget(const hui::Vector2d& size, optor::WidgetsState* state);
         
-        virtual void Draw(hui::Window* window) override final;
+        virtual void Draw(hui::Renderer* renderer) override final;
         
         virtual bool OnMouseMove   (const hui::Event& event) override;
         virtual bool OnKeyboardPress  (const hui::Event& event) override;
