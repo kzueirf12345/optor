@@ -28,12 +28,11 @@ else()
 endif()
 
 add_subdirectory(source/common)
-add_subdirectory(source/hui)
-add_subdirectory(source/widgets)
-add_subdirectory(source/global)
-add_subdirectory(source/optics)
-
-include_directories(source/libs/mipt-ded-zemax/include)
+add_subdirectory(source/dr4)
+# add_subdirectory(source/widgets)
+# add_subdirectory(source/global)
+# add_subdirectory(source/optics)
+add_subdirectory(source/libs)
 
 find_package(X11                            REQUIRED)
 find_package(SFML 2.5.1 COMPONENTS graphics REQUIRED)
@@ -49,8 +48,9 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
         ${X11_LIBRARIES}
 
         common
-        hui
-        widgets
-        global
-        optics
+        dr4
+        # widgets
+        # global
+        # optics
+        libs
 )

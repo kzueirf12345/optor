@@ -1,23 +1,24 @@
-add_library(hui STATIC
-    source/Vector.cpp
-    source/Color.cpp
-    source/RectDouble.cpp
-    
-    source/Drawable.cpp
-    source/Transformable.cpp
 
-    source/Shape.cpp
-    source/RectangleShape.cpp
-    source/Texture.cpp
-    source/Sprite.cpp
-    source/Textured.cpp
-
-    source/Font.cpp
-    source/Text.cpp
+add_library(dr4 STATIC
+    source/math/Vector.cpp
+    # source/Color.cpp
+    # source/RectDouble.cpp
     
-    source/Event.cpp
-    source/Renderer.cpp
-    source/Window.cpp
+    # source/Drawable.cpp
+    # source/Transformable.cpp
+
+    # source/Shape.cpp
+    # source/RectangleShape.cpp
+    # source/Texture.cpp
+    # source/Sprite.cpp
+    # source/Textured.cpp
+
+    # source/Font.cpp
+    # source/Text.cpp
+    
+    # source/Event.cpp
+    # source/Renderer.cpp
+    # source/Window.cpp
 )
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -36,16 +37,17 @@ else()
     add_compile_options(-O2)
 endif()
 
-set_target_properties(hui PROPERTIES FOLDER "source")
+set_target_properties(dr4 PROPERTIES FOLDER "source")
 
-target_include_directories(hui
+target_include_directories(dr4
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> # Для сборки проекта
         $<INSTALL_INTERFACE:include>                           # Для будущей установки
 )
 
-target_link_libraries(hui
+target_link_libraries(dr4
     PRIVATE 
         sfml-graphics
         common
+        libs
 )
