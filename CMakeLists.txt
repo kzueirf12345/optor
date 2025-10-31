@@ -33,6 +33,8 @@ add_subdirectory(source/widgets)
 add_subdirectory(source/global)
 add_subdirectory(source/optics)
 
+include_directories(source/libs/mipt-ded-zemax/include)
+
 find_package(X11                            REQUIRED)
 find_package(SFML 2.5.1 COMPONENTS graphics REQUIRED)
 
