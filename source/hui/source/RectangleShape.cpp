@@ -5,7 +5,6 @@
 
 #include "hui/RectangleShape.hpp"
 #include "common/ErrorHandler.hpp"
-#include "hui/Transformable.hpp"
 
 class hui::RectangleShapeImpl: public sf::RectangleShape {
     public:

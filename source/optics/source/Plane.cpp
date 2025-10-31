@@ -34,3 +34,7 @@ const hui::Vector3d& optor::Plane::GetNormal() const noexcept { return normal_; 
 
 void optor::Plane::SetPoint(const hui::Vector3d& point) { point_ = point; }
 void optor::Plane::SetNormal(const hui::Vector3d& normal) { normal_ = !normal; }
+
+void optor::Plane::Move(const hui::Vector3d& offset) {
+    point_ += offset;
+}

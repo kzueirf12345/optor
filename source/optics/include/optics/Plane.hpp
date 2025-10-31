@@ -22,6 +22,8 @@ class Plane : public OpticObj {
         void SetPoint(const hui::Vector3d& point);
         void SetNormal(const hui::Vector3d& normal);
 
+        virtual void Move(const hui::Vector3d& offset) override final;
+
     protected:
         hui::Vector3d point_;
         hui::Vector3d normal_;
