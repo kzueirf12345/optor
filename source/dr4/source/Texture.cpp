@@ -1,78 +1,140 @@
-#include <SFML/Graphics/Color.hpp>
-#include <SFML/Graphics/Image.hpp>
+#include <SFML/Graphics/Rect.hpp>
 #include <SFML/System/Vector2.hpp>
-#include <memory>
-#include <cassert>
+#include <cstdlib>
 
-#include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
 #include <stdexcept>
+#include "SFML/Graphics/Sprite.hpp"
+#include "SFML/Graphics/Text.hpp"
 
-#include "hui/Texture.hpp"
+#include "dr4/Texture.hpp"
+
 #include "common/ErrorHandler.hpp"
+#include "dr4/texture.hpp"
 
-class hui::TextureImpl: public sf::Texture {
-    public:
-        TextureImpl()
-        {}
-        TextureImpl(const hui::Vector2d& size)
-        {
-            if (!this->create(size.x, size.y)) {
-                throw std::runtime_error("Can't create sf::Texture");
-            }
+void optor::dr4::Texture::SetSize(::dr4::Vec2f size) 
+{
+    ERROR_HANDLE([&](){
+        renderTexture_.create(static_cast<unsigned int>(size.x), static_cast<unsigned int>(size.y));
+    });
+}
+
+::dr4::Vec2f optor::dr4::Texture::GetSize() const 
+{
+    const sf::Vector2u sizeSF = ERROR_HANDLE([&](){
+        return renderTexture_.getSize();
+    });
+
+    return {static_cast<float>(sizeSF.x), static_cast<float>(sizeSF.y)};
+}
+
+float optor::dr4::Texture::GetWidth() const 
+{
+    const sf::Vector2u sizeSF = ERROR_HANDLE([&](){
+        return renderTexture_.getSize();
+    });
+
+    return static_cast<float>(sizeSF.x);
+}
+
+float optor::dr4::Texture::GetHeight() const 
+{
+    const sf::Vector2u sizeSF = ERROR_HANDLE([this](){
+        return renderTexture_.getSize();
+    });
+
+    return static_cast<float>(sizeSF.y);
+}
+
+
+void optor::dr4::Texture::Draw(const ::dr4::Rectangle &rect) 
+{
+    const sf::Vector2f sizeSF = {rect.rect.size.x, rect.rect.size.y};
+    sf::RectangleShape rectSF(sizeSF);
+
+    ERROR_HANDLE([this, &rectSF, &rect](){
+        rectSF.setPosition(rect.rect.pos.x, rect.rect.pos.y);
+    });
+
+    ERROR_HANDLE([this, &rectSF, &rect](){
+        rectSF.setFillColor(sf::Color(rect.fill.r, rect.fill.g, rect.fill.b, rect.fill.a));
+    });
+
+    ERROR_HANDLE([this, &rectSF, &rect](){
+        rectSF.setOutlineColor(sf::Color(rect.borderColor.r, rect.borderColor.g, rect.borderColor.b, rect.borderColor.a));
+    });
+
+    ERROR_HANDLE([this, &rectSF, &rect](){
+        rectSF.setOutlineThickness(rect.borderThickness);
+    });
+
+    ERROR_HANDLE([this, &rectSF, &rect](){
+        rectSF.setOutlineThickness(rect.borderThickness);
+    });
+
+    ERROR_HANDLE([this, &rectSF](){
+        renderTexture_.draw(rectSF);
+    });
+}
+
+void optor::dr4::Texture::Draw(const ::dr4::Text &text) 
+{
+    sf::Text textSF(text.text, font_, text.fontSize);
+
+    ERROR_HANDLE([this, &textSF, &text](){
+        textSF.setFillColor(sf::Color(text.color.r, text.color.g, text.color.b, text.color.a));
+    });
+
+    const sf::FloatRect bounds = textSF.getLocalBounds();
+
+    sf::Vector2f posSF = {text.pos.x, text.pos.y};
+    
+    switch(text.valign) {
+        case ::dr4::Text::VAlign::TOP: {
+            break;
         }
-        TextureImpl(const TextureImpl& other) = default;
+        case ::dr4::Text::VAlign::MIDDLE: {
+            posSF.y -= bounds.height / 2.;
+            break;
+        }
+        case ::dr4::Text::VAlign::BASELINE: {
             
-    private:
-};
+            break;
+        }
+        case ::dr4::Text::VAlign::BOTTOM: {
+            posSF.y -= bounds.height;
+            break;
+        }    
 
-hui::Texture::Texture()
-    :   impl_{std::make_unique<hui::TextureImpl>()}
-{}
-
-hui::Texture::Texture(const hui::Vector2d& size)
-    :   impl_(std::make_unique<hui::TextureImpl>(size))
-{}
-
-hui::Texture::Texture                (hui::Texture&& other) noexcept = default;
-hui::Texture& hui::Texture::operator=(hui::Texture&& other) noexcept = default;
-
-hui::Texture::~Texture() = default;
-
-const void* hui::Texture::GetImpl() const noexcept {
-    return impl_.get();
-}
-
-void* hui::Texture::GetImpl() noexcept {
-    return impl_.get();
-}
-
-hui::Vector2d hui::Texture::GetSize() const noexcept {
-    const auto* const impl = static_cast<const hui::TextureImpl*>(GetImpl());
-    sf::Vector2u size = ERROR_HANDLE([impl](){
-        return impl->getSize();
-    });
-
-    return {static_cast<double>(size.x), static_cast<double>(size.y)};
-}
-
-void hui::Texture::Update(const std::vector<uint32_t>& pixels) {
-    auto* const impl = static_cast<hui::TextureImpl*>(GetImpl());
-    ERROR_HANDLE([impl, &pixels](){
-        impl->update(reinterpret_cast<const std::uint8_t*>(pixels.data()));
-    });
-}
-
-void hui::Texture::SetImpl(void* impl) noexcept {
-    assert(impl);
-
-    impl_ = std::make_unique<hui::TextureImpl>(*static_cast<hui::TextureImpl*>(impl));
-}
-
-void hui::Texture::Fill(const hui::Color& color) {
-    auto* const impl = static_cast<hui::TextureImpl*>(GetImpl());
-    sf::Image image = {};
-    image.create(impl->getSize().x, impl->getSize().y, sf::Color(color.GetRed(), color.GetGreen(), color.GetBlue(), color.GetAlpha()));
-    if (!impl->loadFromImage(image)) {
-        throw std::runtime_error("Can't load texture from image");
+        case ::dr4::Text::VAlign::UNKNOWN:
+        default:
+            throw std::overflow_error("Unknown vertical align");
     }
+
+    ERROR_HANDLE([&textSF, &posSF](){
+        textSF.setPosition(posSF);
+    });
+
+    ERROR_HANDLE([this, &textSF](){
+        renderTexture_.draw(textSF);
+    });
+}
+
+void optor::dr4::Texture::Draw(const ::dr4::Texture &texture, const ::dr4::Vec2f &pos) 
+{
+    const sf::Texture textureSF = ERROR_HANDLE([&texture](){
+        return dynamic_cast<const optor::dr4::Texture&>(texture).renderTexture_.getTexture();
+    });
+
+    sf::Sprite spriteSF = ERROR_HANDLE([&textureSF](){
+        return sf::Sprite(textureSF);
+    });
+
+    ERROR_HANDLE([&spriteSF, &pos](){
+        spriteSF.setPosition(pos.x, pos.y);
+    });
+
+    ERROR_HANDLE([this, &spriteSF](){
+        renderTexture_.draw(spriteSF);
+    });
 }

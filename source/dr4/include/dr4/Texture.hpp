@@ -1,45 +1,41 @@
-#ifndef OPTOR_SOURCE_HUI_INCLUDE_HUI_TEXTURE_HPP
-#define OPTOR_SOURCE_HUI_INCLUDE_HUI_TEXTURE_HPP
+#ifndef OPTOR_SOURCE_DR4_INCLUDE_DR4_TEXTURE_HPP
+#define OPTOR_SOURCE_DR4_INCLUDE_DR4_TEXTURE_HPP
 
-#include <memory>
-#include <vector>
+#include <SFML/Graphics/RenderTexture.hpp>
+#include "SFML/Graphics/Font.hpp"
 
-#include "hui/Vector.hpp"
-#include "hui/Color.hpp"
+#include "dr4/texture.hpp"
 
-namespace hui 
+namespace optor
+{
+namespace dr4 
 {
 
-class TextureImpl;
+class Window;
 
-class Texture {
-    public:
-        Texture();
-        explicit Texture(const hui::Vector2d& size);
+class Texture : public ::dr4::Texture
+{ 
+public:
+    // REVIEW
+    friend optor::dr4::Window;
 
-        Texture           (const Texture&) = delete;
-        Texture& operator=(const Texture&) = delete;
-        
-        Texture           (Texture&& other) noexcept;
-        Texture& operator=(Texture&& other) noexcept;
+    virtual void SetSize(::dr4::Vec2f size) override;
+    virtual ::dr4::Vec2f GetSize() const override;
+    virtual float GetWidth() const override;
+    virtual float GetHeight() const override;
 
-        virtual ~Texture();
+    virtual void Draw(const ::dr4::Rectangle &rect) override;
+    virtual void Draw(const ::dr4::Text &text) override;
+    virtual void Draw(const ::dr4::Texture &texture, const ::dr4::Vec2f &pos) override;
 
-        [[nodiscard]] virtual const void* GetImpl() const noexcept;
-        [[nodiscard]] virtual       void* GetImpl()       noexcept;
+protected:
 
-        [[nodiscard]] hui::Vector2d GetSize() const noexcept;
-
-        void SetImpl(void* impl) noexcept;
-        void Update(const std::vector<uint32_t>& pixels);
-        void Fill(const hui::Color& color);
-
-    private:
-        std::unique_ptr<TextureImpl> impl_;
+private:
+    sf::RenderTexture renderTexture_;
+    sf::Font font_;
 };
 
 }
+}
 
-
-
-#endif /*OPTOR_SOURCE_HUI_INCLUDE_HUI_TEXTURE_HPP*/
+#endif /*OPTOR_SOURCE_DR4_INCLUDE_DR4_TEXTURE_HPP*/

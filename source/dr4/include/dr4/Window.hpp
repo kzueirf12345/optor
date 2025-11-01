@@ -1,48 +1,46 @@
-#ifndef OPTOR_SOURCE_HUI_INCLUDE_HUI_WINDOW_HPP
-#define OPTOR_SOURCE_HUI_INCLUDE_HUI_WINDOW_HPP
+#ifndef OPTOR_SOURCE_DR4_INCLUDE_DR4_WINDOW_HPP
+#define OPTOR_SOURCE_DR4_INCLUDE_DR4_WINDOW_HPP
 
-#include <memory>
+#include "SFML/Graphics/RenderWindow.hpp"
 
-#include "hui/Drawable.hpp"
-#include "hui/Event.hpp"
-#include "hui/Renderer.hpp"
-#include "hui/Vector.hpp"
+#include "dr4/window.hpp"
+#include <SFML/System/Vector2.hpp>
 
-namespace hui 
+namespace optor
+{
+namespace dr4 
 {
 
-class WindowImpl;
+class Window : public ::dr4::Window
+{ 
+public:
 
-class Window : public hui::Renderer {
-    public:
-        Window(const hui::Vector2d& size, const std::string& title);
+    virtual void SetTitle(const std::string &title) override;
+    virtual const std::string &GetTitle() const override;
 
-        Window           (const Window&) = delete;
-        Window& operator=(const Window&) = delete;
-        
-        Window           (Window&& other) noexcept;
-        Window& operator=(Window&& other) noexcept;
+    virtual ::dr4::Vec2f GetSize() const override;
+    virtual void SetSize(const ::dr4::Vec2f& size) override;
 
-        ~Window();
+    virtual void Open() override;
+    virtual bool IsOpen() const override;
+    virtual void Close() override;
 
-        [[nodiscard]] virtual const void* GetImpl() const noexcept override final;
-        [[nodiscard]] virtual       void* GetImpl()       noexcept override final;
-        
-        virtual       void Clear(const hui::Color& color) override;
-        virtual       void Draw(const hui::Drawable& drawable) override;
-        virtual       void Display() override;
-        [[nodiscard]] bool isOpen() const;
-                      void Close();
-                      bool PoolEvent(hui::Event* event);
-        void               SetFrameLimit(unsigned int limit);
+    virtual void Clear(const ::dr4::Color &color) override;
+    virtual void Draw(const ::dr4::Texture &texture, ::dr4::Vec2f pos) override;
+    virtual void Display() override;
 
+    virtual ::dr4::Texture *CreateTexture() override;
 
-        [[nodiscard]] hui::Vector2d GetSize() const;
+    virtual std::optional<::dr4::Event> PollEvent() override;
 
-    private:
-        std::unique_ptr<WindowImpl> impl_;
+protected:
+private:
+    sf::RenderWindow window_;
+    std::string title_;
+    sf::Vector2u size_;
 };
 
 }
+}
 
-#endif /*OPTOR_SOURCE_HUI_INCLUDE_HUI_WINDOW_HPP*/
+#endif /*OPTOR_SOURCE_DR4_INCLUDE_DR4_WINDOW_HPP*/

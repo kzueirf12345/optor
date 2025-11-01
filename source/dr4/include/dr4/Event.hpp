@@ -1,190 +1,21 @@
-#ifndef OPTOR_SOURCE_HUI_INCLUDE_HUI_EVENT_HPP
-#define OPTOR_SOURCE_HUI_INCLUDE_HUI_EVENT_HPP
+#ifndef OPTOR_SOURCE_DR4_INCLUDE_DR4_EVENT_HPP
+#define OPTOR_SOURCE_DR4_INCLUDE_DR4_EVENT_HPP
 
-#include <SFML/Window/Event.hpp>
-#include <memory>
+#include "dr4/event.hpp"
 
-#include "hui/Vector.hpp"
-
-namespace hui 
+namespace optor
+{
+namespace dr4 
 {
 
-class EventImpl;
-
-class Event {
-    public:
-        Event();
-
-        ~Event();
-
-        [[nodiscard]] virtual const void* GetImpl() const noexcept;
-        [[nodiscard]] virtual       void* GetImpl()       noexcept;
-
-        enum class Type 
-        {
-            Closed,                 ///< The window requested to be closed (no data)
-            Resized,                ///< The window was resized (data in event.size)
-            LostFocus,              ///< The window lost the focus (no data)
-            GainedFocus,            ///< The window gained the focus (no data)
-            TextEntered,            ///< A character was entered (data in event.text)
-            KeyPressed,             ///< A key was pressed (data in event.key)
-            KeyReleased,            ///< A key was released (data in event.key)
-            MouseWheelMoved,        ///< The mouse wheel was scrolled (data in event.mouseWheel) (deprecated)
-            MouseWheelScrolled,     ///< The mouse wheel was scrolled (data in event.mouseWheelScroll)
-            MouseButtonPressed,     ///< A mouse button was pressed (data in event.mouseButton)
-            MouseButtonReleased,    ///< A mouse button was released (data in event.mouseButton)
-            MouseMoved,             ///< The mouse cursor moved (data in event.mouseMove)
-            MouseEntered,           ///< The mouse cursor entered the area of the window (no data)
-            MouseLeft,              ///< The mouse cursor left the area of the window (no data)
-            JoystickButtonPressed,  ///< A joystick button was pressed (data in event.joystickButton)
-            JoystickButtonReleased, ///< A joystick button was released (data in event.joystickButton)
-            JoystickMoved,          ///< The joystick moved along an axis (data in event.joystickMove)
-            JoystickConnected,      ///< A joystick was connected (data in event.joystickConnect)
-            JoystickDisconnected,   ///< A joystick was disconnected (data in event.joystickConnect)
-            TouchBegan,             ///< A touch event began (data in event.touch)
-            TouchMoved,             ///< A touch moved (data in event.touch)
-            TouchEnded,             ///< A touch event ended (data in event.touch)
-            SensorChanged,          ///< A sensor value changed (data in event.sensor)
-
-            Count
-        };
-
-        enum class MouseButton
-        {
-            Left,       ///< The left mouse button
-            Right,      ///< The right mouse button
-            Middle,     ///< The middle (wheel) mouse button
-            XButton1,   ///< The first extra mouse button
-            XButton2,   ///< The second extra mouse button
-
-            ButtonCount ///< Keep last -- the total number of mouse buttons
-        };
-
-        enum class MouseWheel
-        {
-            VerticalWheel,  ///< The vertical mouse wheel
-            HorizontalWheel ///< The horizontal mouse wheel
-        };
-
-        enum class KeyboardButton
-        {
-            Unknown = -1, ///< Unhandled key
-            A = 0,        ///< The A key
-            B,            ///< The B key
-            C,            ///< The C key
-            D,            ///< The D key
-            E,            ///< The E key
-            F,            ///< The F key
-            G,            ///< The G key
-            H,            ///< The H key
-            I,            ///< The I key
-            J,            ///< The J key
-            K,            ///< The K key
-            L,            ///< The L key
-            M,            ///< The M key
-            N,            ///< The N key
-            O,            ///< The O key
-            P,            ///< The P key
-            Q,            ///< The Q key
-            R,            ///< The R key
-            S,            ///< The S key
-            T,            ///< The T key
-            U,            ///< The U key
-            V,            ///< The V key
-            W,            ///< The W key
-            X,            ///< The X key
-            Y,            ///< The Y key
-            Z,            ///< The Z key
-            Num0,         ///< The 0 key
-            Num1,         ///< The 1 key
-            Num2,         ///< The 2 key
-            Num3,         ///< The 3 key
-            Num4,         ///< The 4 key
-            Num5,         ///< The 5 key
-            Num6,         ///< The 6 key
-            Num7,         ///< The 7 key
-            Num8,         ///< The 8 key
-            Num9,         ///< The 9 key
-            Escape,       ///< The Escape key
-            LControl,     ///< The left Control key
-            LShift,       ///< The left Shift key
-            LAlt,         ///< The left Alt key
-            LSystem,      ///< The left OS specific key: window (Windows and Linux), apple (MacOS X), ...
-            RControl,     ///< The right Control key
-            RShift,       ///< The right Shift key
-            RAlt,         ///< The right Alt key
-            RSystem,      ///< The right OS specific key: window (Windows and Linux), apple (MacOS X), ...
-            Menu,         ///< The Menu key
-            LBracket,     ///< The [ key
-            RBracket,     ///< The ] key
-            Semicolon,    ///< The ; key
-            Comma,        ///< The , key
-            Period,       ///< The . key
-            Quote,        ///< The ' key
-            Slash,        ///< The / key
-            Backslash,    ///< The \ key
-            Tilde,        ///< The ~ key
-            Equal,        ///< The = key
-            Hyphen,       ///< The - key (hyphen)
-            Space,        ///< The Space key
-            Enter,        ///< The Enter/Return keys
-            Backspace,    ///< The Backspace key
-            Tab,          ///< The Tabulation key
-            PageUp,       ///< The Page up key
-            PageDown,     ///< The Page down key
-            End,          ///< The End key
-            Home,         ///< The Home key
-            Insert,       ///< The Insert key
-            Delete,       ///< The Delete key
-            Add,          ///< The + key
-            Subtract,     ///< The - key (minus, usually from numpad)
-            Multiply,     ///< The * key
-            Divide,       ///< The / key
-            Left,         ///< Left arrow
-            Right,        ///< Right arrow
-            Up,           ///< Up arrow
-            Down,         ///< Down arrow
-            Numpad0,      ///< The numpad 0 key
-            Numpad1,      ///< The numpad 1 key
-            Numpad2,      ///< The numpad 2 key
-            Numpad3,      ///< The numpad 3 key
-            Numpad4,      ///< The numpad 4 key
-            Numpad5,      ///< The numpad 5 key
-            Numpad6,      ///< The numpad 6 key
-            Numpad7,      ///< The numpad 7 key
-            Numpad8,      ///< The numpad 8 key
-            Numpad9,      ///< The numpad 9 key
-            F1,           ///< The F1 key
-            F2,           ///< The F2 key
-            F3,           ///< The F3 key
-            F4,           ///< The F4 key
-            F5,           ///< The F5 key
-            F6,           ///< The F6 key
-            F7,           ///< The F7 key
-            F8,           ///< The F8 key
-            F9,           ///< The F9 key
-            F10,          ///< The F10 key
-            F11,          ///< The F11 key
-            F12,          ///< The F12 key
-            F13,          ///< The F13 key
-            F14,          ///< The F14 key
-            F15,          ///< The F15 key
-            Pause,        ///< The Pause key
-
-            KeyCount,     ///< Keep last -- the total number of keyboard keys
-        };
-
-        [[nodiscard]] hui::Event::Type            GetType()           const;
-        [[nodiscard]] hui::Event::MouseButton     GetMouseButton()    const;
-        [[nodiscard]] hui::Event::MouseWheel      GetMouseWheel()     const;
-        [[nodiscard]] hui::Event::KeyboardButton  GetKeyboardButton() const;
-        [[nodiscard]] hui::Vector2d               GetMouseShift()     const noexcept;
-        [[nodiscard]] hui::Vector2d               GetMouseCoord()     const noexcept;
-
-    private:
-        std::unique_ptr<EventImpl> impl_;
+class Event : public ::dr4::Event
+{ 
+public:
+protected:
+private:
 };
 
 }
+}
 
-#endif /*OPTOR_SOURCE_HUI_INCLUDE_HUI_EVENT_HPP*/
+#endif /*OPTOR_SOURCE_DR4_INCLUDE_DR4_EVENT_HPP*/

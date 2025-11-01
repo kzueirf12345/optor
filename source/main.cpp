@@ -304,7 +304,6 @@
 
 #include <cstdlib>
 #include <iostream>
-#include "dr4/math/Vector.hpp"
 
 int main() {
 
