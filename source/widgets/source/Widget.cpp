@@ -2,10 +2,6 @@
 
 #include "widgets/Widget.hpp"
 #include "common/ErrorHandler.hpp"
-#include "hui/Renderer.hpp"
-#include "hui/Sprite.hpp"
-#include "hui/Texture.hpp"
-#include "hui/Vector.hpp"
 #include "global/Global.hpp"
 
 optor::Widget::Widget(const hui::Vector2d& size, optor::WidgetsState* state)

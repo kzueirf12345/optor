@@ -1,24 +1,8 @@
 
 add_library(dr4 SHARED
-    # source/math/Vector.cpp
-    # source/Color.cpp
-    # source/RectDouble.cpp
-    
-    # source/Drawable.cpp
-    # source/Transformable.cpp
 
-    # source/Shape.cpp
-    # source/RectangleShape.cpp
-    # source/Texture.cpp
-    # source/Sprite.cpp
-    # source/Textured.cpp
-
-    # source/Font.cpp
-    # source/Text.cpp
-    
-    # source/Event.cpp
-    # source/Renderer.cpp
-    # source/Window.cpp
+    source/math/rect.cpp
+    source/math/vec2.cpp
 
     source/Texture.cpp
     source/Window.cpp 

@@ -311,24 +311,17 @@
 #include "dr4/math/color.hpp"
 #include "misc/dr4_ifc.hpp"
 #include "dr4/window.hpp"
-
-using GetBackendT = dr4::DR4Backend*(*)();
+#include "global/Global.hpp"
 
 int main() {
-
-    // std::cout << "Hello world!";
-
-    std::string libdr4Path (dr4::DR4BackendFunctionName);
-
-    void* libdr4 = dlopen("./build/source/dr4/libgfx.so", RTLD_LAZY);
-    
+    void* libdr4 = dlopen("./build/source/dr4/libdr4.so", RTLD_LAZY);
     
     if (!libdr4) {
         std::cerr << "error" << dlerror();
         throw std::runtime_error("Can't open lib");
     }
 
-    dr4::DR4Backend* backend = reinterpret_cast<GetBackendT>(dlsym(libdr4, dr4::DR4BackendFunctionName))();
+    dr4::DR4Backend* backend = reinterpret_cast<dr4::DR4Backend*(*)()>(dlsym(libdr4, dr4::DR4BackendFunctionName))();
 
     if (!backend) {
         throw std::runtime_error("Can't get backend");
@@ -345,9 +338,8 @@ int main() {
 
     window->Open();
 
-    std::optional<dr4::Event> event = {};
     while (window->IsOpen()) {
-
+        std::optional<dr4::Event> event = {};
         while ((event = window->PollEvent())) {
             switch (event->type) {
                 case dr4::Event::Type::QUIT:

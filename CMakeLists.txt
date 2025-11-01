@@ -30,8 +30,8 @@ endif()
 add_subdirectory(source/common)
 add_subdirectory(source/dr4)
 # add_subdirectory(source/widgets)
-# add_subdirectory(source/global)
-# add_subdirectory(source/optics)
+add_subdirectory(source/global)
+add_subdirectory(source/optics)
 add_subdirectory(source/libs)
 
 find_package(X11                            REQUIRED)
@@ -50,7 +50,7 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
         common
         # dr4
         # widgets
-        # global
-        # optics
+        global
+        optics
         libs
 )

@@ -1,14 +1,15 @@
 add_library(optics STATIC
-    source/Scene.cpp
-    source/Camera.cpp
-    source/Light.cpp
-    source/Sphere.cpp
+    # source/Scene.cpp
+    # source/Camera.cpp
+    # source/Light.cpp
+    # source/Sphere.cpp
+    # source/Plane.cpp
+    # source/Triangle.cpp
+    # source/OpticObj.cpp
+    # source/TriangleMesh.cpp
+    # source/FinitPlane.cpp
+    source/Vector.cpp
     source/Material.cpp
-    source/Plane.cpp
-    source/Triangle.cpp
-    source/OpticObj.cpp
-    source/TriangleMesh.cpp
-    source/FinitPlane.cpp
 )
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -39,6 +40,6 @@ target_link_libraries(optics
     PRIVATE 
         sfml-graphics
         common
-        hui
+        libs
         global
 )
