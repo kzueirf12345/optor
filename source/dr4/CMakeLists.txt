@@ -1,5 +1,5 @@
 
-add_library(dr4 STATIC
+add_library(dr4 SHARED
     # source/math/Vector.cpp
     # source/Color.cpp
     # source/RectDouble.cpp
@@ -22,6 +22,7 @@ add_library(dr4 STATIC
 
     source/Texture.cpp
     source/Window.cpp 
+    source/Backend.cpp
 )
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")

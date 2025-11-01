@@ -121,46 +121,61 @@ std::optional<::dr4::Event> optor::dr4::Window::PollEvent()
                 static_cast<float>(eventSF.mouseMove.x), 
                 static_cast<float>(eventSF.mouseMove.y)
             }};
+            break;
         }
         case sf::Event::EventType::MouseButtonPressed : {
             event.type = ::dr4::Event::Type::MOUSE_DOWN;
-            event.mouseDown = {
+            event.mouseButton = {
                 .pos = {
                     static_cast<float>(eventSF.mouseButton.x), 
                     static_cast<float>(eventSF.mouseButton.y)
                 }
             };
-            event.mouseDown.button = (int)eventSF.mouseButton.button;
-            event.mouseDown.pressed = true;
+            event.mouseButton.button = (int)eventSF.mouseButton.button;
+            event.mouseButton.pressed = true;
+            break;
         }
         case sf::Event::EventType::MouseButtonReleased : {
             event.type = ::dr4::Event::Type::MOUSE_UP;
-            event.mouseUp = {
+            event.mouseButton = {
                 .pos = {
                     static_cast<float>(eventSF.mouseButton.x), 
                     static_cast<float>(eventSF.mouseButton.y)
                 }
             };
-            event.mouseUp.button = (int)eventSF.mouseButton.button;
-            event.mouseUp.pressed = true;
+            event.mouseButton.button = (int)eventSF.mouseButton.button;
+            event.mouseButton.pressed = true;
+            break;
         }
         case sf::Event::EventType::MouseWheelScrolled : {
             event.type = ::dr4::Event::Type::MOUSE_WHEEL;
-            // TODO
+            event.mouseWheel = {
+                .pos = {
+                    static_cast<float>(eventSF.mouseWheel.x), 
+                    static_cast<float>(eventSF.mouseWheel.y)
+                }
+            };
+
+            // event.mouseWheel.delta = eventSF.mouseWheel.delta;
+            break;
         }
         case sf::Event::EventType::KeyPressed : {
             event.type = ::dr4::Event::Type::KEY_DOWN;
+            break;
             // TODO
         }
         case sf::Event::EventType::KeyReleased : {
             event.type = ::dr4::Event::Type::KEY_UP;
+            break;
             // TODO
         }
         case sf::Event::EventType::Closed : {
             event.type = ::dr4::Event::Type::QUIT;
+            break;
         }
         default:
             event.type = ::dr4::Event::Type::UNKNOWN;
+            break;
     }
 
     return event;
