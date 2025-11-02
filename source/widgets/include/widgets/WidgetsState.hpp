@@ -4,7 +4,7 @@
 
 #include "dr4/math/vec2.hpp"
 
-// #include "optics/OpticObj.hpp"
+#include "optics/OpticObj.hpp"
 
 namespace optor 
 {
@@ -18,7 +18,7 @@ struct WidgetsState {
     const optor::Widget* selectedWidget;
     dr4::Vec2f           prevMouseCoord;
 
-    // optor::OpticObj* selectedObj; //FIXME
+    optor::OpticObj* selectedObj;
 };
 
 }

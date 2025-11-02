@@ -2,7 +2,7 @@ add_library(widgets STATIC
     source/Widget.cpp
     source/WidgetChildable.cpp
     source/WidgetManager.cpp
-    # source/SceneWidget.cpp
+    source/SceneWidget.cpp
     # source/WidgetButton.cpp
     # source/WidgetButtonCamera.cpp
     # source/WidgetButtonText.cpp

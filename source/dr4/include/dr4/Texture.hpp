@@ -16,7 +16,6 @@ class Window;
 class Texture : public ::dr4::Texture
 { 
 public:
-    // REVIEW
     friend optor::dr4::Window;
 
     virtual void SetSize(::dr4::Vec2f size) override;
@@ -26,6 +25,7 @@ public:
 
     virtual void Draw(const ::dr4::Rectangle &rect) override;
     virtual void Draw(const ::dr4::Text &text) override;
+    virtual void Draw(const ::dr4::Image &image, const ::dr4::Vec2f& pos) override;
     virtual void Draw(const ::dr4::Texture &texture, const ::dr4::Vec2f &pos) override;
 
 protected:
