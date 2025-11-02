@@ -1,15 +1,15 @@
 add_library(widgets STATIC
     source/Widget.cpp
     source/WidgetChildable.cpp
-    source/SceneWidget.cpp
     source/WidgetManager.cpp
-    source/WidgetButton.cpp
-    source/WidgetButtonCamera.cpp
-    source/WidgetButtonText.cpp
-    source/WidgetOpticObj.cpp
-    source/WidgetOpticObjs.cpp
-    source/ScrollBar.cpp
-    source/WidgetButtonMoveOpticObj.cpp
+    # source/SceneWidget.cpp
+    # source/WidgetButton.cpp
+    # source/WidgetButtonCamera.cpp
+    # source/WidgetButtonText.cpp
+    # source/WidgetOpticObj.cpp
+    # source/WidgetOpticObjs.cpp
+    # source/ScrollBar.cpp
+    # source/WidgetButtonMoveOpticObj.cpp
 )
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -38,9 +38,9 @@ target_include_directories(widgets
 
 target_link_libraries(widgets
     PRIVATE 
-        sfml-graphics
         common
-        hui
+        libs
+        dr4
         global
         optics
 )

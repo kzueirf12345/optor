@@ -29,7 +29,7 @@ endif()
 
 add_subdirectory(source/common)
 add_subdirectory(source/dr4)
-# add_subdirectory(source/widgets)
+add_subdirectory(source/widgets)
 add_subdirectory(source/global)
 add_subdirectory(source/optics)
 add_subdirectory(source/libs)
@@ -44,12 +44,8 @@ add_executable(${CMAKE_PROJECT_NAME}
 
 target_link_libraries(${CMAKE_PROJECT_NAME} 
     PRIVATE
-        # sfml-graphics
-        # ${X11_LIBRARIES}
-
         common
-        # dr4
-        # widgets
+        widgets
         global
         optics
         libs

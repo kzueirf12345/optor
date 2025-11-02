@@ -36,7 +36,7 @@ const std::string &optor::dr4::Window::GetTitle() const
 
 ::dr4::Vec2f optor::dr4::Window::GetSize() const 
 {
-    const sf::Vector2u sizeSF = ERROR_HANDLE([this](){
+    const sf::Vector2u sizeSF = ERROR_HANDLE([this]() {
         return window_.getSize();
     });
 
@@ -55,6 +55,7 @@ void optor::dr4::Window::Open()
 {
     ERROR_HANDLE([this](){
         window_.create(sf::VideoMode(size_.x, size_.y), title_);
+        window_.setFramerateLimit(20);
     });
 }
 
@@ -171,15 +172,15 @@ std::optional<::dr4::Event> optor::dr4::Window::PollEvent()
 
         case sf::Event::EventType::KeyPressed: {
             event.type = ::dr4::Event::Type::KEY_DOWN;
-            event.keyDown.sym = KeyCodeSF2DR4(eventSF.key.code);
-            event.keyDown.mod = KeyModeSF2DR4(eventSF.key);
+            event.key.sym = KeyCodeSF2DR4(eventSF.key.code);
+            event.key.mod = KeyModeSF2DR4(eventSF.key);
             break;
         }
 
         case sf::Event::EventType::KeyReleased: {
             event.type = ::dr4::Event::Type::KEY_UP;
-            event.keyUp.sym = KeyCodeSF2DR4(eventSF.key.code);
-            event.keyUp.mod = KeyModeSF2DR4(eventSF.key);
+            event.key.sym = KeyCodeSF2DR4(eventSF.key.code);
+            event.key.mod = KeyModeSF2DR4(eventSF.key);
             break;
         }
 

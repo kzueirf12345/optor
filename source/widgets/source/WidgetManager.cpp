@@ -1,23 +1,35 @@
 #include <memory>
 #include <cassert>
 
+#include "dr4/event.hpp"
+#include "dr4/math/vec2.hpp"
+#include "dr4/texture.hpp"
+#include "dr4/window.hpp"
+
 #include "widgets/WidgetManager.hpp"
 #include "global/Global.hpp"
 #include "common/ErrorHandler.hpp"
-#include "hui/Event.hpp"
-#include "hui/Vector.hpp"
-#include "hui/Window.hpp"
 #include "widgets/WidgetChildable.hpp"
 #include "widgets/Widget.hpp"
 #include "widgets/WidgetChildable.hpp"
 
-optor::WidgetManager::WidgetManager()
+optor::WidgetManager::WidgetManager(dr4::Window* window)
+    :   window_{window},
+        texture_{window_->CreateTexture()},
+        desktop_{},
+        state_{}
 {
-    desktop_ = ERROR_HANDLE(
-        std::make_unique<optor::WidgetChildable, const hui::Vector2d&, optor::WidgetsState*>, 
-        hui::Vector2d(optor::PROGRAM_WIDTH, optor::PROGRAM_HEIGHT),
-        &state_
-    );
+    ERROR_HANDLE([this](){
+        texture_->SetSize({optor::PROGRAM_WIDTH, optor::PROGRAM_HEIGHT});
+    });
+
+    desktop_ = ERROR_HANDLE([this, window](){
+        return std::make_unique<optor::WidgetChildable>(
+            dr4::Vec2f{optor::PROGRAM_WIDTH, optor::PROGRAM_HEIGHT},
+            &state_,
+            window
+        );
+    });
     ERROR_HANDLE(&optor::Widget::SetBackgroundColor, desktop_, optor::color::ProgramBackground);
     ERROR_HANDLE(&optor::Widget::SetIsDraggable, desktop_, false);
 
@@ -25,45 +37,48 @@ optor::WidgetManager::WidgetManager()
     state_.draggedWidget = nullptr;
     state_.selectedWidget = nullptr;
     state_.prevMouseCoord = {0, 0};
-    state_.selectedObj = nullptr;
+    // state_.selectedObj = nullptr; // FIXME
 }
 
-void optor::WidgetManager::Draw(hui::Window* window) {
-    assert(window);
+void optor::WidgetManager::Draw() {
+    ERROR_HANDLE([this](){
+        desktop_->Draw(*texture_);
+    });
 
-    ERROR_HANDLE(&optor::WidgetChildable::Draw, desktop_, window);
+    ERROR_HANDLE([this](){
+        window_->Draw(*texture_, {0, 0});
+    });
 }
 
-void optor::WidgetManager::HandleEvents(hui::Window* window) {
-    assert(window);
+void optor::WidgetManager::HandleEvents() {
+    
+    std::optional<dr4::Event> event = {};
 
-    auto event = ERROR_HANDLE([](){ return hui::Event(); });
-
-    while (ERROR_HANDLE(&hui::Window::PoolEvent, window, &event)) {
-        switch (ERROR_HANDLE(&hui::Event::GetType, event)) {
-            case hui::Event::Type::Closed:
-                ERROR_HANDLE(&hui::Window::Close, window);
+    while ((event = ERROR_HANDLE(&dr4::Window::PollEvent, window_))) {
+        switch (event->type) {
+            case dr4::Event::Type::QUIT:
+                ERROR_HANDLE(&dr4::Window::Close, window_);
                 break;
 
-            case hui::Event::Type::MouseMoved:
-                ERROR_HANDLE(&optor::WidgetChildable::OnMouseMove, desktop_, event);
-                state_.prevMouseCoord = event.GetMouseShift();
+            case dr4::Event::Type::MOUSE_MOVE:
+                ERROR_HANDLE(&optor::WidgetChildable::OnMouseMove, desktop_, event.value());
+                state_.prevMouseCoord = event->mouseMove.pos;
                 break;
 
-            case hui::Event::Type::MouseButtonPressed:
-                ERROR_HANDLE(&optor::WidgetChildable::OnMousePress, desktop_, event);
+            case dr4::Event::Type::MOUSE_DOWN:
+                ERROR_HANDLE(&optor::WidgetChildable::OnMousePress, desktop_, event.value());
                 break;
 
-            case hui::Event::Type::MouseButtonReleased:
-                ERROR_HANDLE(&optor::WidgetChildable::OnMouseRelease, desktop_, event);
+            case dr4::Event::Type::MOUSE_UP:
+                ERROR_HANDLE(&optor::WidgetChildable::OnMouseRelease, desktop_, event.value());
                 break;
 
-            case hui::Event::Type::KeyPressed:
-                ERROR_HANDLE(&optor::WidgetChildable::OnKeyboardPress, desktop_, event);
+            case dr4::Event::Type::KEY_DOWN:
+                ERROR_HANDLE(&optor::WidgetChildable::OnKeyboardPress, desktop_, event.value());
                 break;
 
-            case hui::Event::Type::KeyReleased:
-                ERROR_HANDLE(&optor::WidgetChildable::OnKeyboardRelease, desktop_, event);
+            case dr4::Event::Type::KEY_UP:
+                ERROR_HANDLE(&optor::WidgetChildable::OnKeyboardRelease, desktop_, event.value());
                 break;
 
             default:
@@ -74,23 +89,23 @@ void optor::WidgetManager::HandleEvents(hui::Window* window) {
     ERROR_HANDLE(&optor::WidgetChildable::OnIdle, desktop_);
 }
 
-optor::WidgetChildable* optor::WidgetManager::SetDesktop(std::unique_ptr<optor::WidgetChildable> desktop) noexcept {
+optor::WidgetChildable* optor::WidgetManager::SetDesktop(std::unique_ptr<optor::WidgetChildable> desktop)  {
     desktop_ = std::move(desktop);
     state_.hoveredWidget = desktop_.get();
     return desktop_.get();
 }
-const optor::WidgetChildable* optor::WidgetManager::GetDesktop() const noexcept {
+const optor::WidgetChildable* optor::WidgetManager::GetDesktop() const  {
     return desktop_.get();
 }
 
-optor::WidgetChildable* optor::WidgetManager::GetDesktop() noexcept {
+optor::WidgetChildable* optor::WidgetManager::GetDesktop()  {
     return desktop_.get();
 }
 
-const optor::WidgetsState* optor::WidgetManager::GetState() const noexcept {
+const optor::WidgetsState* optor::WidgetManager::GetState() const  {
     return &state_;
 }
 
-optor::WidgetsState* optor::WidgetManager::GetState() noexcept {
+optor::WidgetsState* optor::WidgetManager::GetState()  {
     return &state_;
 }

@@ -2,16 +2,15 @@
 #define OPTOR_SOURCE_WINDOWS_INCLUDE_WINDOWS_WIDNOW_HPP
 
 #include "dr4/event.hpp"
+#include "dr4/keycodes.hpp"
+#include "dr4/mousecodes.hpp"
 #include "dr4/texture.hpp"
 #include "dr4/math/vec2.hpp"
 
-
+#include "widgets/WidgetsState.hpp"
 
 namespace optor 
 {
-
-class WidgetManager;
-class WidgetsState;
 
 class Widget {
     public:
@@ -32,13 +31,13 @@ class Widget {
         void SetBackgroundColor (const dr4::Color& color);
         void SetBorderColor     (const dr4::Color& color);
         void SetOutlineThickness(double thickness);
-        void SetParent          (optor::Widget* parent)                     noexcept;  
-        void SetIsDraggable     (const bool isDraggable)                    noexcept;
-        void SetIsFreeDraggable (const bool isFreeDraggable)                noexcept;
-        void SetDragButton      (dr4::Event::MouseButton dragButton)        noexcept;
-        void SetIsSelectable    (const bool isSelectable)                   noexcept;
-        void SetSelectButton    (dr4::Event::MouseButton selectButton)      noexcept;
-        void SetUnselectButton  (dr4::Event::KeyEvent  unselectButton)      noexcept;
+        void SetParent          (optor::Widget* parent);  
+        void SetIsDraggable     (const bool isDraggable);
+        void SetIsFreeDraggable (const bool isFreeDraggable);
+        void SetDragButton      (dr4::MouseCode dragButton);
+        void SetIsSelectable    (const bool isSelectable);
+        void SetSelectButton    (dr4::MouseCode selectButton);
+        void SetUnselectButton  (dr4::KeyCode unselectButton);
         
         [[nodiscard]] dr4::Vec2f AbsCoord() const;  
 
@@ -47,18 +46,17 @@ class Widget {
 
     protected:
         dr4::Rectangle rect_;
-        bool spriteIsValid_;
 
         optor::Widget* parent_;
         optor::WidgetsState* const state_;
 
         bool isDraggable_;
-        dr4::Event::MouseButton dragButton_;
+        dr4::MouseCode dragButton_;
         bool isFreeDraggable_;
 
         bool isSelectable_;
-        dr4::Event::MouseButton selectButton_;
-        dr4::Event::KeyEvent  unselectButton_;
+        dr4::MouseCode selectButton_;
+        dr4::KeyCode  unselectButton_;
 
         bool OnMe(const dr4::Vec2f& absCoord) const;
         void Drag(const dr4::Vec2f& shift);

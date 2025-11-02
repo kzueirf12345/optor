@@ -16,6 +16,7 @@ void optor::dr4::Texture::SetSize(::dr4::Vec2f size)
 {
     ERROR_HANDLE([&](){
         renderTexture_.create(static_cast<unsigned int>(size.x), static_cast<unsigned int>(size.y));
+        renderTexture_.clear();
     });
 }
 
@@ -68,12 +69,12 @@ void optor::dr4::Texture::Draw(const ::dr4::Rectangle &rect)
         rectSF.setOutlineThickness(rect.borderThickness);
     });
 
-    ERROR_HANDLE([this, &rectSF, &rect](){
-        rectSF.setOutlineThickness(rect.borderThickness);
-    });
-
     ERROR_HANDLE([this, &rectSF](){
         renderTexture_.draw(rectSF);
+    });
+
+    ERROR_HANDLE([this](){
+        renderTexture_.display();
     });
 }
 
@@ -118,6 +119,10 @@ void optor::dr4::Texture::Draw(const ::dr4::Text &text)
     ERROR_HANDLE([this, &textSF](){
         renderTexture_.draw(textSF);
     });
+
+    ERROR_HANDLE([this](){
+        renderTexture_.display();
+    });
 }
 
 void optor::dr4::Texture::Draw(const ::dr4::Texture &texture, const ::dr4::Vec2f &pos) 
@@ -136,5 +141,9 @@ void optor::dr4::Texture::Draw(const ::dr4::Texture &texture, const ::dr4::Vec2f
 
     ERROR_HANDLE([this, &spriteSF](){
         renderTexture_.draw(spriteSF);
+    });
+
+    ERROR_HANDLE([this](){
+        renderTexture_.display();
     });
 }
