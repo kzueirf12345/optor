@@ -304,14 +304,20 @@
 
 #include <cstdlib>
 #include <dlfcn.h>
+#include <memory>
 #include <stdexcept>
 #include <iostream>
 
-#include "dr4/event.hpp"
 #include "dr4/math/color.hpp"
+#include "dr4/math/vec2.hpp"
+#include "global/Global.hpp"
 #include "misc/dr4_ifc.hpp"
 #include "dr4/window.hpp"
-#include "global/Global.hpp"
+
+#include "common/ErrorHandler.hpp"
+#include "widgets/Widget.hpp"
+#include "widgets/WidgetManager.hpp"
+#include "widgets/WidgetChildable.hpp"
 
 int main() {
     void* libdr4 = dlopen("./build/source/dr4/libdr4.so", RTLD_LAZY);
@@ -330,34 +336,52 @@ int main() {
     dr4::Window* window = backend->CreateWindow();
 
     if (!window) {
+        delete backend;
         throw std::runtime_error("Can't get window");
     }
 
-    window->SetSize({500, 500});
-    window->SetTitle("0xCEBAEBA1DEDA");
+try 
+{
+    ERROR_HANDLE([window](){
+        window->SetSize({optor::PROGRAM_WIDTH, optor::PROGRAM_HEIGHT});
+        window->SetTitle("0xCEBAEBA1DEDA");
+        window->Open();
+    });
 
-    window->Open();
+    optor::WidgetManager manager(window);
+    
+    auto* const desktop = manager.GetDesktop();
 
-    while (window->IsOpen()) {
-        std::optional<dr4::Event> event = {};
-        while ((event = window->PollEvent())) {
-            switch (event->type) {
-                case dr4::Event::Type::QUIT:
-                    window->Close();
-                    break;
-                default:
-                    break;
-            }
-        }
+    auto tempWidget = ERROR_HANDLE([desktop, &manager](){
+        return desktop->AddChild(std::make_unique<optor::Widget>(
+            dr4::Vec2f(500, 500),
+            manager.GetState()
+        ));
+    });
+    
+    while (ERROR_HANDLE(&dr4::Window::IsOpen, window)) {
+        
+        ERROR_HANDLE(&optor::WidgetManager::HandleEvents, &manager);
+        
+        ERROR_HANDLE(&dr4::Window::Clear, window, optor::color::Poison);
+        
+        ERROR_HANDLE(&optor::WidgetManager::Draw, &manager);
 
-        window->Clear(dr4::Color(100, 100, 100, 255));
-
-        window->Display();
+        ERROR_HANDLE(&dr4::Window::Display, window);
     }
+} 
+catch(...) 
+{
+    std::cerr << "Something went wrong\n";
+    delete backend;
+    delete window;
+
+    throw;
+}
 
     delete backend;
     delete window;
     
 
-    return EXIT_SUCCESS;
+    return EXIT_SUCCESS;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        // ВОВА ГЕЙ + ПИДОР
 }

@@ -38,7 +38,6 @@ target_include_directories(optics
 
 target_link_libraries(optics
     PRIVATE 
-        sfml-graphics
         common
         libs
         global
