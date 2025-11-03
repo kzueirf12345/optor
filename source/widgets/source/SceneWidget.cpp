@@ -26,7 +26,7 @@ void optor::SceneWidget::Draw(dr4::Texture& srcTexture) {
 
     rect_.rect.pos = {0, 0};
     ERROR_HANDLE([this](){
-        texture_->Draw(rect_);
+        optor::Widget::Draw(*texture_);
     });
     rect_.rect.pos = pos;
 

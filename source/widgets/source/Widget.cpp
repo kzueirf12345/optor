@@ -89,14 +89,12 @@ dr4::Vec2f optor::Widget::GetPosition() const {
 }
 
 bool optor::Widget::OnMouseMove(const dr4::Event& event) {
-    const dr4::Vec2f mouseCoord = event.mouseMove.pos;
-
     if (state_->draggedWidget == this) {
-        ERROR_HANDLE(&optor::Widget::Drag, this, mouseCoord - state_->prevMouseCoord);
+        ERROR_HANDLE(&optor::Widget::Drag, this, event.mouseMove.rel);
         return true;
     }
 
-    if (dr4::Rect2f(AbsCoord(), rect_.rect.size).Contains(mouseCoord)) {
+    if (dr4::Rect2f(AbsCoord(), rect_.rect.size).Contains(event.mouseMove.pos)) {
         state_->hoveredWidget = this;
         return true;
     }
@@ -105,16 +103,18 @@ bool optor::Widget::OnMouseMove(const dr4::Event& event) {
 }
 
 bool optor::Widget::OnMousePress(const dr4::Event& event) {
-    if (state_->hoveredWidget == this 
+    if (IsInderectedHovered() 
      && isDraggable_ 
-     && event.mouseButton.button == dragButton_) {
+     && event.mouseButton.button == dragButton_) 
+    {
         state_->draggedWidget = this;
         return true;
     };
 
-    if (state_->hoveredWidget == this 
+    if (IsInderectedHovered() 
      && isSelectable_ 
-     && event.mouseButton.button == selectButton_) {
+     && event.mouseButton.button == selectButton_) 
+    {
         state_->selectedWidget = this;
         return true;
     };
@@ -164,4 +164,14 @@ void optor::Widget::Drag(const dr4::Vec2f& shift) {
     if (!isFreeDraggable_ && parent_) {
         rect_.rect.pos = rect_.rect.pos.Clamped({0, 0}, parent_->rect_.rect.size - rect_.rect.size);
     }
+}
+
+bool optor::Widget::IsInderectedHovered() const {
+    for (const auto* curHovered = state_->hoveredWidget; curHovered != nullptr; curHovered = curHovered->parent_) {
+        if (curHovered == this) {
+            return true;
+        }
+    }
+
+    return false;
 }

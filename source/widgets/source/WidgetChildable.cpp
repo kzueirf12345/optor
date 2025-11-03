@@ -22,12 +22,11 @@ void optor::WidgetChildable::Draw(dr4::Texture& srcTexture) {
 
     rect_.rect.pos = {0, 0};
     ERROR_HANDLE([this](){
-        texture_->Draw(rect_);
+        optor::Widget::Draw(*texture_);
     });
     rect_.rect.pos = pos;
 
     for (const auto& child : children_) {
-        // std::cerr << "Print child\n";
         ERROR_HANDLE([this, &child](){
             child->Draw(*texture_);
         });
@@ -40,6 +39,10 @@ void optor::WidgetChildable::Draw(dr4::Texture& srcTexture) {
 
 
 bool optor::WidgetChildable::OnMouseMove(const dr4::Event& event) {
+    bool res = ERROR_HANDLE([this, &event](){
+        return optor::Widget::OnMouseMove(event);
+    });
+
     for (auto childIt = children_.rbegin(); childIt != children_.rend(); ++childIt) {
         if (ERROR_HANDLE([childIt, &event](){
                 return (*childIt)->OnMouseMove(event);
@@ -48,9 +51,7 @@ bool optor::WidgetChildable::OnMouseMove(const dr4::Event& event) {
         }
     }
 
-    return ERROR_HANDLE([this, &event](){
-        return optor::Widget::OnMouseMove(event);
-    });
+    return res;
 }
 
 bool optor::WidgetChildable::OnMousePress(const dr4::Event& event) {

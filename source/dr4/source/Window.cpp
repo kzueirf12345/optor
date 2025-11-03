@@ -125,11 +125,20 @@ std::optional<::dr4::Event> optor::dr4::Window::PollEvent()
 
     switch(eventSF.type) {
         case sf::Event::EventType::MouseMoved: {
+            static ::dr4::Vec2f prevMouseCoord = {0, 0};
+
             event.type = ::dr4::Event::Type::MOUSE_MOVE;
-            event.mouseMove = {.pos = {
-                static_cast<float>(eventSF.mouseMove.x), 
-                static_cast<float>(eventSF.mouseMove.y)
-            }};
+            event.mouseMove = {
+                .pos = {
+                    static_cast<float>(eventSF.mouseMove.x), 
+                    static_cast<float>(eventSF.mouseMove.y)
+                },
+                .rel= {
+                    static_cast<float>(eventSF.mouseMove.x - prevMouseCoord.x), 
+                    static_cast<float>(eventSF.mouseMove.y - prevMouseCoord.y)
+                }
+            };
+            prevMouseCoord = event.mouseMove.pos;
             break;
         }
 

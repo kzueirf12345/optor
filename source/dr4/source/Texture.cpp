@@ -52,11 +52,11 @@ float optor::dr4::Texture::GetHeight() const
 
 void optor::dr4::Texture::Draw(const ::dr4::Rectangle &rect) 
 {
-    const sf::Vector2f sizeSF = {rect.rect.size.x, rect.rect.size.y};
+    const sf::Vector2f sizeSF = {rect.rect.size.x - 2 * rect.borderThickness, rect.rect.size.y - 2 * rect.borderThickness};
     sf::RectangleShape rectSF(sizeSF);
 
     ERROR_HANDLE([this, &rectSF, &rect](){
-        rectSF.setPosition(rect.rect.pos.x, rect.rect.pos.y);
+        rectSF.setPosition(rect.rect.pos.x + rect.borderThickness, rect.rect.pos.y + rect.borderThickness);
     });
 
     ERROR_HANDLE([this, &rectSF, &rect](){

@@ -60,6 +60,7 @@ class Widget {
 
         bool OnMe(const dr4::Vec2f& absCoord) const;
         void Drag(const dr4::Vec2f& shift);
+        bool IsInderectedHovered() const;
 
     private:
 };
