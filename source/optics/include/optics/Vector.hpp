@@ -1,6 +1,7 @@
 #ifndef OPTOR_SOURCE_OPTICS_INCLUDE_OPTICS_VECTOR_HPP
 #define OPTOR_SOURCE_OPTICS_INCLUDE_OPTICS_VECTOR_HPP
 
+#include "dr4/math/color.hpp"
 #include <cmath>
 
 namespace optor
@@ -168,6 +169,9 @@ class Vector3 {
         T z;
         Vector3() noexcept: x{}, y{}, z{} {}
         Vector3(T x, T y, T z) noexcept : x{x}, y{y}, z{z} {};
+        explicit Vector3(dr4::Color color) noexcept 
+            :   x{color.r / 256.}, y{color.g / 256.}, z{color.b / 256.} 
+        {};
         
         [[nodiscard]] T Len2() const noexcept;
         [[nodiscard]] T Len()  const;

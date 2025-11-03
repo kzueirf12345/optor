@@ -18,12 +18,12 @@ class TriangleMesh final : public OpticObj {
         void AddTriangle(const Triangle& triangle);
         void Clear() noexcept;
 
-        [[nodiscard]] std::optional<Intersection> IntersectRay(const hui::Vector3d& rayOrigin, 
-                                                            const hui::Vector3d& rayDir) override;
+        [[nodiscard]] std::optional<Intersection> IntersectRay(const optor::Vector3d& rayOrigin, 
+                                                            const optor::Vector3d& rayDir) override;
         
         virtual void SetMaterial(const Material& material) override;
 
-        virtual void Move(const hui::Vector3d& offset) override final;
+        virtual void Move(const optor::Vector3d& offset) override final;
 
     private:
         std::vector<Triangle> triangles_;

@@ -1,16 +1,17 @@
-#include <SFML/Graphics/Rect.hpp>
-#include <SFML/System/Vector2.hpp>
+#include <stdexcept>
 #include <cstdlib>
 
+#include <SFML/Graphics/Rect.hpp>
+#include <SFML/System/Vector2.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
-#include <stdexcept>
-#include "SFML/Graphics/Sprite.hpp"
-#include "SFML/Graphics/Text.hpp"
+#include <SFML/Graphics/Text.hpp>
+#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Image.hpp>
 
 #include "dr4/Texture.hpp"
+#include "dr4/texture.hpp"
 
 #include "common/ErrorHandler.hpp"
-#include "dr4/texture.hpp"
 
 void optor::dr4::Texture::SetSize(::dr4::Vec2f size) 
 {
@@ -118,6 +119,37 @@ void optor::dr4::Texture::Draw(const ::dr4::Text &text)
 
     ERROR_HANDLE([this, &textSF](){
         renderTexture_.draw(textSF);
+    });
+
+    ERROR_HANDLE([this](){
+        renderTexture_.display();
+    });
+}
+
+void optor::dr4::Texture::Draw(const ::dr4::Image &image, const ::dr4::Vec2f& pos)
+{
+    sf::Image imageSF = {};
+
+    ERROR_HANDLE([&imageSF, &image](){
+        imageSF.create(image.GetSize().x, image.GetSize().y, image.GetArray());
+    });
+
+    sf::Texture textureSF = {};
+
+    ERROR_HANDLE([&textureSF, &imageSF](){
+        textureSF.loadFromImage(imageSF);
+    });
+
+    sf::Sprite spriteSF = ERROR_HANDLE([&textureSF](){
+        return sf::Sprite(textureSF);
+    });
+
+    ERROR_HANDLE([&spriteSF, &pos](){
+        spriteSF.setPosition(pos.x, pos.y);
+    });
+
+    ERROR_HANDLE([this, &spriteSF](){
+        renderTexture_.draw(spriteSF);
     });
 
     ERROR_HANDLE([this](){

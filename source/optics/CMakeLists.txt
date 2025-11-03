@@ -1,13 +1,13 @@
 add_library(optics STATIC
-    # source/Scene.cpp
-    # source/Camera.cpp
-    # source/Light.cpp
-    # source/Sphere.cpp
-    # source/Plane.cpp
-    # source/Triangle.cpp
-    # source/OpticObj.cpp
-    # source/TriangleMesh.cpp
-    # source/FinitPlane.cpp
+    source/Scene.cpp
+    source/Camera.cpp
+    source/Light.cpp
+    source/Sphere.cpp
+    source/Plane.cpp
+    source/Triangle.cpp
+    source/OpticObj.cpp
+    source/TriangleMesh.cpp
+    source/FinitPlane.cpp
     source/Vector.cpp
     source/Material.cpp
 )

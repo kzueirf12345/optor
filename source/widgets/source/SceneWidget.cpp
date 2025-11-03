@@ -1,55 +1,52 @@
 #include <cassert>
 
 #include "widgets/SceneWidget.hpp"
-#include "hui/Event.hpp"
-#include "hui/Renderer.hpp"
-#include "hui/Sprite.hpp"
-#include "hui/Vector.hpp"
+#include "dr4/keycodes.hpp"
 #include "optics/Camera.hpp"
 #include "optics/Scene.hpp"
 #include "widgets/Widget.hpp"
 #include "global/Global.hpp"
 #include "common/ErrorHandler.hpp"
 
-optor::SceneWidget::SceneWidget(const hui::Vector2d& size, optor::WidgetsState* state) 
+optor::SceneWidget::SceneWidget(dr4::Window* window, dr4::DR4Backend* backend, const dr4::Vec2f& size, 
+                                optor::WidgetsState* state)
     :   optor::Widget{size, state},
-        renderer_{size},
-        scene_{size}
+        texture_{window->CreateTexture()},
+        scene_{backend, size}
 {
+    ERROR_HANDLE([this, size](){
+        texture_->SetSize(size);
+    });
+
     ERROR_HANDLE(&optor::Scene::Update, scene_);
 }
 
-void optor::SceneWidget::Draw(hui::Renderer* renderer) {
-    assert(renderer);
+void optor::SceneWidget::Draw(dr4::Texture& srcTexture) {
+    const dr4::Vec2f pos = rect_.rect.pos;
 
-    const hui::Vector2d pos = sprite_.GetPosition();
-
-    sprite_.SetPosition({0, 0});
+    rect_.rect.pos = {0, 0};
     ERROR_HANDLE([this](){
-        optor::Widget::Draw(&renderer_);
+        texture_->Draw(rect_);
     });
-    sprite_.SetPosition(pos);
-    
-    ERROR_HANDLE([this](){
-        renderer_.Draw(scene_);
-    });
+    rect_.rect.pos = pos;
+
+    // for (size_t i = 0; i < 100; ++i) {
+    //     std::cerr << (int)scene_.GetImage()->GetArray()[i] << " ";
+    // }
+    // std::cerr << std::endl;
 
     ERROR_HANDLE([this](){
-        renderer_.Display();
+        texture_->Draw(*scene_.GetImage(), {0, 0});
     });
 
-    hui::Sprite sprite = ERROR_HANDLE([this](){
-        return hui::Sprite(ERROR_HANDLE(&hui::Renderer::GetTexture, renderer_));
+    ERROR_HANDLE([this, &srcTexture](){
+        srcTexture.Draw(*texture_, rect_.rect.pos);
     });
-
-    ERROR_HANDLE(&hui::Sprite::SetPosition, &sprite, pos);
-
-    ERROR_HANDLE(&hui::Renderer::Draw, renderer, sprite);
 }
 
-bool optor::SceneWidget::OnMouseMove(const hui::Event& event) {
-    const hui::Vector2d mouseCoord = event.GetMouseShift();
-    const hui::Vector2d mouseOffset = (mouseCoord - state_->prevMouseCoord) * optor::CAMERA_ROTATE_SPEED;
+bool optor::SceneWidget::OnMouseMove(const dr4::Event& event) {
+    const dr4::Vec2f mouseCoord = event.mouseMove.pos;
+    const dr4::Vec2f mouseOffset = (mouseCoord - state_->prevMouseCoord) * optor::CAMERA_ROTATE_SPEED;
 
     if (state_->selectedWidget == this) {
         ERROR_HANDLE(&optor::SceneWidget::RotateCamera, this, mouseOffset);
@@ -67,10 +64,10 @@ bool optor::SceneWidget::OnMouseMove(const hui::Event& event) {
     return false;
 }
 
-bool optor::SceneWidget::OnMousePress(const hui::Event& event) {
-    const hui::Vector2d pixel = event.GetMouseCoord() - AbsCoord();
-    if (event.GetMouseButton() == selectButton_) {
-        auto* selectedObj = scene_.GetObjAtPixel(pixel);
+bool optor::SceneWidget::OnMousePress(const dr4::Event& event) {
+    const dr4::Vec2f pixel = event.mouseButton.pos - AbsCoord();
+    if (event.mouseButton.button == selectButton_) {
+        auto* selectedObj = scene_.GetObjAtPixel({pixel.x, pixel.y});
         if (selectedObj) {
             state_->selectedObj = selectedObj;
         }
@@ -79,35 +76,35 @@ bool optor::SceneWidget::OnMousePress(const hui::Event& event) {
     return optor::Widget::OnMousePress(event);
 }
 
-bool optor::SceneWidget::OnKeyboardPress(const hui::Event& event) {
+bool optor::SceneWidget::OnKeyboardPress(const dr4::Event& event) {
     if (state_->selectedWidget == this) {
-        switch (event.GetKeyboardButton()) {
-            case hui::Event::KeyboardButton::W: {
+        switch (event.key.sym) {
+            case dr4::KeyCode::KEYCODE_W: {
                 ERROR_HANDLE(&optor::Scene::SetMoveDir, scene_, optor::MoveDirection::FORWARD);
                 return true;
             }
 
-            case hui::Event::KeyboardButton::S: {
+            case dr4::KeyCode::KEYCODE_S: {
                 ERROR_HANDLE(&optor::Scene::SetMoveDir, scene_, optor::MoveDirection::BACKWARD);
                 return true;
             }
 
-            case hui::Event::KeyboardButton::A: {
+            case dr4::KeyCode::KEYCODE_A: {
                 ERROR_HANDLE(&optor::Scene::SetMoveDir, scene_, optor::MoveDirection::LEFT);
                 return true;
             }
 
-            case hui::Event::KeyboardButton::D: {
+            case dr4::KeyCode::KEYCODE_D: {
                 ERROR_HANDLE(&optor::Scene::SetMoveDir, scene_, optor::MoveDirection::RIGHT);
                 return true;
             }
 
-            case hui::Event::KeyboardButton::Space: {
+            case dr4::KeyCode::KEYCODE_SPACE: {
                 ERROR_HANDLE(&optor::Scene::SetMoveDir, scene_, optor::MoveDirection::UP);
                 return true;
             }
 
-            case hui::Event::KeyboardButton::LControl: {
+            case dr4::KeyCode::KEYCODE_LCONTROL: {
                 ERROR_HANDLE(&optor::Scene::SetMoveDir, scene_, optor::MoveDirection::DOWN);
                 return true;
             }
@@ -128,14 +125,14 @@ bool optor::SceneWidget::OnKeyboardPress(const hui::Event& event) {
     return false;
 }
 
-bool optor::SceneWidget::OnKeyboardRelease(const hui::Event& event) {
+bool optor::SceneWidget::OnKeyboardRelease(const dr4::Event& event) {
     if (state_->selectedWidget == this) {
-        if (event.GetKeyboardButton() == hui::Event::KeyboardButton::W
-         || event.GetKeyboardButton() == hui::Event::KeyboardButton::S
-         || event.GetKeyboardButton() == hui::Event::KeyboardButton::A
-         || event.GetKeyboardButton() == hui::Event::KeyboardButton::D
-         || event.GetKeyboardButton() == hui::Event::KeyboardButton::Space
-         || event.GetKeyboardButton() == hui::Event::KeyboardButton::LControl
+        if (event.key.sym == dr4::KeyCode::KEYCODE_W
+         || event.key.sym == dr4::KeyCode::KEYCODE_S
+         || event.key.sym == dr4::KeyCode::KEYCODE_A
+         || event.key.sym == dr4::KeyCode::KEYCODE_D
+         || event.key.sym == dr4::KeyCode::KEYCODE_SPACE
+         || event.key.sym == dr4::KeyCode::KEYCODE_LCONTROL
         ) {
             ERROR_HANDLE(&optor::Scene::SetMoveDir, scene_, optor::MoveDirection::UNKNOWN);
             return true;
@@ -152,7 +149,7 @@ bool optor::SceneWidget::OnKeyboardRelease(const hui::Event& event) {
     return false;
 }
 
-void optor::SceneWidget::RotateCamera(const hui::Vector2d& mouseOffset) {
+void optor::SceneWidget::RotateCamera(const dr4::Vec2f& mouseOffset) {
     double speed = 0;
     optor::RotateDirection dir = optor::RotateDirection::RIGHT;
 
@@ -195,6 +192,6 @@ optor::OpticObj* optor::SceneWidget::AddObj(std::unique_ptr<optor::OpticObj> obj
     return objPtr;
 }
 
-const optor::Camera& optor::SceneWidget::GetCamera() const noexcept { return scene_.GetCamera(); }
-      optor::Camera& optor::SceneWidget::GetCamera()       noexcept { return scene_.GetCamera(); }
-const optor::Scene&  optor::SceneWidget::GetScene()  const noexcept { return scene_; }
+const optor::Camera& optor::SceneWidget::GetCamera() const  { return scene_.GetCamera(); }
+      optor::Camera& optor::SceneWidget::GetCamera()        { return scene_.GetCamera(); }
+const optor::Scene&  optor::SceneWidget::GetScene()  const  { return scene_; }

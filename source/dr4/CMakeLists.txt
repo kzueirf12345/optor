@@ -7,6 +7,7 @@ add_library(dr4 SHARED
     source/Texture.cpp
     source/Window.cpp 
     source/Backend.cpp
+    source/Image.cpp
 )
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")

@@ -4,52 +4,47 @@
 
 #include "optics/Scene.hpp"
 #include "common/ErrorHandler.hpp"
+#include "dr4/math/color.hpp"
+#include "dr4/texture.hpp"
 #include "global/Global.hpp"
-#include "hui/Textured.hpp"
-#include "hui/Vector.hpp"
 #include "optics/Camera.hpp"
 #include "optics/Light.hpp"
 #include "optics/OpticObj.hpp"
-#include "hui/Color.hpp"
 
-optor::Scene::Scene(const hui::Vector2d& boxSize) 
-    : optor::Scene(boxSize, {0, 0})
-{}
-
-optor::Scene::Scene(const hui::Vector2d& boxSize, const hui::Vector2d& position) 
-    :   hui::Textured(boxSize, position), 
+optor::Scene::Scene(dr4::DR4Backend* backend, const dr4::Vec2f& size) 
+    :   image_{backend->CreateImage()},
+        size_{size},
         camera_{}, 
         moveDir_{optor::MoveDirection::UNKNOWN},
         maxRecursionDepth_{4},
-        bgColor_{optor::color::Blue.GetNormalized()}
-{}
+        bgColor_{optor::color::Blue}
+{
+    ERROR_HANDLE([this](){
+        image_->Create(size_, ::dr4::Image::ColorMode::RGBA);
+    });
+}
 
 void optor::Scene::Update() {
     if (moveDir_ != optor::MoveDirection::UNKNOWN) {
         ERROR_HANDLE(&optor::Camera::Move, camera_, moveDir_, optor::CAMERA_MOVE_SPEED);
     }
 
-    for (size_t y = 0; y < boxSize_.y; ++y) {
-        for (size_t x = 0; x < boxSize_.x; ++x) {
-            const size_t pixelIndex = y * boxSize_.x + x;
+    for (size_t y = 0; y < size_.y; ++y) {
+        for (size_t x = 0; x < size_.x; ++x) {
+            const size_t pixelIndex = y * size_.x + x;
             
-            const hui::Vector2d pixel(x, y);
-            const hui::Vector3d rayDirection = ERROR_HANDLE(&optor::Camera::GetRay, camera_, pixel, boxSize_);
-            const hui::Vector3d rayOrigin = camera_.GetPosition();
+            const optor::Vector2d pixel(x, y);
+            const optor::Vector3d rayDirection = ERROR_HANDLE(&optor::Camera::GetRay, camera_, pixel, size_);
+            const optor::Vector3d rayOrigin = camera_.GetPosition();
             
-            const hui::Vector3d pixelColor = TraceRay(rayOrigin, rayDirection);
+            const optor::Vector3d pixelColor = TraceRay(rayOrigin, rayDirection);
 
-            pixelBuffer_[pixelIndex] = hui::Color(pixelColor).GetABGR();
-
+            image_->SetPixel(x, y, dr4::Color(pixelColor.x * 255, pixelColor.y * 255, pixelColor.z * 255, 255));
         }
     }
-
-    ERROR_HANDLE([this](){
-        hui::Textured::Update();
-    });
 }
 
-hui::Vector3d optor::Scene::TraceRay(const hui::Vector3d& origin, const hui::Vector3d& direction, int depth) const {
+optor::Vector3d optor::Scene::TraceRay(const optor::Vector3d& origin, const optor::Vector3d& direction, int depth) const {
     if (depth > maxRecursionDepth_) {
         return bgColor_;
     }
@@ -64,7 +59,7 @@ hui::Vector3d optor::Scene::TraceRay(const hui::Vector3d& origin, const hui::Vec
 }
 
 std::optional<optor::OpticObj::Intersection> 
-optor::Scene::FindClosestIntersection(const hui::Vector3d& origin, const hui::Vector3d& direction) const 
+optor::Scene::FindClosestIntersection(const optor::Vector3d& origin, const optor::Vector3d& direction) const 
 {
     std::optional<optor::OpticObj::Intersection> closestIntersection;
     double closestDistance = std::numeric_limits<double>::max();
@@ -80,19 +75,19 @@ optor::Scene::FindClosestIntersection(const hui::Vector3d& origin, const hui::Ve
     return closestIntersection;
 }
 
-hui::Vector3d optor::Scene::CalculateLighting(const optor::OpticObj::Intersection& intersection, 
-                                              const hui::Vector3d& rayOrigin, int depth) const 
+optor::Vector3d optor::Scene::CalculateLighting(const optor::OpticObj::Intersection& intersection, 
+                                              const optor::Vector3d& rayOrigin, int depth) const 
 {
     const Material& material = intersection.object->GetMaterial();
-    const hui::Vector3d& point = intersection.point;
-    const hui::Vector3d& normal = intersection.normal;
+    const optor::Vector3d& point = intersection.point;
+    const optor::Vector3d& normal = intersection.normal;
     
-    hui::Vector3d viewDir = !(rayOrigin - point);
+    optor::Vector3d viewDir = !(rayOrigin - point);
     
-    hui::Vector3d result = material.GetAmbientColor();
+    optor::Vector3d result = material.GetAmbientColor();
     
     for (const Light* light : lights_) {
-        hui::Vector3d lightDir = !(light->GetCenter() - point);
+        optor::Vector3d lightDir = !(light->GetCenter() - point);
         double distanceToLight = (light->GetCenter() - point).Len();
         
         if (IsInShadow(point, lightDir, distanceToLight - 1.1 * light->GetRadius(), intersection.object)) {
@@ -100,15 +95,15 @@ hui::Vector3d optor::Scene::CalculateLighting(const optor::OpticObj::Intersectio
         }
         
         double diffuseFactor = std::max(0.0, normal ^ lightDir);
-        hui::Vector3d diffuse = hui::Product(
+        optor::Vector3d diffuse = optor::Product(
             material.GetDiffuseColor() * diffuseFactor, 
             light->GetColor()          * light->GetIntensity()
         );
         
         
-        hui::Vector3d reflectDir = Reflect(-lightDir, normal);
+        optor::Vector3d reflectDir = Reflect(-lightDir, normal);
         double specularFactor = std::pow(std::max(0.0, reflectDir ^ viewDir), material.GetShininess());
-        hui::Vector3d specular = hui::Product(
+        optor::Vector3d specular = optor::Product(
             material.GetSpecularColor() * specularFactor, 
             light->GetColor()           * light->GetIntensity()
         );
@@ -118,8 +113,8 @@ hui::Vector3d optor::Scene::CalculateLighting(const optor::OpticObj::Intersectio
     
     const double reflectivity = material.GetReflectivity();
     if (reflectivity > 0) {
-        const hui::Vector3d reflectDir = Reflect(-viewDir, normal);
-        const hui::Vector3d reflectionColor = TraceRay(point + reflectDir * 0.001, reflectDir, depth + 1);
+        const optor::Vector3d reflectDir = Reflect(-viewDir, normal);
+        const optor::Vector3d reflectionColor = TraceRay(point + reflectDir * 0.001, reflectDir, depth + 1);
         result = result * (1 - reflectivity) + reflectionColor * reflectivity;
     }
 
@@ -129,7 +124,7 @@ hui::Vector3d optor::Scene::CalculateLighting(const optor::OpticObj::Intersectio
     if (transparency > 0) {
         const auto refractDir = Refract(-viewDir, normal, refractivity);
         if (refractDir.has_value()) {
-            const hui::Vector3d refractedColor = TraceRay(point + refractDir.value() * 0.001, refractDir.value(), depth + 1);
+            const optor::Vector3d refractedColor = TraceRay(point + refractDir.value() * 0.001, refractDir.value(), depth + 1);
             result = result * (1 - transparency) + refractedColor * transparency;
         }
     }
@@ -137,8 +132,8 @@ hui::Vector3d optor::Scene::CalculateLighting(const optor::OpticObj::Intersectio
     return result.Clamp({0, 0, 0}, {1, 1, 1});
 }
 
-bool optor::Scene::IsInShadow(const hui::Vector3d& point, const hui::Vector3d& lightDir, double lightDistance, const optor::OpticObj* obj) const {
-    hui::Vector3d shadowOrigin = point + lightDir * 0.001;
+bool optor::Scene::IsInShadow(const optor::Vector3d& point, const optor::Vector3d& lightDir, double lightDistance, const optor::OpticObj* obj) const {
+    optor::Vector3d shadowOrigin = point + lightDir * 0.001;
     
     for (const auto& curObj : objs_) {
         auto intersection = curObj->IntersectRay(shadowOrigin, lightDir);
@@ -150,16 +145,16 @@ bool optor::Scene::IsInShadow(const hui::Vector3d& point, const hui::Vector3d& l
     return false;
 }
 
-hui::Vector3d optor::Scene::Reflect(const hui::Vector3d& incident, const hui::Vector3d& normal) const {
+optor::Vector3d optor::Scene::Reflect(const optor::Vector3d& incident, const optor::Vector3d& normal) const {
     return incident - normal * 2.0 * (incident ^ normal);
 }
 
-std::optional<hui::Vector3d> optor::Scene::Refract(const hui::Vector3d& incident, 
-                                                   const hui::Vector3d& normal, 
+std::optional<optor::Vector3d> optor::Scene::Refract(const optor::Vector3d& incident, 
+                                                   const optor::Vector3d& normal, 
                                                    double eta) const {
     double cosi = incident ^ normal;
     double etai = 1.0, etat = eta;
-    hui::Vector3d n = normal;
+    optor::Vector3d n = normal;
 
     if (cosi < 0) {
         cosi = -cosi;
@@ -195,10 +190,10 @@ optor::OpticObj* optor::Scene::AddObj(std::unique_ptr<optor::OpticObj> obj) {
     return objs_.back().get();
 }
 
-const optor::Camera& optor::Scene::GetCamera() const noexcept {
+const optor::Camera& optor::Scene::GetCamera() const  {
     return camera_;
 }
-optor::Camera& optor::Scene::GetCamera()       noexcept {
+optor::Camera& optor::Scene::GetCamera()        {
     return camera_;
 }
 
@@ -206,9 +201,9 @@ void optor::Scene::SetMoveDir(optor::MoveDirection moveDir) {
     moveDir_ = moveDir;
 }
 
-optor::OpticObj* optor::Scene::GetObjAtPixel(const hui::Vector2d& pixel) {
-    const hui::Vector3d rayDirection = ERROR_HANDLE(&optor::Camera::GetRay, camera_, pixel, boxSize_);
-    const hui::Vector3d rayOrigin = camera_.GetPosition();
+optor::OpticObj* optor::Scene::GetObjAtPixel(const optor::Vector2d& pixel) {
+    const optor::Vector3d rayDirection = ERROR_HANDLE(&optor::Camera::GetRay, camera_, pixel, size_);
+    const optor::Vector3d rayOrigin = camera_.GetPosition();
 
     auto closestIntersection = FindClosestIntersection(rayOrigin, rayDirection);
     
@@ -219,10 +214,14 @@ optor::OpticObj* optor::Scene::GetObjAtPixel(const hui::Vector2d& pixel) {
     return nullptr;
 }
 
-optor::MoveDirection optor::Scene::GetMoveDir() const noexcept {
+optor::MoveDirection optor::Scene::GetMoveDir() const  {
     return moveDir_;
 }
 
-const std::vector<std::unique_ptr<optor::OpticObj>>& optor::Scene::GetObjs() const noexcept {
+const std::vector<std::unique_ptr<optor::OpticObj>>& optor::Scene::GetObjs() const  {
     return objs_;
+}
+
+dr4::Image* optor::Scene::GetImage() const {
+    return image_.get();
 }
