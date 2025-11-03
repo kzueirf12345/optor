@@ -3,8 +3,9 @@ add_library(widgets STATIC
     source/WidgetChildable.cpp
     source/WidgetManager.cpp
     source/SceneWidget.cpp
-    # source/WidgetButton.cpp
-    # source/WidgetButtonCamera.cpp
+    source/WidgetButton.cpp
+    source/Textable.cpp
+    source/WidgetButtonCamera.cpp
     # source/WidgetButtonText.cpp
     # source/WidgetOpticObj.cpp
     # source/WidgetOpticObjs.cpp

@@ -1,6 +1,7 @@
 #include "dr4/Backend.hpp"
 #include "dr4/Window.hpp"
 #include "dr4/Image.hpp"
+#include "dr4/Font.hpp"
 
 const std::string &optor::dr4::Backend::Name() const 
 {
@@ -18,7 +19,12 @@ const std::string &optor::dr4::Backend::Name() const
     return new optor::dr4::Image();
 }
 
-::dr4::DR4Backend* optor::dr4::DR4_BACKEND_FUNCTION()
+::dr4::DR4Backend *optor::dr4::DR4_BACKEND_FUNCTION()
 {
     return new optor::dr4::Backend();
+}
+
+::dr4::Font *optor::dr4::Backend::CreateFont()
+{
+    return new optor::dr4::Font();
 }

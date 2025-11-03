@@ -9,6 +9,7 @@
 #include <SFML/Graphics/Image.hpp>
 
 #include "dr4/Texture.hpp"
+#include "dr4/Font.hpp"
 #include "dr4/texture.hpp"
 
 #include "common/ErrorHandler.hpp"
@@ -81,7 +82,7 @@ void optor::dr4::Texture::Draw(const ::dr4::Rectangle &rect)
 
 void optor::dr4::Texture::Draw(const ::dr4::Text &text) 
 {
-    sf::Text textSF(text.text, font_, text.fontSize);
+    sf::Text textSF(text.text, dynamic_cast<const optor::dr4::Font*>(text.font)->font_, text.fontSize);
 
     ERROR_HANDLE([this, &textSF, &text](){
         textSF.setFillColor(sf::Color(text.color.r, text.color.g, text.color.b, text.color.a));

@@ -2,7 +2,6 @@
 #define OPTOR_SOURCE_DR4_INCLUDE_DR4_TEXTURE_HPP
 
 #include <SFML/Graphics/RenderTexture.hpp>
-#include "SFML/Graphics/Font.hpp"
 
 #include "dr4/texture.hpp"
 
@@ -32,7 +31,6 @@ protected:
 
 private:
     sf::RenderTexture renderTexture_;
-    sf::Font font_;
 };
 
 }

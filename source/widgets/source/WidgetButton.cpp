@@ -1,26 +1,26 @@
 #include "widgets/WidgetButton.hpp"
-#include "hui/Texture.hpp"
 #include "widgets/Widget.hpp"
 #include "global/Global.hpp"
 #include "common/ErrorHandler.hpp"
 
-optor::WidgetButton::WidgetButton(const hui::Vector2d& size, optor::WidgetsState* state)
+optor::WidgetButton::WidgetButton(const ::dr4::Vec2f& size, optor::WidgetsState* state)
     :   optor::Widget{size, state},
         isPressed_{false},
         pressButton_{optor::INIT_PRESS_BUTTON_BUTTON_},
         pressedColor_(optor::color::ButtonPressed),
         releasedColor_(optor::color::ButtonReleased)
 {
-    ERROR_HANDLE([this](){texture_.Fill(releasedColor_);});
+    rect_.fill = releasedColor_;
     ERROR_HANDLE([this](){SetIsDraggable(false);});
 }
 
-bool optor::WidgetButton::OnMousePress  (const hui::Event& event) {
-    if (state_->hoveredWidget == this && event.GetMouseButton() == pressButton_) {
+bool optor::WidgetButton::OnMousePress  (const ::dr4::Event& event) {
+    if (state_->hoveredWidget == this && event.mouseButton.button == pressButton_) {
         isPressed_ = true;
-        if (isSelectable_) { state_->selectedWidget = this; }
-        ERROR_HANDLE(&hui::Texture::Fill, texture_, pressedColor_);
-        spriteIsValid_ = false;
+        if (isSelectable_) { 
+            state_->selectedWidget = this; 
+        }
+        rect_.fill = pressedColor_;
         return true;
     }
 
@@ -31,11 +31,10 @@ bool optor::WidgetButton::OnMousePress  (const hui::Event& event) {
     return false;
 }
 
-bool optor::WidgetButton::OnMouseRelease(const hui::Event& event) {
-    if (isPressed_ && event.GetMouseButton() == pressButton_) {
+bool optor::WidgetButton::OnMouseRelease(const ::dr4::Event& event) {
+    if (isPressed_ && event.mouseButton.button == pressButton_) {
         isPressed_ = false;
-        ERROR_HANDLE(&hui::Texture::Fill, texture_, releasedColor_);
-        spriteIsValid_ = false;
+        rect_.fill = releasedColor_;
         return true;
     }
 
@@ -46,17 +45,19 @@ bool optor::WidgetButton::OnMouseRelease(const hui::Event& event) {
     return false;
 }
 
-void optor::WidgetButton::SetReleasedColor(const hui::Color& color) {
+void optor::WidgetButton::SetReleasedColor(const ::dr4::Color& color) {
     releasedColor_ = color;
     if (!isPressed_) {
-        ERROR_HANDLE(&hui::Texture::Fill, texture_, releasedColor_);
+        rect_.fill = releasedColor_;
     }
 }
-void optor::WidgetButton::SetPressedColor (const hui::Color& color) {
+void optor::WidgetButton::SetPressedColor (const ::dr4::Color& color) {
     pressedColor_ = color;
     if (isPressed_) {
-        ERROR_HANDLE(&hui::Texture::Fill, texture_, pressedColor_);
+        rect_.fill = pressedColor_;
     }
 }
 
-bool optor::WidgetButton::IsPressed() const noexcept { return isPressed_; }
+bool optor::WidgetButton::IsPressed() const noexcept { 
+    return isPressed_; 
+}
