@@ -83,7 +83,8 @@ static constexpr inline double PROGRAM_HEIGHT = 1100;
 
 static constexpr inline unsigned int FRAME_LIMIT = 20;
 
-static constexpr inline double INIT_WIDGET_BORDER_THICKNESS = 5;
+static constexpr inline float INIT_WIDGET_BORDER_THICKNESS = 5;
+static constexpr inline float INIT_HEADER_HEIGHT = 50;
 
 static constexpr inline ::dr4::MouseCode    INIT_DRAG_WINDOW_BUTTON_         = ::dr4::MOUSECODE_MIDDLE;
 static constexpr inline ::dr4::MouseCode    INIT_SELECT_WINDOW_BUTTON_       = ::dr4::MOUSECODE_LEFT;

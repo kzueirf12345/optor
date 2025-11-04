@@ -319,6 +319,7 @@
 #include "global/Global.hpp"
 #include "optics/Vector.hpp"
 #include "widgets/Widget.hpp"
+#include "widgets/WidgetHeader.hpp"
 #include "widgets/WidgetManager.hpp"
 #include "widgets/WidgetChildable.hpp"
 #include "widgets/SceneWidget.hpp"
@@ -413,20 +414,26 @@ void CreateScene(dr4::Window* window, dr4::DR4Backend* backend, optor::WidgetMan
     assert(window);
     assert(backend);
 
-    auto* sceneWidget = dynamic_cast<optor::SceneWidget*>(ERROR_HANDLE(
-        &optor::WidgetChildable::AddChild, 
-        manager->GetDesktop(), 
-        std::make_unique<optor::SceneWidget>(
+    auto* sceneWidgetWithHeader = dynamic_cast<optor::WidgetHeader*>(ERROR_HANDLE(
+        &optor::WidgetChildable::AddChild,
+        manager->GetDesktop(),
+        std::make_unique<optor::WidgetHeader>(
             window,
-            backend,
-            dr4::Vec2f{1200, 700},
-            manager->GetState()
+            std::make_unique<optor::SceneWidget>(
+                window,
+                backend,
+                dr4::Vec2f{1200, 700},
+                manager->GetState()
+            ),
+            "Scene"
         )
     ));
 
+    ERROR_HANDLE(&optor::Widget::SetPosition, sceneWidgetWithHeader, dr4::Vec2f(100, 100));
+    
+    auto* sceneWidget = dynamic_cast<optor::SceneWidget*>(sceneWidgetWithHeader->GetWidget());
     
 
-    ERROR_HANDLE(&optor::Widget::SetPosition, sceneWidget, dr4::Vec2f(100, 100));
 
     ERROR_HANDLE(&CreateCameraButtons, window, backend, manager, sceneWidget);
 
@@ -506,15 +513,11 @@ static void CreateCameraButtons(dr4::Window* window, dr4::DR4Backend* backend, o
     assert(window);
     assert(backend);
 
-    auto* cameraButtons = dynamic_cast<optor::WidgetChildable*>(ERROR_HANDLE(
-        &optor::WidgetChildable::AddChild, 
-        manager->GetDesktop(), 
-        std::make_unique<optor::WidgetChildable>(
-            dr4::Vec2f{750, 400},
-            manager->GetState(),
-            window
-        )
-    ));
+    auto cameraButtons = std::make_unique<optor::WidgetChildable>(
+        dr4::Vec2f{750, 400},
+        manager->GetState(),
+        window
+    );
 
     ERROR_HANDLE(&optor::Widget::SetPosition, cameraButtons, dr4::Vec2f(1350, 100));
 
@@ -607,4 +610,14 @@ static void CreateCameraButtons(dr4::Window* window, dr4::DR4Backend* backend, o
     ));
 
     ERROR_HANDLE(&optor::Widget::SetPosition, backwordButton, dr4::Vec2f(500, 200));
+
+    auto* cameraButtonsWithHeader = dynamic_cast<optor::WidgetHeader*>(ERROR_HANDLE(
+        &optor::WidgetChildable::AddChild, 
+        manager->GetDesktop(), 
+        std::make_unique<optor::WidgetHeader>(
+            window,
+            std::move(cameraButtons),
+            "Camera buttons"
+        )
+    ));
 }

@@ -1,5 +1,5 @@
-#ifndef OPTOR_SOURCE_WINDOWS_INCLUDE_WINDOWS_WIDNOW_HPP
-#define OPTOR_SOURCE_WINDOWS_INCLUDE_WINDOWS_WIDNOW_HPP
+#ifndef OPTOR_SOURCE_WIDGETS_INCLUDE_WIDGETS_WIDGET_HPP
+#define OPTOR_SOURCE_WIDGETS_INCLUDE_WIDGETS_WIDGET_HPP
 
 #include "dr4/event.hpp"
 #include "dr4/keycodes.hpp"
@@ -41,8 +41,20 @@ class Widget {
         
         [[nodiscard]] dr4::Vec2f AbsCoord() const;  
 
-        [[nodiscard]] dr4::Vec2f GetSize() const;
-        [[nodiscard]] dr4::Vec2f GetPosition() const;
+        [[nodiscard]] dr4::Vec2f GetSize            () const;
+        [[nodiscard]] dr4::Vec2f GetPosition        () const;
+        [[nodiscard]] optor::WidgetsState* GetState () const;
+        [[nodiscard]] dr4::Color GetBackgroundColor () const;
+        [[nodiscard]] dr4::Color GetBorderColor     () const;
+        [[nodiscard]] double     GetOutlineThickness() const;
+        [[nodiscard]] optor::Widget* GetParent      () const;
+        [[nodiscard]] bool GetIsDraggable           () const;
+        [[nodiscard]] bool GetIsFreeDraggable       () const;
+        [[nodiscard]] dr4::MouseCode GetDragButton  () const;
+        [[nodiscard]] bool GetIsSelectable          () const;
+        [[nodiscard]] dr4::MouseCode GetSelectButton() const;
+        [[nodiscard]] dr4::KeyCode GetUnselectButton() const;
+        [[nodiscard]] bool GetMustRemoved() const;
 
     protected:
         dr4::Rectangle rect_;
@@ -58,6 +70,8 @@ class Widget {
         dr4::MouseCode selectButton_;
         dr4::KeyCode  unselectButton_;
 
+        bool mustRemoved_;
+
         bool OnMe(const dr4::Vec2f& absCoord) const;
         void Drag(const dr4::Vec2f& shift);
         bool IsInderectedHovered() const;
@@ -67,4 +81,4 @@ class Widget {
 
 }
 
-#endif /*OPTOR_SOURCE_WINDOWS_INCLUDE_WINDOWS_WIDNOW_HPP*/
+#endif /*OPTOR_SOURCE_WIDGETS_INCLUDE_WIDGETS_WIDGET_HPP*/

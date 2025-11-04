@@ -44,7 +44,7 @@ bool optor::WidgetChildable::OnMouseMove(const dr4::Event& event) {
     });
 
     for (auto childIt = children_.rbegin(); childIt != children_.rend(); ++childIt) {
-        if (ERROR_HANDLE([childIt, &event](){
+        if (!(*childIt)->GetMustRemoved() && ERROR_HANDLE([childIt, &event](){
                 return (*childIt)->OnMouseMove(event);
         })) {
             return true;
@@ -56,7 +56,7 @@ bool optor::WidgetChildable::OnMouseMove(const dr4::Event& event) {
 
 bool optor::WidgetChildable::OnMousePress(const dr4::Event& event) {
     for (auto childIt = children_.rbegin(); childIt != children_.rend(); ++childIt) {
-        if (ERROR_HANDLE([childIt, &event](){
+        if (!(*childIt)->GetMustRemoved() && ERROR_HANDLE([childIt, &event](){
                 return (*childIt)->OnMousePress(event);
         })) {
             return true;
@@ -70,7 +70,7 @@ bool optor::WidgetChildable::OnMousePress(const dr4::Event& event) {
 
 bool optor::WidgetChildable::OnMouseRelease(const dr4::Event& event) {
     for (auto childIt = children_.rbegin(); childIt != children_.rend(); ++childIt) {
-        if (ERROR_HANDLE([childIt, &event](){
+        if (!(*childIt)->GetMustRemoved() && ERROR_HANDLE([childIt, &event](){
                 return (*childIt)->OnMouseRelease(event);
         })) {
             return true;
@@ -84,7 +84,7 @@ bool optor::WidgetChildable::OnMouseRelease(const dr4::Event& event) {
 
 bool optor::WidgetChildable::OnKeyboardPress(const dr4::Event& event) {
     for (auto childIt = children_.rbegin(); childIt != children_.rend(); ++childIt) {
-        if (ERROR_HANDLE([childIt, &event](){
+        if (!(*childIt)->GetMustRemoved() && ERROR_HANDLE([childIt, &event](){
                 return (*childIt)->OnKeyboardPress(event);
         })) {
             return true;
@@ -98,7 +98,7 @@ bool optor::WidgetChildable::OnKeyboardPress(const dr4::Event& event) {
 
 bool optor::WidgetChildable::OnKeyboardRelease(const dr4::Event& event) {
     for (auto childIt = children_.rbegin(); childIt != children_.rend(); ++childIt) {
-        if (ERROR_HANDLE([childIt, &event](){
+        if (!(*childIt)->GetMustRemoved() && ERROR_HANDLE([childIt, &event](){
                 return (*childIt)->OnKeyboardRelease(event);
         })) {
             return true;
@@ -111,6 +111,14 @@ bool optor::WidgetChildable::OnKeyboardRelease(const dr4::Event& event) {
 }
 
 void optor::WidgetChildable::OnIdle() {
+    children_.erase(
+        std::remove_if(children_.begin(), children_.end(),
+            [](const std::unique_ptr<Widget>& child) {
+                return child->GetMustRemoved();
+            }),
+        children_.end()
+    );
+
     for (auto childIt = children_.rbegin(); childIt != children_.rend(); ++childIt) {
         ERROR_HANDLE(&optor::Widget::OnIdle, *childIt);
     }

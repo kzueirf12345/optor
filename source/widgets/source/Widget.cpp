@@ -10,7 +10,7 @@
 #include "global/Global.hpp"
 
 optor::Widget::Widget(const dr4::Vec2f& size, optor::WidgetsState* state)
-    :   rect_{{{0, 0}, size}, optor::color::WindowBackground, 2, optor::color::WindowBorder}, 
+    :   rect_{{{0, 0}, size}, optor::color::WindowBackground, INIT_WIDGET_BORDER_THICKNESS, optor::color::WindowBorder}, 
         parent_{nullptr}, 
         state_{state}, 
         isDraggable_{true}, 
@@ -18,7 +18,8 @@ optor::Widget::Widget(const dr4::Vec2f& size, optor::WidgetsState* state)
         isFreeDraggable_{false},
         isSelectable_{true}, 
         selectButton_{optor::INIT_SELECT_WINDOW_BUTTON_},
-        unselectButton_{optor::INIT_UNSELECT_WINDOW_BUTTON_}
+        unselectButton_{optor::INIT_UNSELECT_WINDOW_BUTTON_},
+        mustRemoved_(false)
 {}
 
 void optor::Widget::Draw(dr4::Texture& srcTexture) {
@@ -86,6 +87,46 @@ dr4::Vec2f optor::Widget::GetSize() const {
 
 dr4::Vec2f optor::Widget::GetPosition() const {
     return rect_.rect.pos;
+}
+
+optor::WidgetsState* optor::Widget::GetState() const {
+    return state_;
+}
+
+dr4::Color optor::Widget::GetBackgroundColor () const {
+    return rect_.fill;
+}
+dr4::Color optor::Widget::GetBorderColor     () const {
+    return rect_.borderColor;
+}
+double     optor::Widget::GetOutlineThickness() const {
+    return rect_.borderThickness;
+}
+
+optor::Widget* optor::Widget::GetParent() const {
+    return parent_;
+}
+
+bool optor::Widget::GetIsDraggable           () const {
+    return isDraggable_;
+}
+bool optor::Widget::GetIsFreeDraggable       () const {
+    return isFreeDraggable_;
+}
+dr4::MouseCode optor::Widget::GetDragButton  () const {
+    return dragButton_;
+}
+bool optor::Widget::GetIsSelectable          () const {
+    return isSelectable_;
+}
+dr4::MouseCode optor::Widget::GetSelectButton() const {
+    return selectButton_;
+}
+dr4::KeyCode optor::Widget::GetUnselectButton() const {
+    return unselectButton_;
+}
+bool optor::Widget::GetMustRemoved() const {
+    return mustRemoved_;
 }
 
 bool optor::Widget::OnMouseMove(const dr4::Event& event) {

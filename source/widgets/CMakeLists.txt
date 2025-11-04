@@ -6,6 +6,7 @@ add_library(widgets STATIC
     source/WidgetButton.cpp
     source/Textable.cpp
     source/WidgetButtonCamera.cpp
+    source/WidgetHeader.cpp
     # source/WidgetButtonText.cpp
     # source/WidgetOpticObj.cpp
     # source/WidgetOpticObjs.cpp
