@@ -38,6 +38,7 @@ class Widget {
         void SetIsSelectable    (const bool isSelectable);
         void SetSelectButton    (dr4::MouseCode selectButton);
         void SetUnselectButton  (dr4::KeyCode unselectButton);
+        void SetMustRemoved     (const bool mustRemoved);
         
         [[nodiscard]] dr4::Vec2f AbsCoord() const;  
 
@@ -55,6 +56,7 @@ class Widget {
         [[nodiscard]] dr4::MouseCode GetSelectButton() const;
         [[nodiscard]] dr4::KeyCode GetUnselectButton() const;
         [[nodiscard]] bool GetMustRemoved() const;
+        [[nodiscard]] bool IsInderectedHovered() const;
 
     protected:
         dr4::Rectangle rect_;
@@ -74,7 +76,6 @@ class Widget {
 
         bool OnMe(const dr4::Vec2f& absCoord) const;
         void Drag(const dr4::Vec2f& shift);
-        bool IsInderectedHovered() const;
 
     private:
 };

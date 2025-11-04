@@ -38,12 +38,21 @@ optor::WidgetManager::WidgetManager(dr4::Window* window)
     state_.selectedWidget = nullptr;
     state_.prevMouseCoord = {0, 0};
     state_.selectedObj = nullptr;
+    // state_.modalWidgets = {};
 }
 
 void optor::WidgetManager::Draw() {
     ERROR_HANDLE([this](){
         desktop_->Draw(*texture_);
     });
+
+    for (auto& modalWidget : state_.modalWidgets) {
+        if (!modalWidget->GetMustRemoved()) {
+            ERROR_HANDLE([this, &modalWidget](){
+                modalWidget->Draw(*texture_);
+            });
+        }
+    }
 
     ERROR_HANDLE([this](){
         window_->Draw(*texture_, {0, 0});
@@ -60,29 +69,86 @@ void optor::WidgetManager::HandleEvents() {
                 ERROR_HANDLE(&dr4::Window::Close, window_);
                 break;
 
-            case dr4::Event::Type::MOUSE_MOVE:
+            case dr4::Event::Type::MOUSE_MOVE: {
+                bool childRes = false;
+                for (auto& modalWidget : state_.modalWidgets) {
+                    if (!modalWidget->GetMustRemoved() && ERROR_HANDLE(&optor::Widget::OnMouseMove, modalWidget, event.value())) {
+                        childRes = true;
+                        state_.prevMouseCoord = event->mouseMove.pos;
+                        break;
+                    }
+                }
+                if (childRes) break;
+
                 ERROR_HANDLE(&optor::WidgetChildable::OnMouseMove, desktop_, event.value());
                 state_.prevMouseCoord = event->mouseMove.pos;
                 break;
+            }
 
-            case dr4::Event::Type::MOUSE_DOWN:
+            case dr4::Event::Type::MOUSE_DOWN: {
+                bool childRes = false;
+                for (auto& modalWidget : state_.modalWidgets) {
+                    if (!modalWidget->GetMustRemoved() && ERROR_HANDLE(&optor::Widget::OnMousePress, modalWidget, event.value())) {
+                        childRes = true;
+                        break;
+                    }
+                }
+                if (childRes) break;
+
                 ERROR_HANDLE(&optor::WidgetChildable::OnMousePress, desktop_, event.value());
                 break;
+            }
 
-            case dr4::Event::Type::MOUSE_UP:
+            case dr4::Event::Type::MOUSE_UP: {
+                bool childRes = false;
+                for (auto& modalWidget : state_.modalWidgets) {
+                    if (!modalWidget->GetMustRemoved() && ERROR_HANDLE(&optor::Widget::OnMouseRelease, modalWidget, event.value())) {
+                        childRes = true;
+                        break;
+                    }
+                }
+                if (childRes) break;
+
                 ERROR_HANDLE(&optor::WidgetChildable::OnMouseRelease, desktop_, event.value());
                 break;
+            }
 
-            case dr4::Event::Type::KEY_DOWN:
+            case dr4::Event::Type::KEY_DOWN: {
+                bool childRes = false;
+                for (auto& modalWidget : state_.modalWidgets) {
+                    if (!modalWidget->GetMustRemoved() && ERROR_HANDLE(&optor::Widget::OnKeyboardPress, modalWidget, event.value())) {
+                        childRes = true;
+                        break;
+                    }
+                }
+                if (childRes) break;
+
                 ERROR_HANDLE(&optor::WidgetChildable::OnKeyboardPress, desktop_, event.value());
                 break;
+            }
 
-            case dr4::Event::Type::KEY_UP:
+            case dr4::Event::Type::KEY_UP: {
+                bool childRes = false;
+                for (auto& modalWidget : state_.modalWidgets) {
+                    if (!modalWidget->GetMustRemoved() && ERROR_HANDLE(&optor::Widget::OnKeyboardRelease, modalWidget, event.value())) {
+                        childRes = true;
+                        break;
+                    }
+                }
+                if (childRes) break;
+
                 ERROR_HANDLE(&optor::WidgetChildable::OnKeyboardRelease, desktop_, event.value());
                 break;
+            }
 
             default:
                 break;
+        }
+    }
+
+    for (auto& modalWidget : state_.modalWidgets) {
+        if (!modalWidget->GetMustRemoved()) {
+            ERROR_HANDLE(&optor::Widget::OnIdle, modalWidget);
         }
     }
 

@@ -72,6 +72,10 @@ void optor::Widget::SetUnselectButton(dr4::KeyCode unselectButton)  {
     unselectButton_ = unselectButton;
 }
 
+void optor::Widget::SetMustRemoved (const bool mustRemoved) {
+    mustRemoved_ = mustRemoved;
+}
+
 
 dr4::Vec2f optor::Widget::AbsCoord() const {
     dr4::Vec2f absCoord = rect_.rect.pos;

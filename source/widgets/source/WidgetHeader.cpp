@@ -113,6 +113,7 @@ bool optor::WidgetHeader::OnMousePress     (const dr4::Event& event)
     if (dr4::Rect2f(AbsCoord() + closeRect_.rect.pos, closeRect_.rect.size).Contains(event.mouseButton.pos)
      && event.mouseButton.button == dr4::MouseCode::MOUSECODE_LEFT
     ) {
+        state_->hoveredWidget = parent_;
         widget_.reset();
         mustRemoved_ = true;
         return true;

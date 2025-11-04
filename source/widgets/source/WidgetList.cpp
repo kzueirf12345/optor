@@ -42,7 +42,7 @@ void optor::WidgetList::Scroll(float percentage) {
 }
 
 void optor::WidgetList::Draw(dr4::Texture& srcTexture) {
-    const dr4::Vec2f pos = rect_.rect.pos;
+    dr4::Vec2f pos = rect_.rect.pos;
 
     rect_.rect.pos = {0, 0};
     ERROR_HANDLE([this](){
@@ -53,15 +53,21 @@ void optor::WidgetList::Draw(dr4::Texture& srcTexture) {
     float childOffset = baseOffset_;
 
     for (const auto& child : children_) {
-        ERROR_HANDLE([&child, childOffset](){
-            child->SetPosition({0, childOffset});
+        pos = child->GetPosition();
+
+        ERROR_HANDLE([&child, childOffset, &pos](){
+            child->SetPosition(pos + dr4::Vec2f{0, childOffset});
         });
 
         ERROR_HANDLE([this, &child](){
             child->Draw(*texture_);
         });
 
-        childOffset += child->GetSize().y;
+        ERROR_HANDLE([&child, &pos](){
+            child->SetPosition(pos);
+        });
+
+        childOffset += pos.y + child->GetSize().y;
     }
 
     ERROR_HANDLE([this](){

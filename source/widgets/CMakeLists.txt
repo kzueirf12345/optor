@@ -9,6 +9,7 @@ add_library(widgets STATIC
     source/WidgetHeader.cpp
     source/ScrollBar.cpp
     source/WidgetList.cpp
+    source/HideButton.cpp
     # source/WidgetButtonText.cpp
     # source/WidgetOpticObj.cpp
     # source/WidgetOpticObjs.cpp
