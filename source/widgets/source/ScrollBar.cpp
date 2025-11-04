@@ -66,21 +66,21 @@ optor::ScrollBar::ScrollBar(dr4::Window* window, const dr4::Vec2f& size, optor::
 }
 
 void optor::ScrollBar::Move(float shiftPercent) {
-    const double newPercentage = std::clamp(percentage_ + shiftPercent, 0.f, 1.f);
-    const double realShift = newPercentage - percentage_;
-    percentage_ = (isHorizontal_ ? newPercentage : 1 - newPercentage);
+    const float newPercentage = std::clamp(percentage_ + shiftPercent, 0.f, 1.f);
+    const float realShift = newPercentage - percentage_;
+    percentage_ = newPercentage;
 
-    action_(percentage_);
+    action_((isHorizontal_ ? percentage_ : 1 - percentage_));
 
     const dr4::Vec2f barSize = rect_.rect.size;
     dr4::Vec2f thumbPos = thumbButton_.GetPosition();
 
     if (isHorizontal_) {
-        const double travel = barSize.x - 3.0 * buttonSize_.x;
+        const float travel = barSize.x - 3.0 * buttonSize_.x;
         thumbPos.x = buttonSize_.x + percentage_ * travel;
     } else {
-        const double travel = barSize.y - 3.0 * buttonSize_.y;
-        thumbPos.y = buttonSize_.y + percentage_ * travel;
+        const float travel = barSize.y - 3.0 * buttonSize_.y;
+        thumbPos.y = buttonSize_.y + (1 - percentage_) * travel;
     }
 
     thumbButton_.SetPosition(thumbPos);
@@ -120,8 +120,8 @@ bool optor::ScrollBar::OnMouseMove(const dr4::Event& event) {
         const dr4::Vec2f thumbSize = thumbButton_.GetSize();
         const dr4::Vec2f absBarPos = AbsCoord();
 
-        double curPos;
-        double maxTravel;
+        float curPos;
+        float maxTravel;
 
         if (isHorizontal_) {
             curPos = mouse.x - absBarPos.x - thumbSize.x;
@@ -131,8 +131,8 @@ bool optor::ScrollBar::OnMouseMove(const dr4::Event& event) {
             maxTravel = barSize.y - 2.0 * thumbSize.y;
         }
 
-        double newPercent = std::clamp(curPos / maxTravel, 0.0, 1.0);
-        double shift = newPercent - percentage_;
+        float newPercent = std::clamp(curPos / maxTravel, 0.0f, 1.0f);
+        float shift = newPercent - percentage_;
         Move(shift);
     }
 

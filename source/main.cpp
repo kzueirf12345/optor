@@ -24,14 +24,6 @@
 // #include "widgets/WidgetButtonCamera.hpp"
 // #include "widgets/WidgetOpticObjs.hpp"
 
-// /*!SECTION
-// чужой объект в конфигурационном файле. Там айдишник, что он не тот.
-// */
-
-// /*!SECTION
-// // TODO самоветящийся объект (когда попадает луч, тогда увеличивать яркость)
-// // TODO прокручиваемый список объектов. Там выбираем объект и можем его двигать тооже на кнопки
-
 // */
 
 // static void CreateScene(optor::WidgetManager* manager);

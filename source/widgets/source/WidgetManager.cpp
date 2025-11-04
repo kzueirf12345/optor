@@ -37,7 +37,7 @@ optor::WidgetManager::WidgetManager(dr4::Window* window)
     state_.draggedWidget = nullptr;
     state_.selectedWidget = nullptr;
     state_.prevMouseCoord = {0, 0};
-    // state_.selectedObj = nullptr; // FIXME
+    state_.selectedObj = nullptr;
 }
 
 void optor::WidgetManager::Draw() {

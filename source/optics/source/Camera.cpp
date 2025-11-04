@@ -31,7 +31,7 @@ optor::Camera::Camera(const optor::Vector3d& position, const optor::Vector3d& ta
 
 void optor::Camera::Move(MoveDirection direction, double speed) {
     switch (direction) {
-        case MoveDirection::FORWARD: // REVIEW
+        case MoveDirection::FORWARD:
             position_ -= front_ * speed;
             break;
         case MoveDirection::BACKWARD:
