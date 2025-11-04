@@ -7,10 +7,11 @@ add_library(widgets STATIC
     source/Textable.cpp
     source/WidgetButtonCamera.cpp
     source/WidgetHeader.cpp
+    source/ScrollBar.cpp
+    source/WidgetList.cpp
     # source/WidgetButtonText.cpp
     # source/WidgetOpticObj.cpp
     # source/WidgetOpticObjs.cpp
-    # source/ScrollBar.cpp
     # source/WidgetButtonMoveOpticObj.cpp
 )
 

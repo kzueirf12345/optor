@@ -15,7 +15,7 @@ namespace optor
 
 class WidgetChildable: public Widget {
     public:
-        WidgetChildable(const dr4::Vec2f& pos, optor::WidgetsState* state, dr4::Window* window);
+        WidgetChildable(const dr4::Vec2f& size, optor::WidgetsState* state, dr4::Window* window);
 
         WidgetChildable           (const WidgetChildable&) = delete;
         WidgetChildable& operator=(const WidgetChildable&) = delete;
