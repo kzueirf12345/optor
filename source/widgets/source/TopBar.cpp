@@ -8,6 +8,7 @@
 #include "global/Global.hpp"
 #include "widgets/WidgetChildable.hpp"
 #include "widgets/WidgetList.hpp"
+#include "widgets/WidgetScrolledList.hpp"
 #include "widgets/WidgetText.hpp"
 
 optor::TopBarButton::TopBarButton(dr4::Window* window, const dr4::Vec2f& size, optor::WidgetsState* state, 
@@ -47,6 +48,8 @@ void optor::TopBarButton::Draw(dr4::Texture& srcTexture)
     });
 }
 
+//==========================================TOPBAR==================================================
+
 static std::unique_ptr<optor::Widget> CreateViewList(optor::WidgetManager* manager);
 
 optor::TopBar::TopBar(optor::WidgetManager* manager) 
@@ -73,8 +76,6 @@ optor::TopBar::TopBar(optor::WidgetManager* manager)
         "view"
     );
 
-    // view
-
     AddChild(std::move(view));
 }
 
@@ -82,29 +83,29 @@ static std::unique_ptr<optor::Widget> CreateViewList(optor::WidgetManager* manag
 {
     assert(manager);
 
-    auto list = std::make_unique<optor::WidgetList>(
+    auto list = std::make_unique<optor::WidgetScrolledList>(
         manager->GetWindow(),
-        dr4::Vec2f(300, 500),
+        dr4::Vec2f(500, 500),
         manager->GetState()
     );
 
     list->AddChild(std::make_unique<optor::WidgetText>(
         manager->GetWindow(),
-        dr4::Vec2f(list->GetSize().x, dr4::Text{.text = "Scene", .fontSize = 40, .font = optor::FONT}.GetBounds().size.y),
+        dr4::Text{.text = "Scene", .fontSize = 40, .font = optor::FONT}.GetBounds().size,
         manager->GetState(),
         "Scene"
     ));
 
     list->AddChild(std::make_unique<optor::WidgetText>(
         manager->GetWindow(),
-        dr4::Vec2f(list->GetSize().x, dr4::Text{.text = "Camera", .fontSize = 40, .font = optor::FONT}.GetBounds().size.y),
+        dr4::Text{.text = "Camera", .fontSize = 40, .font = optor::FONT}.GetBounds().size,
         manager->GetState(),
         "Camera"
     ));
 
     list->AddChild(std::make_unique<optor::WidgetText>(
         manager->GetWindow(),
-        dr4::Vec2f(list->GetSize().x, dr4::Text{.text = "List", .fontSize = 40, .font = optor::FONT}.GetBounds().size.y),
+        dr4::Text{.text = "List", .fontSize = 40, .font = optor::FONT}.GetBounds().size,
         manager->GetState(),
         "List"
     ));

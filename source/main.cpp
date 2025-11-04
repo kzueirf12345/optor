@@ -314,11 +314,13 @@
 #include "widgets/TopBar.hpp"
 #include "widgets/Widget.hpp"
 #include "widgets/WidgetHeader.hpp"
-#include "widgets/WidgetList.hpp"
+#include "widgets/WidgetScrolledList.hpp"
 #include "widgets/WidgetManager.hpp"
+#include "widgets/WidgetText.hpp"
 #include "widgets/WidgetChildable.hpp"
 #include "widgets/SceneWidget.hpp"
 #include "widgets/WidgetButtonCamera.hpp"
+#include "widgets/WidgetList.hpp"
 #include "optics/FinitPlane.hpp"
 #include "optics/Plane.hpp"
 #include "optics/Light.hpp"
@@ -383,7 +385,7 @@ try
             &manager
         ));
     });
-    
+
     while (ERROR_HANDLE(&dr4::Window::IsOpen, window)) {
         
         ERROR_HANDLE(&optor::WidgetManager::HandleEvents, &manager);
@@ -518,6 +520,8 @@ static void CreateCameraButtons(dr4::Window* window, dr4::DR4Backend* backend, o
         window
     );
 
+    ERROR_HANDLE(&optor::Widget::SetPosition, cameraButtons, dr4::Vec2f(1350, 200));
+
     auto* leftButton = dynamic_cast<optor::WidgetButtonCamera*>(ERROR_HANDLE(
         &optor::WidgetChildable::AddChild, 
         cameraButtons, 
@@ -608,33 +612,13 @@ static void CreateCameraButtons(dr4::Window* window, dr4::DR4Backend* backend, o
 
     ERROR_HANDLE(&optor::Widget::SetPosition, backwordButton, dr4::Vec2f(500, 200));
 
-    auto scroll = std::make_unique<optor::WidgetList>(
-        window,
-        dr4::Vec2f{800, 500},
-        manager->GetState()
-    );
-
-    ERROR_HANDLE(&optor::Widget::SetPosition, scroll, dr4::Vec2f(1350, 300));
-
-    scroll->AddChild(std::move(cameraButtons));
-
-    auto hideButton  = std::make_unique<optor::HideButton>(
-        dr4::Vec2f(300, 300),
-        manager->GetState(),
-        std::move(scroll)
-    );
-
-    hideButton->SetPosition(dr4::Vec2f(1350, 100));
-
-    manager->GetDesktop()->AddChild(std::move(hideButton));
-
-    // auto* scrollWithHeader = dynamic_cast<optor::WidgetHeader*>(ERROR_HANDLE(
-    //     &optor::WidgetChildable::AddChild, 
-    //     manager->GetDesktop(), 
-    //     std::make_unique<optor::WidgetHeader>(
-    //         window,
-    //         std::move(scroll),
-    //         "Camera buttons"
-    //     )
-    // ));
+    auto* cameraButtonsWithHeader = dynamic_cast<optor::WidgetHeader*>(ERROR_HANDLE(
+        &optor::WidgetChildable::AddChild, 
+        manager->GetDesktop(), 
+        std::make_unique<optor::WidgetHeader> (
+            window,
+            std::move(cameraButtons),
+            "Camera"
+        )
+    ));
 }

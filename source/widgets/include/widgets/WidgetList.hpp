@@ -12,25 +12,11 @@ namespace optor
 
 class WidgetList : public WidgetChildable {
     public:
-        WidgetList(dr4::Window* window, const dr4::Vec2f& size, optor::WidgetsState* state);
+        WidgetList(dr4::Window* window, optor::WidgetsState* state);
 
-        virtual void Scroll(float percentage);
-
-        virtual void Draw(dr4::Texture& srcTexture) override;
-
-        virtual bool OnMouseMove      (const dr4::Event& event) override;
-        virtual bool OnMousePress     (const dr4::Event& event) override;
-        virtual bool OnMouseRelease   (const dr4::Event& event) override;
-        virtual bool OnKeyboardPress  (const dr4::Event& event) override;
-        virtual bool OnKeyboardRelease(const dr4::Event& event) override;
-        virtual void OnIdle           ()                        override;
+        virtual optor::Widget* AddChild(std::unique_ptr<Widget> child) override;
 
     protected:
-        std::unique_ptr<optor::ScrollBar> scrollbar_;
-
-        float baseOffset_;
-
-        float GetListSize() const;
 
 };
 

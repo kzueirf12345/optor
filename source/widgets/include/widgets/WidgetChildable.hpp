@@ -33,7 +33,7 @@ class WidgetChildable: public Widget {
         virtual bool OnKeyboardRelease(const dr4::Event& event) override;
         virtual void OnIdle           ()                        override;
 
-        optor::Widget* AddChild(std::unique_ptr<Widget> child);
+        virtual optor::Widget* AddChild(std::unique_ptr<Widget> child);
 
         [[nodiscard]]       Widget& operator[](size_t ind)       ;
         [[nodiscard]] const Widget& operator[](size_t ind) const ;
