@@ -311,6 +311,7 @@
 #include "global/Global.hpp"
 #include "optics/Vector.hpp"
 #include "widgets/HideButton.hpp"
+#include "widgets/TopBar.hpp"
 #include "widgets/Widget.hpp"
 #include "widgets/WidgetHeader.hpp"
 #include "widgets/WidgetList.hpp"
@@ -375,6 +376,12 @@ try
 
     ERROR_HANDLE([backend, window, &manager](){
         CreateScene(window, backend, &manager);
+    });
+
+    ERROR_HANDLE([&manager](){
+        manager.GetDesktop()->AddChild(std::make_unique<optor::TopBar>(
+            &manager
+        ));
     });
     
     while (ERROR_HANDLE(&dr4::Window::IsOpen, window)) {

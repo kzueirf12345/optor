@@ -31,6 +31,7 @@ class WidgetManager {
         [[nodiscard]]       optor::WidgetChildable* GetDesktop()       ;
         [[nodiscard]] const optor::WidgetsState*    GetState()   const ;
         [[nodiscard]]       optor::WidgetsState*    GetState()         ;
+        [[nodiscard]]       dr4::Window*            GetWindow()        ;
 
     protected:
 

@@ -16,8 +16,6 @@ class HideButton: public WidgetButton {
     public:
         HideButton(const dr4::Vec2f& size, optor::WidgetsState* state, std::unique_ptr<optor::Widget> widget);
 
-        virtual void Draw(dr4::Texture &srcTexture) override;
-
         virtual bool OnMousePress  (const ::dr4::Event& event) override;
         virtual bool OnMouseRelease(const ::dr4::Event& event) override;
 

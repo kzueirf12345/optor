@@ -10,12 +10,6 @@ optor::HideButton::HideButton(const dr4::Vec2f& size, optor::WidgetsState* state
     widget_ = state_->modalWidgets.back().get();
 }
 
-void optor::HideButton::Draw(dr4::Texture &srcTexture) {
-    ERROR_HANDLE([this, &srcTexture](){
-        optor::WidgetButton::Draw(srcTexture);
-    });
-}
-
 bool optor::HideButton::OnMousePress  (const ::dr4::Event& event) {
     if (ERROR_HANDLE([this, &event](){return optor::Widget::OnMousePress(event);})) {
         return true;

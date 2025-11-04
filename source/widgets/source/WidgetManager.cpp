@@ -175,3 +175,6 @@ const optor::WidgetsState* optor::WidgetManager::GetState() const  {
 optor::WidgetsState* optor::WidgetManager::GetState()  {
     return &state_;
 }
+dr4::Window* optor::WidgetManager::GetWindow() {
+    return window_;
+}
