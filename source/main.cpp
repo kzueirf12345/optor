@@ -507,18 +507,18 @@ void CreateScene(dr4::Window* window, dr4::DR4Backend* backend, optor::WidgetMan
         ));
     }));
 
-    auto* checkBox = dynamic_cast<optor::WidgetCheckbox*>(ERROR_HANDLE(
-        &optor::WidgetChildable::AddChild,
-        manager->GetDesktop(),
-        std::make_unique<optor::WidgetCheckbox>(
-            window, 
-            dr4::Vec2f(100, 100),
-            manager->GetState(),
-            [sceneWidgetWithHeader](bool isPresssed) { sceneWidgetWithHeader->SetIsHide(!isPresssed); }
-        )
-    ));
+    // auto* checkBox = dynamic_cast<optor::WidgetCheckbox*>(ERROR_HANDLE(
+    //     &optor::WidgetChildable::AddChild,
+    //     manager->GetDesktop(),
+    //     std::make_unique<optor::WidgetCheckbox>(
+    //         window, 
+    //         dr4::Vec2f(100, 100),
+    //         manager->GetState(),
+    //         [sceneWidgetWithHeader](bool isPresssed) { sceneWidgetWithHeader->SetIsHide(!isPresssed); }
+    //     )
+    // ));
 
-    checkBox->SetPosition({500, 500});
+    // checkBox->SetPosition({500, 500});
 
     // ERROR_HANDLE(&CreateObjsList, manager, sceneWidget);
 }

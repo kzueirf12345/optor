@@ -7,7 +7,9 @@
 #include "widgets/TopBar.hpp"
 #include "global/Global.hpp"
 #include "widgets/HideButton.hpp"
+#include "widgets/HideCheckbox.hpp"
 #include "widgets/Textable.hpp"
+#include "widgets/WidgetCheckbox.hpp"
 #include "widgets/WidgetChildable.hpp"
 #include "widgets/WidgetHeader.hpp"
 #include "widgets/WidgetList.hpp"
@@ -98,9 +100,12 @@ optor::TopBar::TopBar(optor::WidgetManager* manager)
     AddChild(std::move(view));
 }
 
+static void HandleChild(optor::Widget* child, optor::WidgetList* list, optor::WidgetManager* manager);
+
 static std::unique_ptr<optor::Widget> CreateViewList(optor::WidgetManager* manager, const optor::WidgetChildable* parent)
 {
     assert(manager);
+    assert(parent);
 
     auto list = std::make_unique<optor::WidgetList>(
         manager->GetWindow(),
@@ -109,47 +114,88 @@ static std::unique_ptr<optor::Widget> CreateViewList(optor::WidgetManager* manag
 
     const size_t childrenCount = parent->GetChildrenCount();
     for (size_t ind = 0; ind < childrenCount; ++ind) {
-        const auto* child = parent->GetChild(ind);
-        const auto* headerChild = dynamic_cast<const optor::WidgetHeader*>(child);
 
-        if (headerChild) {
-            child = headerChild->GetWidget();
-        }
+        auto* child = parent->GetChild(ind);
 
-        std::optional<std::string> name = child->GetName();
-
-        if (!name.has_value()) {
-            name = child->GetTypeName();
-        }
-
-        dr4::Vec2f size = dr4::Text{.text = name.value(), .fontSize = 40, .font = optor::FONT}.GetBounds().size;
-
-        const auto* childableChild = dynamic_cast<const optor::WidgetChildable*>(child);
-
-        if (childableChild) {
-            auto sublist = std::move(CreateViewList(manager, childableChild));
-
-            list->AddChild(std::make_unique<optor::TopBarButton>(
-                manager->GetWindow(),
-                size, 
-                manager->GetState(), 
-                std::move(sublist), 
-                name.value(),
-                optor::TopBarButton::WidgetPos::RIGHT
-            ));
-
-        } else {
-            list->AddChild(std::make_unique<optor::WidgetText>(
-                manager->GetWindow(),
-                size,
-                manager->GetState(),
-                name.value()
-            ));
-        }
-
-        dynamic_cast<optor::Textable*>(list->GetChild(list->GetChildrenCount() - 1))->GetText()->pos.x = 0;
-
+        ERROR_HANDLE(HandleChild, child, list.get(), manager);
     }
 
     return std::move(list);
+}
+
+static void HandleChild(optor::Widget* child, optor::WidgetList* list, optor::WidgetManager* manager)
+{
+    assert(child);
+    assert(list);
+    assert(manager);
+
+    auto* headerChild = dynamic_cast<optor::WidgetHeader*>(child);
+
+    if (headerChild) {
+        child = headerChild->GetWidget();
+    }
+
+    std::optional<std::string> name = child->GetName();
+
+    if (!name.has_value()) {
+        name = child->GetTypeName();
+    }
+
+    dr4::Vec2f size = dr4::Text{.text = name.value(), .fontSize = 40, .font = optor::FONT}.GetBounds().size;
+
+    const auto* childableChild = dynamic_cast<const optor::WidgetChildable*>(child);
+
+    std::unique_ptr<optor::Widget> textWidget;
+
+    if (childableChild) {
+        auto sublist = std::move(CreateViewList(manager, childableChild));
+
+        textWidget = std::make_unique<optor::TopBarButton>(
+            manager->GetWindow(),
+            size, 
+            manager->GetState(), 
+            std::move(sublist), 
+            name.value(),
+            optor::TopBarButton::WidgetPos::RIGHT
+        );
+
+    } else {
+        textWidget = std::make_unique<optor::WidgetText>(
+            manager->GetWindow(),
+            size,
+            manager->GetState(),
+            name.value()
+        );
+    }
+
+    dynamic_cast<optor::Textable*>(textWidget.get())->GetText()->pos.x = 0;
+    
+    ERROR_HANDLE([&textWidget, &size](){
+        textWidget->SetPosition({size.y, 0});
+    });
+
+    textWidget->SetOutlineThickness(0);
+
+    auto checkBox = std::make_unique<optor::HideCheckbox>(
+        manager->GetWindow(),
+        dr4::Vec2f{size.y, size.y},
+        manager->GetState(),
+        (headerChild ? headerChild : child)
+    );
+
+    checkBox->SetOutlineThickness(0);
+
+    auto* listElem = dynamic_cast<optor::WidgetChildable*>(ERROR_HANDLE(
+        &optor::WidgetChildable::AddChild,
+        list,
+        std::make_unique<optor::WidgetChildable>(
+            dr4::Vec2f({size.x + size.y, size.y}),
+            manager->GetState(),
+            manager->GetWindow()
+        )
+    ));
+
+    ERROR_HANDLE(&optor::WidgetChildable::AddChild, listElem, std::move(textWidget));
+    ERROR_HANDLE(&optor::WidgetChildable::AddChild, listElem, std::move(checkBox));
+
 }

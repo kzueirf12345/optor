@@ -26,7 +26,7 @@ class WidgetCheckbox: public WidgetButton {
 
         [[nodiscard]] virtual std::string GetTypeName() const override {return "WidgetCheckbox"; };
 
-    private:
+    protected:
         std::unique_ptr<::dr4::Texture> texture_;
 
         ::dr4::Text pressedText_;

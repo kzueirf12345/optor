@@ -109,6 +109,7 @@ bool optor::WidgetHeader::OnMouseMove      (const dr4::Event& event)
 bool optor::WidgetHeader::OnMousePress     (const dr4::Event& event) 
 {
     if (isHide_) { return false; }
+
     if (ERROR_HANDLE([this, &event](){
             return widget_->OnMousePress(event);
         })) 
@@ -120,10 +121,10 @@ bool optor::WidgetHeader::OnMousePress     (const dr4::Event& event)
      && event.mouseButton.button == dr4::MouseCode::MOUSECODE_LEFT
     ) {
         state_->hoveredWidget = parent_;
-        widget_.reset();
         if (closeMode_ == optor::WidgetHeader::CloseMode::HIDE) {
             isHide_ = true;
         } else {
+            widget_.reset();
             mustRemoved_ = true;
         }
         return true;
