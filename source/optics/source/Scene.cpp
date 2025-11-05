@@ -42,6 +42,7 @@ void optor::Scene::Update() {
             image_->SetPixel(x, y, dr4::Color(pixelColor.x * 255, pixelColor.y * 255, pixelColor.z * 255, 255));
         }
     }
+
 }
 
 optor::Vector3d optor::Scene::TraceRay(const optor::Vector3d& origin, const optor::Vector3d& direction, int depth) const {
@@ -84,7 +85,7 @@ optor::Vector3d optor::Scene::CalculateLighting(const optor::OpticObj::Intersect
     
     optor::Vector3d viewDir = !(rayOrigin - point);
     
-    optor::Vector3d result = material.GetAmbientColor();
+    optor::Vector3d result = material.GetDiffuseColor();
     
     for (const Light* light : lights_) {
         optor::Vector3d lightDir = !(light->GetCenter() - point);
@@ -224,4 +225,104 @@ const std::vector<std::unique_ptr<optor::OpticObj>>& optor::Scene::GetObjs() con
 
 dr4::Image* optor::Scene::GetImage() const {
     return image_.get();
+}
+
+optor::Mat4 optor::Scene::LookAt(const optor::Vector3d& eye, const optor::Vector3d& center, const optor::Vector3d& up) {
+    optor::Vector3d f = !(center - eye);
+    optor::Vector3d s = !(f * up);
+    optor::Vector3d u = s * f;
+
+    optor::Mat4 view = {};
+    view.m[0][0] = s.x;  view.m[0][1] = u.x;  view.m[0][2] = -f.x; view.m[0][3] = 0;
+    view.m[1][0] = s.y;  view.m[1][1] = u.y;  view.m[1][2] = -f.y; view.m[1][3] = 0;
+    view.m[2][0] = s.z;  view.m[2][1] = u.z;  view.m[2][2] = -f.z; view.m[2][3] = 0;
+    view.m[3][0] = -(s ^ eye);
+    view.m[3][1] = -(u ^ eye);
+    view.m[3][2] =  (f ^ eye);
+    view.m[3][3] = 1;
+    return view;
+}
+
+optor::Mat4 optor::Scene::Perspective(double fovDeg, double aspect, double near, double far) {
+    double fovRad = fovDeg * M_PI / 180.0;
+    double f = 1.0 / std::tan(fovRad / 2.0);
+    Mat4 p = {};
+    p.m[0][0] = f / aspect;
+    p.m[1][1] = f;
+    p.m[2][2] = (far + near) / (near - far);
+    p.m[2][3] = -1.0;
+    p.m[3][2] = (2 * far * near) / (near - far);
+    return p;
+}
+
+optor::ScreenPoint optor::Scene::ProjectPoint(const optor::Vector3d& p, const Mat4& view, const Mat4& proj,
+                         const dr4::Vec2f& screenSize)
+{
+    // в clip space
+    double x = p.x * view.m[0][0] + p.y * view.m[1][0] + p.z * view.m[2][0] + view.m[3][0];
+    double y = p.x * view.m[0][1] + p.y * view.m[1][1] + p.z * view.m[2][1] + view.m[3][1];
+    double z = p.x * view.m[0][2] + p.y * view.m[1][2] + p.z * view.m[2][2] + view.m[3][2];
+    double w = p.x * view.m[0][3] + p.y * view.m[1][3] + p.z * view.m[2][3] + view.m[3][3];
+
+    double cx = x * proj.m[0][0] + y * proj.m[1][0] + z * proj.m[2][0] + w * proj.m[3][0];
+    double cy = x * proj.m[0][1] + y * proj.m[1][1] + z * proj.m[2][1] + w * proj.m[3][1];
+    double cz = x * proj.m[0][2] + y * proj.m[1][2] + z * proj.m[2][2] + w * proj.m[3][2];
+    double cw = x * proj.m[0][3] + y * proj.m[1][3] + z * proj.m[2][3] + w * proj.m[3][3];
+
+    if (cw <= 0.0)  // за камерой
+        return {0, 0, false};
+
+    // нормализуем
+    cx /= cw;
+    cy /= cw;
+
+    // из [-1, 1] в [0, screenSize]
+    double sx = (cx * 0.5 + 0.5) * screenSize.x;
+    double sy = (1.0 - (cy * 0.5 + 0.5)) * screenSize.y;
+
+    return {sx, sy, true};
+}
+
+std::optional<std::array<dr4::Vec2f, 4>> optor::Scene::ProjectAABBToScreen(
+    const std::array<optor::Vector3d, 8>& aabb,
+    const optor::Camera& camera,
+    const dr4::Vec2f& screenSize)
+{
+    Mat4 view = LookAt(camera.GetPosition(), 
+                       camera.GetPosition() + camera.GetFront(),
+                       camera.GetUp());
+
+    Mat4 proj = Perspective(camera.GetFov(), screenSize.x / screenSize.y, 0.1, 1000.0);
+
+    double minX = std::numeric_limits<double>::max();
+    double minY = std::numeric_limits<double>::max();
+    double maxX = std::numeric_limits<double>::lowest();
+    double maxY = std::numeric_limits<double>::lowest();
+
+    bool anyVisible = false;
+
+    for (auto& v : aabb) {
+        auto sp = ProjectPoint(v, view, proj, screenSize);
+        if (!sp.visible)
+            continue;
+        anyVisible = true;
+        minX = std::min(minX, sp.x);
+        minY = std::min(minY, sp.y);
+        maxX = std::max(maxX, sp.x);
+        maxY = std::max(maxY, sp.y);
+    }
+
+    if (!anyVisible)
+    {
+        return std::nullopt;
+    }
+
+    std::cerr << "kek\n";
+
+    return std::array<dr4::Vec2f, 4>{
+        dr4::Vec2f(minX, minY),
+        dr4::Vec2f(maxX, minY),
+        dr4::Vec2f(maxX, maxY),
+        dr4::Vec2f(minX, maxY)
+    };
 }

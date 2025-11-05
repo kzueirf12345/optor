@@ -10,7 +10,7 @@
 namespace optor
 {
 
-class TriangleMesh final : public OpticObj {
+class TriangleMesh : public OpticObj {
     public:
         TriangleMesh() = default;
         explicit TriangleMesh(const Material& material);
@@ -24,6 +24,8 @@ class TriangleMesh final : public OpticObj {
         virtual void SetMaterial(const Material& material) override;
 
         virtual void Move(const optor::Vector3d& offset) override final;
+
+        std::array<optor::Vector3d, 8> GetAABB() const override;
 
         [[nodiscard]] virtual std::string GetTypeName() const override {return "TriangleMesh"; };
 

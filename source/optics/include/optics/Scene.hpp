@@ -16,6 +16,12 @@
 namespace optor 
 {
 
+struct ScreenPoint {
+    double x, y;
+    bool visible;
+};
+
+
 class Scene {
     public:
         Scene(dr4::DR4Backend* backend, const dr4::Vec2f& size);
@@ -34,6 +40,12 @@ class Scene {
         void SetMoveDir(optor::MoveDirection moveDir);
 
         OpticObj* GetObjAtPixel(const optor::Vector2d& pixel);
+
+        std::optional<std::array<dr4::Vec2f, 4>> ProjectAABBToScreen(
+            const std::array<optor::Vector3d, 8>& aabb,
+            const optor::Camera& camera,
+            const dr4::Vec2f& screenSize
+        );
 
     private:
         std::unique_ptr<dr4::Image> image_;
@@ -63,6 +75,13 @@ class Scene {
         std::optional<optor::Vector3d> Refract(const optor::Vector3d& incident, 
                                                const optor::Vector3d& normal, 
                                                double eta) const;
+
+        Mat4 LookAt(const optor::Vector3d& eye, const optor::Vector3d& center, const optor::Vector3d& up);
+        Mat4 Perspective(double fovDeg, double aspect, double near, double far);
+        ScreenPoint ProjectPoint(const optor::Vector3d& p, const Mat4& view, const Mat4& proj,
+                         const dr4::Vec2f& screenSize);
+
+
 };
 
 }

@@ -3,6 +3,7 @@
 
 #include <optional>
 #include <string>
+#include <array>
 
 #include "optics/Vector.hpp"
 #include "optics/Material.hpp"
@@ -31,6 +32,8 @@ class OpticObj {
         virtual void SetMaterial(const Material& material) { material_ = material; }
 
         virtual void Move(const optor::Vector3d& offset) = 0;
+
+        virtual std::array<optor::Vector3d, 8> GetAABB() const = 0; 
 
         [[nodiscard]] virtual std::string GetTypeName() const {return "OpticObject"; };
 

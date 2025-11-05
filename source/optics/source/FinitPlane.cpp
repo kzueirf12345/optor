@@ -88,3 +88,9 @@ void optor::FinitPlane::Move(const optor::Vector3d& offset) {
 
     ERROR_HANDLE(&optor::FinitPlane::BuildMesh, this);
 }
+
+
+std::array<optor::Vector3d, 8> optor::FinitPlane::GetAABB() const 
+{
+    return ERROR_HANDLE(&optor::TriangleMesh::GetAABB, mesh_);
+}

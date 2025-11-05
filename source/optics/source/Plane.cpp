@@ -38,3 +38,16 @@ void optor::Plane::SetNormal(const optor::Vector3d& normal) { normal_ = !normal;
 void optor::Plane::Move(const optor::Vector3d& offset) {
     point_ += offset;
 }
+
+std::array<optor::Vector3d, 8> optor::Plane::GetAABB() const {
+    return {
+        point_ + optor::Vector3d{-INFINITY, -INFINITY, -INFINITY},
+        point_ + optor::Vector3d{ INFINITY, -INFINITY, -INFINITY},
+        point_ + optor::Vector3d{-INFINITY,  INFINITY, -INFINITY},
+        point_ + optor::Vector3d{ INFINITY,  INFINITY, -INFINITY},
+        point_ + optor::Vector3d{-INFINITY, -INFINITY,  INFINITY},
+        point_ + optor::Vector3d{ INFINITY, -INFINITY,  INFINITY},
+        point_ + optor::Vector3d{-INFINITY,  INFINITY,  INFINITY},
+        point_ + optor::Vector3d{ INFINITY,  INFINITY,  INFINITY}
+    };
+}
