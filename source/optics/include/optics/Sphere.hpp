@@ -31,6 +31,7 @@ class Sphere: public optor::OpticObj {
 
         std::array<optor::Vector3d, 8> GetAABB() const override;
         virtual optor::Vector3d GetCoord() const override;
+        std::array<optor::Vector3d, 8> GetAABB() const override;
 
         [[nodiscard]] virtual std::string GetTypeName() const override {return "Sphere"; };
 

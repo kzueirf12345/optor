@@ -96,3 +96,7 @@ std::array<optor::Vector3d, 8> optor::FinitPlane::GetAABB() const
 optor::Vector3d optor::FinitPlane::GetCoord() const {
     return center_;
 }
+std::array<optor::Vector3d, 8> optor::FinitPlane::GetAABB() const 
+{
+    return ERROR_HANDLE(&optor::TriangleMesh::GetAABB, mesh_);
+}
