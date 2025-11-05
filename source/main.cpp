@@ -326,6 +326,7 @@
 #include "optics/Light.hpp"
 #include "optics/Triangle.hpp"
 #include "optics/Sphere.hpp"
+#include "widgets/WidgetCheckbox.hpp"
 
 ::dr4::Font* optor::FONT = nullptr;
 
@@ -505,6 +506,19 @@ void CreateScene(dr4::Window* window, dr4::DR4Backend* backend, optor::WidgetMan
             optor::materials::MIRROR
         ));
     }));
+
+    auto* checkBox = dynamic_cast<optor::WidgetCheckbox*>(ERROR_HANDLE(
+        &optor::WidgetChildable::AddChild,
+        manager->GetDesktop(),
+        std::make_unique<optor::WidgetCheckbox>(
+            window, 
+            dr4::Vec2f(100, 100),
+            manager->GetState(),
+            [sceneWidgetWithHeader](bool isPresssed) { sceneWidgetWithHeader->SetIsHide(!isPresssed); }
+        )
+    ));
+
+    checkBox->SetPosition({500, 500});
 
     // ERROR_HANDLE(&CreateObjsList, manager, sceneWidget);
 }
