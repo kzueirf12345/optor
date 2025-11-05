@@ -313,6 +313,7 @@
 #include "global/Global.hpp"
 #include "optics/Vector.hpp"
 #include "widgets/HideButton.hpp"
+#include "widgets/OpticObjShort.hpp"
 #include "widgets/TopBar.hpp"
 #include "widgets/Widget.hpp"
 #include "widgets/WidgetHeader.hpp"
@@ -664,11 +665,11 @@ static void CreateObjsList(optor::WidgetManager* manager, optor::SceneWidget* sc
 
         const dr4::Vec2f size = dr4::Text{.text = name, .fontSize = 40, .font = optor::FONT}.GetBounds().size;
 
-        auto nameWidget = std::make_unique<optor::WidgetText>(
+        auto nameWidget = std::make_unique<optor::OpticObjShort>(
             manager->GetWindow(),
             dr4::Vec2f{list->GetSize().x - optor::INIT_SCROLLBAR_WIDTH - size.y, size.y},
             manager->GetState(),
-            name
+            obj
         );
 
         nameWidget->SetOutlineThickness(0);
