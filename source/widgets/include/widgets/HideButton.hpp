@@ -25,6 +25,8 @@ class HideButton: public WidgetButton {
 
         virtual void SetPosition(const dr4::Vec2f& position) override;
 
+        optor::Widget* GetWidget() const;
+
         [[nodiscard]] virtual std::string GetTypeName() const override {return "HideButton"; };
 
     protected:

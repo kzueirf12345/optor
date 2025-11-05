@@ -296,10 +296,12 @@
 
 #include <cstdlib>
 #include <dlfcn.h>
+#include <linux/limits.h>
 #include <memory>
 #include <stdexcept>
 #include <iostream>
 #include <cassert>
+#include <string>
 
 #include "dr4/math/color.hpp"
 #include "dr4/math/vec2.hpp"
@@ -332,7 +334,7 @@
 
 static void CreateScene(dr4::Window* window, dr4::DR4Backend* backend, optor::WidgetManager* manager);
 static void CreateCameraButtons(dr4::Window* window, dr4::DR4Backend* backend, optor::WidgetManager* manager, optor::SceneWidget* sceneWidget);
-// static void CreateObjsList(optor::WidgetManager* manager, optor::SceneWidget* sceneWidget);
+static void CreateObjsList(optor::WidgetManager* manager, optor::SceneWidget* sceneWidget);
 
 int main() {
     void* libdr4 = dlopen("./build/source/dr4/libdr4.so", RTLD_LAZY);
@@ -426,7 +428,7 @@ void CreateScene(dr4::Window* window, dr4::DR4Backend* backend, optor::WidgetMan
             std::make_unique<optor::SceneWidget>(
                 window,
                 backend,
-                dr4::Vec2f{1200, 700},
+                dr4::Vec2f{1750, 900},
                 manager->GetState()
             ),
             "Scene",
@@ -434,9 +436,11 @@ void CreateScene(dr4::Window* window, dr4::DR4Backend* backend, optor::WidgetMan
         )
     ));
 
-    ERROR_HANDLE(&optor::Widget::SetPosition, sceneWidgetWithHeader, dr4::Vec2f(100, 100));
+    ERROR_HANDLE(&optor::Widget::SetPosition, sceneWidgetWithHeader, dr4::Vec2f(500, 100));
 
     auto* sceneWidget = dynamic_cast<optor::SceneWidget*>(sceneWidgetWithHeader->GetWidget());
+
+    sceneWidget->SetName("Scene");
     
     ERROR_HANDLE(&CreateCameraButtons, window, backend, manager, sceneWidget);
 
@@ -520,7 +524,7 @@ void CreateScene(dr4::Window* window, dr4::DR4Backend* backend, optor::WidgetMan
 
     // checkBox->SetPosition({500, 500});
 
-    // ERROR_HANDLE(&CreateObjsList, manager, sceneWidget);
+    ERROR_HANDLE(&CreateObjsList, manager, sceneWidget);
 }
 
 static void CreateCameraButtons(dr4::Window* window, dr4::DR4Backend* backend, optor::WidgetManager* manager, optor::SceneWidget* sceneWidget) {
@@ -535,7 +539,9 @@ static void CreateCameraButtons(dr4::Window* window, dr4::DR4Backend* backend, o
         window
     );
 
-    ERROR_HANDLE(&optor::Widget::SetPosition, cameraButtons, dr4::Vec2f(1350, 200));
+    ERROR_HANDLE(&optor::Widget::SetPosition, cameraButtons, dr4::Vec2f(1450, 650));
+
+    cameraButtons->SetName("Camera buttons");
 
     auto* leftButton = dynamic_cast<optor::WidgetButtonCamera*>(ERROR_HANDLE(
         &optor::WidgetChildable::AddChild, 
@@ -637,4 +643,66 @@ static void CreateCameraButtons(dr4::Window* window, dr4::DR4Backend* backend, o
             optor::WidgetHeader::CloseMode::HIDE
         )
     ));
+}
+
+static void CreateObjsList(optor::WidgetManager* manager, optor::SceneWidget* sceneWidget) {
+    auto list = std::make_unique<optor::WidgetScrolledList>(
+        manager->GetWindow(),
+        dr4::Vec2f(400, 900),
+        manager->GetState()
+    );
+
+    list->SetName("Optical Oblects list");
+
+    const auto& objs = sceneWidget->GetScene().GetObjs();
+
+    for (size_t ind = 0; ind < objs.size(); ++ind) {
+
+        auto* obj = objs[ind].get();
+
+        const std::string name = obj->GetTypeName();
+
+        const dr4::Vec2f size = dr4::Text{.text = name, .fontSize = 40, .font = optor::FONT}.GetBounds().size;
+
+        auto nameWidget = std::make_unique<optor::WidgetText>(
+            manager->GetWindow(),
+            dr4::Vec2f{list->GetSize().x - optor::INIT_SCROLLBAR_WIDTH - size.y, size.y},
+            manager->GetState(),
+            name
+        );
+
+        nameWidget->SetOutlineThickness(0);
+        nameWidget->SetPosition({size.y, 0});
+
+        auto numWidget = std::make_unique<optor::WidgetText>(
+            manager->GetWindow(),
+            dr4::Vec2f{size.y, size.y},
+            manager->GetState(),
+            std::to_string(ind)
+        );
+
+        numWidget->SetOutlineThickness(0);
+
+        auto listElem = std::make_unique<optor::WidgetChildable> (
+            dr4::Vec2f(nameWidget->GetSize().x + size.y, size.y),
+            manager->GetState(),
+            manager->GetWindow()
+        );
+
+        ERROR_HANDLE(&optor::WidgetChildable::AddChild, listElem, std::move(numWidget));
+        ERROR_HANDLE(&optor::WidgetChildable::AddChild, listElem, std::move(nameWidget));
+
+        ERROR_HANDLE(&optor::WidgetChildable::AddChild, list, std::move(listElem));
+    }
+
+    auto listWithHeader  = std::make_unique<optor::WidgetHeader>(
+        manager->GetWindow(),
+        std::move(list),
+        list->GetName().value(),
+        optor::WidgetHeader::CloseMode::HIDE
+    );
+
+    listWithHeader->SetPosition({50, 100});
+
+    ERROR_HANDLE(&optor::WidgetChildable::AddChild, manager->GetDesktop(), std::move(listWithHeader));
 }

@@ -2,6 +2,7 @@
 #define OPTOR_SOURCE_OPTICS_INCLUDE_OPTICS_OPTICS_OBJ_HPP
 
 #include <optional>
+#include <string>
 
 #include "optics/Vector.hpp"
 #include "optics/Material.hpp"
@@ -30,6 +31,8 @@ class OpticObj {
         virtual void SetMaterial(const Material& material) { material_ = material; }
 
         virtual void Move(const optor::Vector3d& offset) = 0;
+
+        [[nodiscard]] virtual std::string GetTypeName() const {return "OpticObject"; };
 
     protected:
         optor::Material material_;

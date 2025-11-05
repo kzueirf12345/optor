@@ -12,6 +12,7 @@
 #include "widgets/Widget.hpp"
 #include "widgets/WidgetChildable.hpp"
 #include "widgets/WidgetManager.hpp"
+#include "widgets/WidgetList.hpp"
 
 namespace optor 
 {
@@ -25,14 +26,18 @@ public:
     };
 
     TopBarButton(dr4::Window* window, const dr4::Vec2f& size, optor::WidgetsState* state, 
-                 std::unique_ptr<optor::Widget> widget, const std::string& text, enum WidgetPos pos);
+                 std::unique_ptr<optor::Widget> widget, const std::string& text, WidgetPos pos);
 
     void Draw(dr4::Texture& srcTexture) override;
+
+    WidgetPos GetWidgetPos() const;
 
     [[nodiscard]] virtual std::string GetTypeName() const override {return "TopBarButton"; };
 
 protected:
     std::unique_ptr<dr4::Texture> texture_;
+
+    WidgetPos widgetPos_;
 };
 
 class TopBar: public WidgetChildable {
@@ -45,6 +50,8 @@ private:
     std::unique_ptr<dr4::Texture> texture_;
 
     optor::WidgetManager* const manager_;
+
+    void UpdatePositions(optor::WidgetList* list, dr4::Vec2f absCoord);
 };
 
 }

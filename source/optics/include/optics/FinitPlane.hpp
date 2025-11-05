@@ -31,6 +31,8 @@ class FinitPlane final : public OpticObj {
 
         virtual void Move(const optor::Vector3d& offset) override final;
 
+        [[nodiscard]] virtual std::string GetTypeName() const override {return "FinitPlane"; };
+
     private:
         optor::Vector3d center_;
         optor::Vector3d normal_;

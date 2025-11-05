@@ -25,6 +25,8 @@ class Plane : public OpticObj {
 
         virtual void Move(const optor::Vector3d& offset) override final;
 
+        [[nodiscard]] virtual std::string GetTypeName() const override {return "Plane"; };
+
     protected:
         optor::Vector3d point_;
         optor::Vector3d normal_;

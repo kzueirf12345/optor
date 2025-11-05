@@ -22,6 +22,8 @@ class Light : public Sphere {
         void SetColor(const optor::Vector3d& color);
         void SetIntensity(double intensity);
 
+        [[nodiscard]] virtual std::string GetTypeName() const override {return "Light"; };
+
     private:
         optor::Vector3d color_;
         double intensity_;

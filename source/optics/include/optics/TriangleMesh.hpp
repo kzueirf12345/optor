@@ -25,6 +25,8 @@ class TriangleMesh final : public OpticObj {
 
         virtual void Move(const optor::Vector3d& offset) override final;
 
+        [[nodiscard]] virtual std::string GetTypeName() const override {return "TriangleMesh"; };
+
     private:
         std::vector<Triangle> triangles_;
 };

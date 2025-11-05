@@ -56,3 +56,7 @@ void optor::HideButton::SetPosition(const dr4::Vec2f& position){
     widget_->SetPosition(widget_->GetPosition() + (position - rect_.rect.pos));
     rect_.rect.pos = position;
 }
+
+optor::Widget* optor::HideButton::GetWidget() const {
+    return widget_;
+}
