@@ -14,6 +14,8 @@ optor::HideCheckbox::HideCheckbox(dr4::Window* window, const ::dr4::Vec2f& size,
 {}
 
 void optor::HideCheckbox::OnIdle() {
+    if (isHide_) return;
+    
     if (widget_->GetIsHide() == isPressed_) {
         isPressed_ = !isPressed_;
     }
