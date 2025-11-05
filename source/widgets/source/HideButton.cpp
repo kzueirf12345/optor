@@ -27,7 +27,7 @@ bool optor::HideButton::OnMouseRelease(const ::dr4::Event& event) {
 }
 
 void optor::HideButton::OnIdle() {
-    if (IsInderectedHovered() || widget_->IsInderectedHovered()) {
+    if (IsInderectedHovered()) {
         isPressed_ = true;
         rect_.fill = pressedColor_;
         widget_->SetMustRemoved(false);
@@ -38,4 +38,13 @@ void optor::HideButton::OnIdle() {
     }
 
     return optor::WidgetButton::OnIdle();
+}
+
+bool optor::HideButton::IsInderectedHovered() const {
+    return widget_->IsInderectedHovered() || optor::WidgetButton::IsInderectedHovered();
+}
+
+void optor::HideButton::SetPosition(const dr4::Vec2f& position){
+    widget_->SetPosition(widget_->GetPosition() + (position - rect_.rect.pos));
+    rect_.rect.pos = position;
 }

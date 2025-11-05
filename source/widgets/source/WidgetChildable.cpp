@@ -137,12 +137,21 @@ optor::Widget* optor::WidgetChildable::AddChild(std::unique_ptr<Widget> child) {
     return childPtr;
 }
 
-optor::Widget& optor::WidgetChildable::operator[](size_t ind)  {
+optor::Widget* optor::WidgetChildable::GetChild(size_t ind) const {
     assert(ind < children_.size());
-    return *children_[ind].get();
+    return children_[ind].get();
 }
 
-const optor::Widget& optor::WidgetChildable::operator[](size_t ind) const  {
-    assert(ind < children_.size());
-    return *children_[ind].get();
+size_t optor::WidgetChildable::GetChildrenCount() const {
+    return children_.size();
+}
+
+bool optor::WidgetChildable::IsInderectedHovered() const {
+    for (const auto& child : children_) {
+        if (child->IsInderectedHovered()) {
+            return true;
+        }
+    }
+
+    return optor::Widget::IsInderectedHovered();
 }

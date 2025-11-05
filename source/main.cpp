@@ -380,8 +380,8 @@ try
         CreateScene(window, backend, &manager);
     });
 
-    ERROR_HANDLE([&manager](){
-        manager.GetDesktop()->AddChild(std::make_unique<optor::TopBar>(
+    auto* topbar = ERROR_HANDLE([&manager](){
+        return manager.GetDesktop()->AddChild(std::make_unique<optor::TopBar>(
             &manager
         ));
     });
@@ -436,6 +436,7 @@ void CreateScene(dr4::Window* window, dr4::DR4Backend* backend, optor::WidgetMan
 
     auto* sceneWidget = dynamic_cast<optor::SceneWidget*>(sceneWidgetWithHeader->GetWidget());
     
+    ERROR_HANDLE(&CreateCameraButtons, window, backend, manager, sceneWidget);
     ERROR_HANDLE(&CreateCameraButtons, window, backend, manager, sceneWidget);
 
     auto* sphere1 = dynamic_cast<optor::Sphere*>(ERROR_HANDLE([sceneWidget](){

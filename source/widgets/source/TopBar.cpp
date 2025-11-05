@@ -6,13 +6,16 @@
 
 #include "widgets/TopBar.hpp"
 #include "global/Global.hpp"
+#include "widgets/HideButton.hpp"
+#include "widgets/Textable.hpp"
 #include "widgets/WidgetChildable.hpp"
+#include "widgets/WidgetHeader.hpp"
 #include "widgets/WidgetList.hpp"
-#include "widgets/WidgetScrolledList.hpp"
 #include "widgets/WidgetText.hpp"
+#include "common/ErrorHandler.hpp"
 
 optor::TopBarButton::TopBarButton(dr4::Window* window, const dr4::Vec2f& size, optor::WidgetsState* state, 
-                std::unique_ptr<optor::Widget> widget, const std::string& text)
+                std::unique_ptr<optor::Widget> widget, const std::string& text, enum WidgetPos pos)
 :   HideButton(size, state, std::move(widget)),
     Textable(text),
     texture_{window->CreateTexture()}
@@ -26,7 +29,20 @@ optor::TopBarButton::TopBarButton(dr4::Window* window, const dr4::Vec2f& size, o
         text_.pos.x = (size.x - localBounds.x) / 2;
         text_.pos.y = (size.y - localBounds.y) / 2;
     });
-    widget_->SetPosition(AbsCoord() + dr4::Vec2f(0, size.y));
+
+    switch (pos) {
+        case optor::TopBarButton::WidgetPos::BOTTOM:
+            widget_->SetPosition(AbsCoord() + dr4::Vec2f(0, size.y));
+            break;
+
+        case optor::TopBarButton::WidgetPos::RIGHT:
+            widget_->SetPosition(AbsCoord() + dr4::Vec2f(size.x, 0));
+            break;
+
+        case optor::TopBarButton::WidgetPos::BOTTOM_RIGHT:
+            widget_->SetPosition(AbsCoord() + dr4::Vec2f(size.x, size.y));
+            break;
+    }
 }
 
 void optor::TopBarButton::Draw(dr4::Texture& srcTexture)
@@ -50,7 +66,7 @@ void optor::TopBarButton::Draw(dr4::Texture& srcTexture)
 
 //==========================================TOPBAR==================================================
 
-static std::unique_ptr<optor::Widget> CreateViewList(optor::WidgetManager* manager);
+static std::unique_ptr<optor::Widget> CreateViewList(optor::WidgetManager* manager, const optor::WidgetChildable* parent);
 
 optor::TopBar::TopBar(optor::WidgetManager* manager) 
     :   optor::WidgetChildable(
@@ -72,43 +88,66 @@ optor::TopBar::TopBar(optor::WidgetManager* manager)
         manager->GetWindow(),
         dr4::Vec2f(dr4::Text{.text = "view", .fontSize = 40, .font = optor::FONT}.GetBounds().size.x, rect_.rect.size.y), 
         manager_->GetState(), 
-        std::move(CreateViewList(manager_)), 
-        "view"
+        std::move(CreateViewList(manager_, manager_->GetDesktop())), 
+        "view",
+        optor::TopBarButton::WidgetPos::BOTTOM
     );
 
     AddChild(std::move(view));
 }
 
-static std::unique_ptr<optor::Widget> CreateViewList(optor::WidgetManager* manager)
+static std::unique_ptr<optor::Widget> CreateViewList(optor::WidgetManager* manager, const optor::WidgetChildable* parent)
 {
     assert(manager);
 
-    auto list = std::make_unique<optor::WidgetScrolledList>(
+    auto list = std::make_unique<optor::WidgetList>(
         manager->GetWindow(),
-        dr4::Vec2f(500, 500),
         manager->GetState()
     );
 
-    list->AddChild(std::make_unique<optor::WidgetText>(
-        manager->GetWindow(),
-        dr4::Text{.text = "Scene", .fontSize = 40, .font = optor::FONT}.GetBounds().size,
-        manager->GetState(),
-        "Scene"
-    ));
+    const size_t childrenCount = parent->GetChildrenCount();
+    for (size_t ind = 0; ind < childrenCount; ++ind) {
+        const auto* child = parent->GetChild(ind);
+        const auto* headerChild = dynamic_cast<const optor::WidgetHeader*>(child);
 
-    list->AddChild(std::make_unique<optor::WidgetText>(
-        manager->GetWindow(),
-        dr4::Text{.text = "Camera", .fontSize = 40, .font = optor::FONT}.GetBounds().size,
-        manager->GetState(),
-        "Camera"
-    ));
+        if (headerChild) {
+            child = headerChild->GetWidget();
+        }
 
-    list->AddChild(std::make_unique<optor::WidgetText>(
-        manager->GetWindow(),
-        dr4::Text{.text = "List", .fontSize = 40, .font = optor::FONT}.GetBounds().size,
-        manager->GetState(),
-        "List"
-    ));
+        std::optional<std::string> name = child->GetName();
+
+        if (!name.has_value()) {
+            name = child->GetTypeName();
+        }
+
+        dr4::Vec2f size = dr4::Text{.text = name.value(), .fontSize = 40, .font = optor::FONT}.GetBounds().size;
+
+        const auto* childableChild = dynamic_cast<const optor::WidgetChildable*>(child);
+
+        if (childableChild) {
+            auto sublist = std::move(CreateViewList(manager, childableChild));
+
+            list->AddChild(std::make_unique<optor::TopBarButton>(
+                manager->GetWindow(),
+                size, 
+                manager->GetState(), 
+                std::move(sublist), 
+                name.value(),
+                optor::TopBarButton::WidgetPos::RIGHT
+            ));
+
+        } else {
+            list->AddChild(std::make_unique<optor::WidgetText>(
+                manager->GetWindow(),
+                size,
+                manager->GetState(),
+                name.value()
+            ));
+        }
+
+        dynamic_cast<optor::Textable*>(list->GetChild(list->GetChildrenCount() - 1))->GetText()->pos.x = 0;
+
+    }
 
     return std::move(list);
 }

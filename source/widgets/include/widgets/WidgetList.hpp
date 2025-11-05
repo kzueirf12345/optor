@@ -1,9 +1,6 @@
 #ifndef OPTOR_SOURCE_WIDGETS_INCLUDE_WIDGETS_WIDGET_LIST_HPP
 #define OPTOR_SOURCE_WIDGETS_INCLUDE_WIDGETS_WIDGET_LIST_HPP
 
-#include "dr4/math/vec2.hpp"
-#include "dr4/texture.hpp"
-#include "widgets/ScrollBar.hpp"
 #include "widgets/WidgetChildable.hpp"
 #include <memory>
 
@@ -15,6 +12,8 @@ class WidgetList : public WidgetChildable {
         WidgetList(dr4::Window* window, optor::WidgetsState* state);
 
         virtual optor::Widget* AddChild(std::unique_ptr<Widget> child) override;
+
+        [[nodiscard]] virtual std::string GetTypeName() const override {return "WidgetList"; };
 
     protected:
 

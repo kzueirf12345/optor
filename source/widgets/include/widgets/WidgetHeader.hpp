@@ -26,7 +26,9 @@ public:
     virtual void OnIdle           () override;
     
     void SetTitle(const std::string& title);
-    optor::Widget* GetWidget();
+    optor::Widget* GetWidget() const;
+
+    [[nodiscard]] virtual std::string GetTypeName() const override {return "WidgetHeader"; };
 
 protected:
     std::unique_ptr<dr4::Texture> texture_;

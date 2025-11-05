@@ -21,6 +21,12 @@ class HideButton: public WidgetButton {
 
         virtual void OnIdle() override;
 
+        [[nodiscard]] virtual bool IsInderectedHovered() const override;
+
+        virtual void SetPosition(const dr4::Vec2f& position) override;
+
+        [[nodiscard]] virtual std::string GetTypeName() const override {return "HideButton"; };
+
     protected:
         optor::Widget* widget_;
 };

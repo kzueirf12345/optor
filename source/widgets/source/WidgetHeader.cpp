@@ -180,6 +180,6 @@ void optor::WidgetHeader::OnIdle           ()
 void optor::WidgetHeader::SetTitle(const std::string& title) {
     text_.text = title;
 }
-optor::Widget* optor::WidgetHeader::GetWidget() {
+optor::Widget* optor::WidgetHeader::GetWidget() const {
     return widget_.get();
 }

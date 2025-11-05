@@ -1,4 +1,5 @@
 #include <cassert>
+#include <optional>
 
 #include "widgets/Widget.hpp"
 #include "common/ErrorHandler.hpp"
@@ -19,7 +20,8 @@ optor::Widget::Widget(const dr4::Vec2f& size, optor::WidgetsState* state)
         isSelectable_{true}, 
         selectButton_{optor::INIT_SELECT_WINDOW_BUTTON_},
         unselectButton_{optor::INIT_UNSELECT_WINDOW_BUTTON_},
-        mustRemoved_(false)
+        mustRemoved_(false),
+        name_{std::nullopt}
 {}
 
 void optor::Widget::Draw(dr4::Texture& srcTexture) {
@@ -74,6 +76,10 @@ void optor::Widget::SetUnselectButton(dr4::KeyCode unselectButton)  {
 
 void optor::Widget::SetMustRemoved (const bool mustRemoved) {
     mustRemoved_ = mustRemoved;
+}
+
+void optor::Widget::SetName (const std::string& name) {
+    name_ = name;
 }
 
 
@@ -219,4 +225,8 @@ bool optor::Widget::IsInderectedHovered() const {
     }
 
     return false;
+}
+
+std::optional<std::string> optor::Widget::GetName() const {
+    return name_;
 }

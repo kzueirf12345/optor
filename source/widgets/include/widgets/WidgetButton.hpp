@@ -19,6 +19,8 @@ class WidgetButton: public Widget {
         void SetPressedColor (const ::dr4::Color& color);
 
         bool IsPressed() const noexcept;
+
+        [[nodiscard]] virtual std::string GetTypeName() const override {return "WidgetButton"; };
         
     protected:
         bool isPressed_;

@@ -18,6 +18,8 @@ public:
 
     virtual void Draw(dr4::Texture& srcTexture) override;
 
+    [[nodiscard]] virtual std::string GetTypeName() const override {return "WidgetText"; };
+
 protected:
     std::unique_ptr<dr4::Texture> texture_;
 };

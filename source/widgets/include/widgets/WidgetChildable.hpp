@@ -35,8 +35,13 @@ class WidgetChildable: public Widget {
 
         virtual optor::Widget* AddChild(std::unique_ptr<Widget> child);
 
-        [[nodiscard]]       Widget& operator[](size_t ind)       ;
-        [[nodiscard]] const Widget& operator[](size_t ind) const ;
+        optor::Widget* GetChild(size_t ind) const;
+
+        size_t GetChildrenCount() const;
+
+        [[nodiscard]] virtual bool IsInderectedHovered() const override;
+
+        [[nodiscard]] virtual std::string GetTypeName() const override {return "WidgetChildable"; };
 
     protected:
 

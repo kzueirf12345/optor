@@ -39,6 +39,8 @@ class ScrollBar: public Widget {
         virtual bool OnKeyboardRelease(const dr4::Event& event) override;
         virtual void OnIdle           ()                        override;
 
+        [[nodiscard]] virtual std::string GetTypeName() const override {return "ScrollBar"; };
+
     private:
         using HandleButtonsT = std::function<bool(optor::WidgetButton&, const dr4::Event&)>;
         bool Propagate(const dr4::Event& event, HandleButtonsT handler);

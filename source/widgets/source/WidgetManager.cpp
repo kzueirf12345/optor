@@ -48,6 +48,7 @@ void optor::WidgetManager::Draw() {
 
     for (auto& modalWidget : state_.modalWidgets) {
         if (!modalWidget->GetMustRemoved()) {
+            // std::cerr << "MOdalWidget pos " << modalWidget->GetPosition().x << " " << modalWidget->GetPosition().y << std::endl;
             ERROR_HANDLE([this, &modalWidget](){
                 modalWidget->Draw(*texture_);
             });
@@ -97,7 +98,7 @@ void optor::WidgetManager::HandleEvents() {
 
                 ERROR_HANDLE(&optor::WidgetChildable::OnMousePress, desktop_, event.value());
                 break;
-            }
+            } 
 
             case dr4::Event::Type::MOUSE_UP: {
                 bool childRes = false;

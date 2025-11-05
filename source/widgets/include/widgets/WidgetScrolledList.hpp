@@ -27,6 +27,8 @@ class WidgetScrolledList : public WidgetChildable {
         virtual bool OnKeyboardRelease(const dr4::Event& event) override;
         virtual void OnIdle           ()                        override;
 
+        [[nodiscard]] virtual std::string GetTypeName() const override {return "WidgetScrooledList"; };
+
     protected:
         std::unique_ptr<optor::ScrollBar> scrollbar_;
 

@@ -29,6 +29,8 @@ class SceneWidget: public optor::Widget {
         [[nodiscard]] const optor::Camera& GetCamera() const ;
         [[nodiscard]]       optor::Camera& GetCamera()       ;
         [[nodiscard]] const optor::Scene&  GetScene()  const ;
+
+        [[nodiscard]] virtual std::string GetTypeName() const override {return "SceneWidget"; };
         
     protected:
         optor::Scene scene_;

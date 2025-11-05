@@ -14,6 +14,8 @@ class Textable {
 
         ::dr4::Text* GetText();
 
+        [[nodiscard]] virtual std::string GetTypeName() const {return "Textable"; };
+
     protected:
         ::dr4::Text text_;
 };

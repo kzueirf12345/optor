@@ -24,6 +24,8 @@ class WidgetButtonCamera: public WidgetButton, public Textable {
 
         virtual void Draw(dr4::Texture &srcTexture) override;
 
+        [[nodiscard]] virtual std::string GetTypeName() const override {return "WidgetButtonCamera"; };
+
     private:
         std::unique_ptr<dr4::Texture> texture_;
         optor::Camera* camera_;
