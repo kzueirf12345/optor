@@ -77,12 +77,6 @@ class Scene {
                                                const optor::Vector3d& normal, 
                                                double eta) const;
 
-        Mat4 LookAt(const optor::Vector3d& eye, const optor::Vector3d& center, const optor::Vector3d& up);
-        Mat4 Perspective(double fovDeg, double aspect, double near, double far);
-        ScreenPoint ProjectPoint(const optor::Vector3d& p, const Mat4& view, const Mat4& proj,
-                         const dr4::Vec2f& screenSize);
-
-
 };
 
 }

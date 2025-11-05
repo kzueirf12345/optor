@@ -67,30 +67,6 @@ void optor::Sphere::Move(const optor::Vector3d& offset) {
     center_ += offset;
 }
 
-std::array<optor::Vector3d, 8> optor::Sphere::GetAABB() const 
-{
-    const optor::Vector3d minPoint = {
-        center_.x - radius_,
-        center_.y - radius_,
-        center_.z - radius_
-    };
-
-    const optor::Vector3d maxPoint = {
-        center_.x + radius_,
-        center_.y + radius_,
-        center_.z + radius_
-    };
-
-    return {
-        optor::Vector3d{minPoint.x, minPoint.y, minPoint.z},
-        optor::Vector3d{maxPoint.x, minPoint.y, minPoint.z},
-        optor::Vector3d{minPoint.x, maxPoint.y, minPoint.z},
-        optor::Vector3d{maxPoint.x, maxPoint.y, minPoint.z},
-        optor::Vector3d{minPoint.x, minPoint.y, maxPoint.z},
-        optor::Vector3d{maxPoint.x, minPoint.y, maxPoint.z},
-        optor::Vector3d{minPoint.x, maxPoint.y, maxPoint.z},
-        optor::Vector3d{maxPoint.x, maxPoint.y, maxPoint.z}
-    };
 optor::Vector3d optor::Sphere::GetCoord() const {
     return center_;
 }

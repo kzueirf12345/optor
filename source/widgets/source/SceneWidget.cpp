@@ -35,43 +35,6 @@ void optor::SceneWidget::Draw(dr4::Texture& srcTexture) {
     });
     rect_.rect.pos = pos;
 
-    // for (size_t i = 0; i < 100; ++i) {
-    //     std::cerr << (int)scene_.GetImage()->GetArray()[i] << " ";
-    // }
-    // std::cerr << std::endl;
-
-    if (state_->selectedObj) {
-        auto rect = scene_.ProjectAABBToScreen(state_->selectedObj->GetAABB(), scene_.GetCamera(), rect_.rect.size);
-        if (rect) {
-            const auto& points = *rect;
-
-            // Найдём минимальные и максимальные координаты x и y
-            float minX = points[0].x, minY = points[0].y;
-            float maxX = points[0].x, maxY = points[0].y;
-
-            for (int i = 1; i < 4; ++i) {
-                minX = std::min(minX, points[i].x);
-                minY = std::min(minY, points[i].y);
-                maxX = std::max(maxX, points[i].x);
-                maxY = std::max(maxY, points[i].y);
-            }
-
-            dr4::Vec2f pos  = {minX, minY};
-            dr4::Vec2f size = {maxX - minX, maxY - minY};
-
-            dr4::Rectangle rect(
-                dr4::Rect2f(pos, size),
-                optor::color::Transparent,
-                2,
-                optor::color::Red
-            );
-
-            ERROR_HANDLE([this, &rect](){
-                texture_->Draw(rect);
-            });
-        }
-    }
-
     ERROR_HANDLE([this](){
         texture_->Draw(*scene_.GetImage(), {0, 0});
     });
