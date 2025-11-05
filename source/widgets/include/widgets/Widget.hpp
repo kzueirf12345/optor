@@ -40,24 +40,26 @@ class Widget {
         void SetUnselectButton  (dr4::KeyCode unselectButton);
         void SetMustRemoved     (const bool mustRemoved);
         void SetName            (const std::string& name);
+        void SetIsHide          (const bool isHide);
         
         [[nodiscard]] dr4::Vec2f AbsCoord() const;  
 
-        [[nodiscard]] dr4::Vec2f GetSize            () const;
-        [[nodiscard]] dr4::Vec2f GetPosition        () const;
-        [[nodiscard]] optor::WidgetsState* GetState () const;
-        [[nodiscard]] dr4::Color GetBackgroundColor () const;
-        [[nodiscard]] dr4::Color GetBorderColor     () const;
-        [[nodiscard]] double     GetOutlineThickness() const;
-        [[nodiscard]] optor::Widget* GetParent      () const;
-        [[nodiscard]] bool GetIsDraggable           () const;
-        [[nodiscard]] bool GetIsFreeDraggable       () const;
-        [[nodiscard]] dr4::MouseCode GetDragButton  () const;
-        [[nodiscard]] bool GetIsSelectable          () const;
-        [[nodiscard]] dr4::MouseCode GetSelectButton() const;
-        [[nodiscard]] dr4::KeyCode GetUnselectButton() const;
-        [[nodiscard]] bool GetMustRemoved() const;
-        [[nodiscard]] std::optional<std::string> GetName() const;
+        [[nodiscard]] dr4::Vec2f                 GetSize            () const;
+        [[nodiscard]] dr4::Vec2f                 GetPosition        () const;
+        [[nodiscard]] optor::WidgetsState*       GetState           () const;
+        [[nodiscard]] dr4::Color                 GetBackgroundColor () const;
+        [[nodiscard]] dr4::Color                 GetBorderColor     () const;
+        [[nodiscard]] double                     GetOutlineThickness() const;
+        [[nodiscard]] optor::Widget*             GetParent          () const;
+        [[nodiscard]] bool                       GetIsDraggable     () const;
+        [[nodiscard]] bool                       GetIsFreeDraggable () const;
+        [[nodiscard]] dr4::MouseCode             GetDragButton      () const;
+        [[nodiscard]] bool                       GetIsSelectable    () const;
+        [[nodiscard]] dr4::MouseCode             GetSelectButton    () const;
+        [[nodiscard]] dr4::KeyCode               GetUnselectButton  () const;
+        [[nodiscard]] bool                       GetMustRemoved     () const;
+        [[nodiscard]] std::optional<std::string> GetName            () const;
+        [[nodiscard]] bool                       GetIsHide          () const;
         
         [[nodiscard]] virtual bool IsInderectedHovered() const;
 
@@ -77,6 +79,7 @@ class Widget {
         dr4::KeyCode  unselectButton_;
 
         bool mustRemoved_;
+        bool isHide_;
 
         std::optional<std::string> name_;
 

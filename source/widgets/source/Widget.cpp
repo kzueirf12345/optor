@@ -21,10 +21,13 @@ optor::Widget::Widget(const dr4::Vec2f& size, optor::WidgetsState* state)
         selectButton_{optor::INIT_SELECT_WINDOW_BUTTON_},
         unselectButton_{optor::INIT_UNSELECT_WINDOW_BUTTON_},
         mustRemoved_(false),
-        name_{std::nullopt}
+        name_{std::nullopt},
+        isHide_{false}
 {}
 
 void optor::Widget::Draw(dr4::Texture& srcTexture) {
+    if (isHide_) { return; }
+
     ERROR_HANDLE([this, &srcTexture](){
         srcTexture.Draw(rect_);
     });
@@ -80,6 +83,9 @@ void optor::Widget::SetMustRemoved (const bool mustRemoved) {
 
 void optor::Widget::SetName (const std::string& name) {
     name_ = name;
+}
+void optor::Widget::SetIsHide (const bool isHide) {
+    isHide_ = isHide;
 }
 
 
@@ -138,8 +144,16 @@ dr4::KeyCode optor::Widget::GetUnselectButton() const {
 bool optor::Widget::GetMustRemoved() const {
     return mustRemoved_;
 }
+std::optional<std::string> optor::Widget::GetName() const {
+    return name_;
+}
+bool optor::Widget::GetIsHide() const {
+    return isHide_;
+}
 
 bool optor::Widget::OnMouseMove(const dr4::Event& event) {
+    if (isHide_) { return false; }
+
     if (state_->draggedWidget == this) {
         ERROR_HANDLE(&optor::Widget::Drag, this, event.mouseMove.rel);
         return true;
@@ -154,6 +168,8 @@ bool optor::Widget::OnMouseMove(const dr4::Event& event) {
 }
 
 bool optor::Widget::OnMousePress(const dr4::Event& event) {
+    if (isHide_) { return false; }
+
     if (IsInderectedHovered() 
      && isDraggable_ 
      && event.mouseButton.button == dragButton_) 
@@ -174,6 +190,8 @@ bool optor::Widget::OnMousePress(const dr4::Event& event) {
 }
 
 bool optor::Widget::OnMouseRelease(const dr4::Event& event) {
+    if (isHide_) { return false; }
+
     if (state_->draggedWidget == this
      && event.mouseButton.button == dragButton_) {
         state_->draggedWidget = nullptr;
@@ -184,6 +202,8 @@ bool optor::Widget::OnMouseRelease(const dr4::Event& event) {
 }
 
 bool optor::Widget::OnKeyboardPress  (const dr4::Event& event) {
+    if (isHide_) { return false; }
+
     if (state_->selectedWidget == this
      && event.key.sym == unselectButton_) {
         state_->selectedWidget = nullptr;
@@ -194,11 +214,13 @@ bool optor::Widget::OnKeyboardPress  (const dr4::Event& event) {
 }
 
 bool optor::Widget::OnKeyboardRelease(const dr4::Event& event) {
+    if (isHide_) { return false; }
+
     return false;
 }
 
 void optor::Widget::OnIdle() {
-    
+
 }
 
 bool optor::Widget::OnMe(const dr4::Vec2f& absCoord) const {
@@ -218,6 +240,8 @@ void optor::Widget::Drag(const dr4::Vec2f& shift) {
 }
 
 bool optor::Widget::IsInderectedHovered() const {
+    if (isHide_) { return false; }
+    
     for (const auto* curHovered = state_->hoveredWidget; curHovered != nullptr; curHovered = curHovered->parent_) {
         if (curHovered == this) {
             return true;
@@ -225,8 +249,4 @@ bool optor::Widget::IsInderectedHovered() const {
     }
 
     return false;
-}
-
-std::optional<std::string> optor::Widget::GetName() const {
-    return name_;
 }

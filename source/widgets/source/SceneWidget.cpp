@@ -22,6 +22,8 @@ optor::SceneWidget::SceneWidget(dr4::Window* window, dr4::DR4Backend* backend, c
 }
 
 void optor::SceneWidget::Draw(dr4::Texture& srcTexture) {
+    if (isHide_) { return; }
+
     const dr4::Vec2f pos = rect_.rect.pos;
 
     rect_.rect.pos = {0, 0};
@@ -45,6 +47,8 @@ void optor::SceneWidget::Draw(dr4::Texture& srcTexture) {
 }
 
 bool optor::SceneWidget::OnMouseMove(const dr4::Event& event) {
+    if (isHide_) { return false; }
+
     const dr4::Vec2f mouseCoord = event.mouseMove.pos;
     const dr4::Vec2f mouseOffset = (mouseCoord - state_->prevMouseCoord) * optor::CAMERA_ROTATE_SPEED;
 
@@ -65,6 +69,8 @@ bool optor::SceneWidget::OnMouseMove(const dr4::Event& event) {
 }
 
 bool optor::SceneWidget::OnMousePress(const dr4::Event& event) {
+    if (isHide_) { return false; }
+
     const dr4::Vec2f pixel = event.mouseButton.pos - AbsCoord();
     if (event.mouseButton.button == selectButton_) {
         auto* selectedObj = scene_.GetObjAtPixel({pixel.x, pixel.y});
@@ -77,6 +83,8 @@ bool optor::SceneWidget::OnMousePress(const dr4::Event& event) {
 }
 
 bool optor::SceneWidget::OnKeyboardPress(const dr4::Event& event) {
+    if (isHide_) { return false; }
+
     if (state_->selectedWidget == this) {
         switch (event.key.sym) {
             case dr4::KeyCode::KEYCODE_W: {
@@ -126,6 +134,8 @@ bool optor::SceneWidget::OnKeyboardPress(const dr4::Event& event) {
 }
 
 bool optor::SceneWidget::OnKeyboardRelease(const dr4::Event& event) {
+    if (isHide_) { return false; }
+
     if (state_->selectedWidget == this) {
         if (event.key.sym == dr4::KeyCode::KEYCODE_W
          || event.key.sym == dr4::KeyCode::KEYCODE_S
@@ -179,6 +189,8 @@ void optor::SceneWidget::RotateCamera(const dr4::Vec2f& mouseOffset) {
 }
 
 void optor::SceneWidget::OnIdle() { 
+    if (isHide_) { return ; }
+    
     ERROR_HANDLE([this](){
         optor::Widget::OnIdle();
     });

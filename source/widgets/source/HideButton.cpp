@@ -11,6 +11,8 @@ optor::HideButton::HideButton(const dr4::Vec2f& size, optor::WidgetsState* state
 }
 
 bool optor::HideButton::OnMousePress  (const ::dr4::Event& event) {
+    if (isHide_) { return false; }
+
     if (ERROR_HANDLE([this, &event](){return optor::Widget::OnMousePress(event);})) {
         return true;
     }
@@ -19,6 +21,8 @@ bool optor::HideButton::OnMousePress  (const ::dr4::Event& event) {
 }
 
 bool optor::HideButton::OnMouseRelease(const ::dr4::Event& event) {
+    if (isHide_) { return false; }
+
     if (ERROR_HANDLE([this, &event](){return optor::Widget::OnMouseRelease(event);})) {
         return true;
     }
@@ -27,20 +31,24 @@ bool optor::HideButton::OnMouseRelease(const ::dr4::Event& event) {
 }
 
 void optor::HideButton::OnIdle() {
+    if (isHide_) { return; }
+
     if (IsInderectedHovered()) {
         isPressed_ = true;
         rect_.fill = pressedColor_;
-        widget_->SetMustRemoved(false);
+        widget_->SetIsHide(false);
     } else {
         isPressed_ = false;
         rect_.fill = releasedColor_;
-        widget_->SetMustRemoved(true);
+        widget_->SetIsHide(true);
     }
 
     return optor::WidgetButton::OnIdle();
 }
 
 bool optor::HideButton::IsInderectedHovered() const {
+    if (isHide_) { return false; }
+
     return widget_->IsInderectedHovered() || optor::WidgetButton::IsInderectedHovered();
 }
 

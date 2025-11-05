@@ -38,6 +38,8 @@ void optor::WidgetScrolledList::Scroll(float percentage) {
 }
 
 void optor::WidgetScrolledList::Draw(dr4::Texture& srcTexture) {
+    if (isHide_) { return; }
+
     dr4::Vec2f pos = rect_.rect.pos;
 
     rect_.rect.pos = {0, 0};
@@ -102,6 +104,8 @@ float optor::WidgetScrolledList::GetListSize() const {
 
 bool optor::WidgetScrolledList::OnMouseMove      (const dr4::Event& event) 
 {
+    if (isHide_) { return false; }
+
     if (ERROR_HANDLE([this, &event](){
         return scrollbar_->OnMouseMove(event);
     })) {
@@ -115,6 +119,8 @@ bool optor::WidgetScrolledList::OnMouseMove      (const dr4::Event& event)
 
 bool optor::WidgetScrolledList::OnMousePress     (const dr4::Event& event) 
 {
+    if (isHide_) { return false; }
+
     if (ERROR_HANDLE([this, &event](){
         return scrollbar_->OnMousePress(event);
     })) {
@@ -128,6 +134,8 @@ bool optor::WidgetScrolledList::OnMousePress     (const dr4::Event& event)
 
 bool optor::WidgetScrolledList::OnMouseRelease   (const dr4::Event& event) 
 {
+    if (isHide_) { return false; }
+
     if (ERROR_HANDLE([this, &event](){
         return scrollbar_->OnMouseRelease(event);
     })) {
@@ -141,6 +149,8 @@ bool optor::WidgetScrolledList::OnMouseRelease   (const dr4::Event& event)
 
 bool optor::WidgetScrolledList::OnKeyboardPress  (const dr4::Event& event) 
 {
+    if (isHide_) { return false; }
+
     if (ERROR_HANDLE([this, &event](){
         return scrollbar_->OnKeyboardPress(event);
     })) {
@@ -154,6 +164,8 @@ bool optor::WidgetScrolledList::OnKeyboardPress  (const dr4::Event& event)
 
 bool optor::WidgetScrolledList::OnKeyboardRelease(const dr4::Event& event) 
 {
+    if (isHide_) { return false; }
+
     if (ERROR_HANDLE([this, &event](){
         return scrollbar_->OnKeyboardRelease(event);
     })) {
@@ -167,6 +179,8 @@ bool optor::WidgetScrolledList::OnKeyboardRelease(const dr4::Event& event)
 
 void optor::WidgetScrolledList::OnIdle()                        
 {
+    if (isHide_) { return; }
+
     ERROR_HANDLE([this](){
         scrollbar_->OnIdle();
     });

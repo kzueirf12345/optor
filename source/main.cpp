@@ -428,7 +428,8 @@ void CreateScene(dr4::Window* window, dr4::DR4Backend* backend, optor::WidgetMan
                 dr4::Vec2f{1200, 700},
                 manager->GetState()
             ),
-            "Scene"
+            "Scene",
+            optor::WidgetHeader::CloseMode::HIDE
         )
     ));
 
@@ -436,7 +437,6 @@ void CreateScene(dr4::Window* window, dr4::DR4Backend* backend, optor::WidgetMan
 
     auto* sceneWidget = dynamic_cast<optor::SceneWidget*>(sceneWidgetWithHeader->GetWidget());
     
-    ERROR_HANDLE(&CreateCameraButtons, window, backend, manager, sceneWidget);
     ERROR_HANDLE(&CreateCameraButtons, window, backend, manager, sceneWidget);
 
     auto* sphere1 = dynamic_cast<optor::Sphere*>(ERROR_HANDLE([sceneWidget](){
@@ -619,7 +619,8 @@ static void CreateCameraButtons(dr4::Window* window, dr4::DR4Backend* backend, o
         std::make_unique<optor::WidgetHeader> (
             window,
             std::move(cameraButtons),
-            "Camera"
+            "Camera",
+            optor::WidgetHeader::CloseMode::HIDE
         )
     ));
 }

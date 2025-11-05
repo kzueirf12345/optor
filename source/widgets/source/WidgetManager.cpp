@@ -38,7 +38,6 @@ optor::WidgetManager::WidgetManager(dr4::Window* window)
     state_.selectedWidget = nullptr;
     state_.prevMouseCoord = {0, 0};
     state_.selectedObj = nullptr;
-    // state_.modalWidgets = {};
 }
 
 void optor::WidgetManager::Draw() {
@@ -47,12 +46,9 @@ void optor::WidgetManager::Draw() {
     });
 
     for (auto& modalWidget : state_.modalWidgets) {
-        if (!modalWidget->GetMustRemoved()) {
-            // std::cerr << "MOdalWidget pos " << modalWidget->GetPosition().x << " " << modalWidget->GetPosition().y << std::endl;
-            ERROR_HANDLE([this, &modalWidget](){
-                modalWidget->Draw(*texture_);
-            });
-        }
+        ERROR_HANDLE([this, &modalWidget](){
+            modalWidget->Draw(*texture_);
+        });
     }
 
     ERROR_HANDLE([this](){
@@ -73,7 +69,7 @@ void optor::WidgetManager::HandleEvents() {
             case dr4::Event::Type::MOUSE_MOVE: {
                 bool childRes = false;
                 for (auto& modalWidget : state_.modalWidgets) {
-                    if (!modalWidget->GetMustRemoved() && ERROR_HANDLE(&optor::Widget::OnMouseMove, modalWidget, event.value())) {
+                    if (ERROR_HANDLE(&optor::Widget::OnMouseMove, modalWidget, event.value())) {
                         childRes = true;
                         state_.prevMouseCoord = event->mouseMove.pos;
                         break;
@@ -89,7 +85,7 @@ void optor::WidgetManager::HandleEvents() {
             case dr4::Event::Type::MOUSE_DOWN: {
                 bool childRes = false;
                 for (auto& modalWidget : state_.modalWidgets) {
-                    if (!modalWidget->GetMustRemoved() && ERROR_HANDLE(&optor::Widget::OnMousePress, modalWidget, event.value())) {
+                    if (ERROR_HANDLE(&optor::Widget::OnMousePress, modalWidget, event.value())) {
                         childRes = true;
                         break;
                     }
@@ -103,7 +99,7 @@ void optor::WidgetManager::HandleEvents() {
             case dr4::Event::Type::MOUSE_UP: {
                 bool childRes = false;
                 for (auto& modalWidget : state_.modalWidgets) {
-                    if (!modalWidget->GetMustRemoved() && ERROR_HANDLE(&optor::Widget::OnMouseRelease, modalWidget, event.value())) {
+                    if (ERROR_HANDLE(&optor::Widget::OnMouseRelease, modalWidget, event.value())) {
                         childRes = true;
                         break;
                     }
@@ -117,7 +113,7 @@ void optor::WidgetManager::HandleEvents() {
             case dr4::Event::Type::KEY_DOWN: {
                 bool childRes = false;
                 for (auto& modalWidget : state_.modalWidgets) {
-                    if (!modalWidget->GetMustRemoved() && ERROR_HANDLE(&optor::Widget::OnKeyboardPress, modalWidget, event.value())) {
+                    if (ERROR_HANDLE(&optor::Widget::OnKeyboardPress, modalWidget, event.value())) {
                         childRes = true;
                         break;
                     }
@@ -131,7 +127,7 @@ void optor::WidgetManager::HandleEvents() {
             case dr4::Event::Type::KEY_UP: {
                 bool childRes = false;
                 for (auto& modalWidget : state_.modalWidgets) {
-                    if (!modalWidget->GetMustRemoved() && ERROR_HANDLE(&optor::Widget::OnKeyboardRelease, modalWidget, event.value())) {
+                    if (ERROR_HANDLE(&optor::Widget::OnKeyboardRelease, modalWidget, event.value())) {
                         childRes = true;
                         break;
                     }
@@ -148,9 +144,7 @@ void optor::WidgetManager::HandleEvents() {
     }
 
     for (auto& modalWidget : state_.modalWidgets) {
-        if (!modalWidget->GetMustRemoved()) {
-            ERROR_HANDLE(&optor::Widget::OnIdle, modalWidget);
-        }
+        ERROR_HANDLE(&optor::Widget::OnIdle, modalWidget);
     }
 
     ERROR_HANDLE(&optor::WidgetChildable::OnIdle, desktop_);

@@ -87,6 +87,8 @@ void optor::ScrollBar::Move(float shiftPercent) {
 }
 
 void optor::ScrollBar::Draw(dr4::Texture& srcTexture) {
+    if (isHide_) { return; }
+
     const dr4::Vec2f pos = rect_.rect.pos;
 
     rect_.rect.pos = {0, 0};
@@ -113,6 +115,8 @@ void optor::ScrollBar::Draw(dr4::Texture& srcTexture) {
 }
 
 bool optor::ScrollBar::OnMouseMove(const dr4::Event& event) {
+    if (isHide_) { return false; }
+
     const dr4::Vec2f mouse = event.mouseMove.pos;
 
     if (state_->draggedWidget == &thumbButton_) {
@@ -145,6 +149,7 @@ bool optor::ScrollBar::OnMouseMove(const dr4::Event& event) {
 }
 
 bool optor::ScrollBar::OnMousePress(const dr4::Event& event) {
+    if (isHide_) { return false; }
 
     if ((state_->hoveredWidget == this 
       || state_->hoveredWidget == &incButton_ 
@@ -188,6 +193,8 @@ bool optor::ScrollBar::OnMousePress(const dr4::Event& event) {
 }
 
 bool optor::ScrollBar::OnMouseRelease(const dr4::Event& event) {
+    if (isHide_) { return false; }
+
     const bool thumbWasPressed = thumbButton_.IsPressed();
 
     const bool childrenRes = Propagate(event, &optor::WidgetButton::OnMouseRelease);
@@ -205,6 +212,8 @@ bool optor::ScrollBar::OnMouseRelease(const dr4::Event& event) {
 }
 
 bool optor::ScrollBar::OnKeyboardPress(const dr4::Event& event) {
+    if (isHide_) { return false; }
+
     if (event.key.sym == INC_KEYBOARD_BUTTON_ && state_->selectedWidget == this) {
         Move(MIN_SHIFT_);
         return true;
@@ -226,10 +235,14 @@ bool optor::ScrollBar::OnKeyboardPress(const dr4::Event& event) {
 }
 
 bool optor::ScrollBar::OnKeyboardRelease(const dr4::Event&) {
+    if (isHide_) { return false; }
+
     return false;
 }
 
 void optor::ScrollBar::OnIdle() {
+    if (isHide_) { return; }
+
     if (incButton_.IsPressed()) Move( MIN_SHIFT_);
     if (decButton_.IsPressed()) Move(-MIN_SHIFT_);
 

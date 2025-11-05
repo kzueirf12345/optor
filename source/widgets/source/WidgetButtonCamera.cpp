@@ -31,6 +31,8 @@ optor::WidgetButtonCamera::WidgetButtonCamera(dr4::Window* window, const dr4::Ve
 }
 
 void optor::WidgetButtonCamera::OnIdle() {
+    if (isHide_) { return; }
+
     if (isPressed_) {
         ERROR_HANDLE(&optor::Camera::Move, camera_, dir_, CAMERA_MOVE_SPEED);
     }
@@ -41,6 +43,8 @@ void optor::WidgetButtonCamera::OnIdle() {
 }
 
 void optor::WidgetButtonCamera::Draw(dr4::Texture &srcTexture) {
+    if (isHide_) { return; }
+
     const dr4::Vec2f pos = rect_.rect.pos;
 
     rect_.rect.pos = {0, 0};

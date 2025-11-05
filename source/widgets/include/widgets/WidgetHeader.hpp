@@ -14,7 +14,12 @@ namespace optor
 
 class WidgetHeader : public Widget, public Textable {
 public:
-    WidgetHeader(dr4::Window* window, std::unique_ptr<optor::Widget> widget, const std::string& title);
+    enum class CloseMode {
+        HIDE,
+        REMOVE
+    };
+
+    WidgetHeader(dr4::Window* window, std::unique_ptr<optor::Widget> widget, const std::string& title, CloseMode closeMode);
 
     virtual void Draw       (dr4::Texture& srcTexture) override;
     
@@ -35,6 +40,8 @@ protected:
     std::unique_ptr<optor::Widget> widget_;
 
     dr4::Rectangle closeRect_;
+
+    CloseMode closeMode_;
 
 private:
 };

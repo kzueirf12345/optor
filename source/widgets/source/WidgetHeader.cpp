@@ -10,7 +10,7 @@
 #include <cstdlib>
 
 optor::WidgetHeader::WidgetHeader(dr4::Window* window, std::unique_ptr<optor::Widget> widget, 
-                                  const std::string& title)
+                                  const std::string& title, CloseMode closeMode)
     :   Widget(
             widget->GetSize() 
                 + dr4::Vec2f {
@@ -28,7 +28,8 @@ optor::WidgetHeader::WidgetHeader(dr4::Window* window, std::unique_ptr<optor::Wi
                 dr4::Vec2f{INIT_HEADER_HEIGHT, INIT_HEADER_HEIGHT}
             },
             optor::color::Red
-        )
+        ),
+        closeMode_(closeMode)
 {
     ERROR_HANDLE([this](){
         texture_->SetSize(rect_.rect.size);
@@ -60,6 +61,8 @@ optor::WidgetHeader::WidgetHeader(dr4::Window* window, std::unique_ptr<optor::Wi
 
 void optor::WidgetHeader::Draw (dr4::Texture& srcTexture) 
 {
+    if (isHide_) { return; }
+
     const dr4::Vec2f pos = rect_.rect.pos;
 
     rect_.rect.pos = {0, 0};
@@ -87,6 +90,8 @@ void optor::WidgetHeader::Draw (dr4::Texture& srcTexture)
 
 bool optor::WidgetHeader::OnMouseMove      (const dr4::Event& event) 
 {
+    if (isHide_) { return false; }
+
     bool res = ERROR_HANDLE([this, &event](){
         return optor::Widget::OnMouseMove(event);
     });
@@ -103,6 +108,7 @@ bool optor::WidgetHeader::OnMouseMove      (const dr4::Event& event)
 
 bool optor::WidgetHeader::OnMousePress     (const dr4::Event& event) 
 {
+    if (isHide_) { return false; }
     if (ERROR_HANDLE([this, &event](){
             return widget_->OnMousePress(event);
         })) 
@@ -115,7 +121,11 @@ bool optor::WidgetHeader::OnMousePress     (const dr4::Event& event)
     ) {
         state_->hoveredWidget = parent_;
         widget_.reset();
-        mustRemoved_ = true;
+        if (closeMode_ == optor::WidgetHeader::CloseMode::HIDE) {
+            isHide_ = true;
+        } else {
+            mustRemoved_ = true;
+        }
         return true;
     }
 
@@ -130,6 +140,8 @@ bool optor::WidgetHeader::OnMousePress     (const dr4::Event& event)
 
 bool optor::WidgetHeader::OnMouseRelease   (const dr4::Event& event) 
 {
+    if (isHide_) { return false; }
+
     if (ERROR_HANDLE([this, &event](){
             return widget_->OnMouseRelease(event);
         })) 
@@ -148,6 +160,8 @@ bool optor::WidgetHeader::OnMouseRelease   (const dr4::Event& event)
 
 bool optor::WidgetHeader::OnKeyboardPress  (const dr4::Event& event) 
 {
+    if (isHide_) { return false; }
+
     if (ERROR_HANDLE([this, &event](){
             return widget_->OnKeyboardPress(event);
         })) 
@@ -160,6 +174,8 @@ bool optor::WidgetHeader::OnKeyboardPress  (const dr4::Event& event)
 
 bool optor::WidgetHeader::OnKeyboardRelease(const dr4::Event& event) 
 {
+    if (isHide_) { return false; }
+
     if (ERROR_HANDLE([this, &event](){
             return widget_->OnKeyboardRelease(event);
         })) 
@@ -172,6 +188,8 @@ bool optor::WidgetHeader::OnKeyboardRelease(const dr4::Event& event)
 
 void optor::WidgetHeader::OnIdle           () 
 {
+    if (isHide_) { return; }
+
     ERROR_HANDLE([this](){
         widget_->OnIdle();
     });

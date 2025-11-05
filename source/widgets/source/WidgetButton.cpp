@@ -15,6 +15,8 @@ optor::WidgetButton::WidgetButton(const ::dr4::Vec2f& size, optor::WidgetsState*
 }
 
 bool optor::WidgetButton::OnMousePress  (const ::dr4::Event& event) {
+    if (isHide_) { return false; }
+
     if (state_->hoveredWidget == this && event.mouseButton.button == pressButton_) {
         isPressed_ = true;
         if (isSelectable_) { 
@@ -32,6 +34,8 @@ bool optor::WidgetButton::OnMousePress  (const ::dr4::Event& event) {
 }
 
 bool optor::WidgetButton::OnMouseRelease(const ::dr4::Event& event) {
+    if (isHide_) { return false; }
+    
     if (isPressed_ && event.mouseButton.button == pressButton_) {
         isPressed_ = false;
         rect_.fill = releasedColor_;

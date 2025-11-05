@@ -23,6 +23,8 @@ optor::WidgetText::WidgetText(dr4::Window* window, const dr4::Vec2f& size, optor
 
 void optor::WidgetText::Draw(dr4::Texture& srcTexture)
 {
+    if (isHide_) { return; }
+
     const dr4::Vec2f pos = rect_.rect.pos;
 
     rect_.rect.pos = {0, 0};
