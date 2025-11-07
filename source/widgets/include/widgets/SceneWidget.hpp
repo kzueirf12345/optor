@@ -14,7 +14,7 @@ namespace optor
 
 class SceneWidget: public optor::Widget {
     public:
-        SceneWidget(dr4::Window* window, dr4::DR4Backend* backend, const dr4::Vec2f& size, optor::WidgetsState* state);
+        SceneWidget(dr4::Window* window, const dr4::Vec2f& size, optor::WidgetsState* state);
         
         virtual void Draw(dr4::Texture& srcTexture) override final;
         

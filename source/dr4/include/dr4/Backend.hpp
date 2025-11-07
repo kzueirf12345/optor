@@ -1,7 +1,6 @@
 #ifndef OPTOR_SOURCE_DR4_INCLUDE_DR4_BACKEND_HPP
 #define OPTOR_SOURCE_DR4_INCLUDE_DR4_BACKEND_HPP
 
-#include "dr4/texture.hpp"
 #include "misc/dr4_ifc.hpp"
 
 namespace optor
@@ -13,8 +12,6 @@ class Backend : public ::dr4::DR4Backend
 { 
 public:
     virtual const std::string &Name() const override;
-    virtual ::dr4::Font   *CreateFont() override;
-    virtual ::dr4::Image  *CreateImage() override;
     virtual ::dr4::Window *CreateWindow() override;
 protected:
 private:

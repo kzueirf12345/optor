@@ -10,6 +10,7 @@
 
 #include "dr4/Texture.hpp"
 #include "dr4/Font.hpp"
+#include "dr4/Image.hpp"
 #include "dr4/texture.hpp"
 
 #include "common/ErrorHandler.hpp"
@@ -47,6 +48,12 @@ float optor::dr4::Texture::GetHeight() const
     });
 
     return static_cast<float>(sizeSF.y);
+}
+
+void optor::dr4::Texture::Clear(::dr4::Color color) {
+    ERROR_HANDLE([this, &color](){
+        renderTexture_.clear({color.r, color.g, color.b, color.a});
+    });
 }
 
 
@@ -132,7 +139,11 @@ void optor::dr4::Texture::Draw(const ::dr4::Image &image, const ::dr4::Vec2f& po
     sf::Image imageSF = {};
 
     ERROR_HANDLE([&imageSF, &image](){
-        imageSF.create(image.GetSize().x, image.GetSize().y, image.GetArray());
+        imageSF.create(
+            image.GetSize().x, 
+            image.GetSize().y, 
+            dynamic_cast<const optor::dr4::Image&>(image).pixels_.begin().base()
+        );
     });
 
     sf::Texture textureSF = {};

@@ -11,8 +11,8 @@
 #include "optics/Light.hpp"
 #include "optics/OpticObj.hpp"
 
-optor::Scene::Scene(dr4::DR4Backend* backend, const dr4::Vec2f& size) 
-    :   image_{backend->CreateImage()},
+optor::Scene::Scene(dr4::Window* window, const dr4::Vec2f& size) 
+    :   image_{window->CreateImage()},
         size_{size},
         camera_{}, 
         moveDir_{optor::MoveDirection::UNKNOWN},
@@ -20,7 +20,7 @@ optor::Scene::Scene(dr4::DR4Backend* backend, const dr4::Vec2f& size)
         bgColor_{optor::color::Blue}
 {
     ERROR_HANDLE([this](){
-        image_->Create(size_, ::dr4::Image::ColorMode::RGBA);
+        image_->SetSize(size_);
     });
 }
 

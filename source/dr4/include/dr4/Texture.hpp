@@ -22,6 +22,8 @@ public:
     virtual float GetWidth() const override;
     virtual float GetHeight() const override;
 
+    virtual void Clear(::dr4::Color color) override;
+
     virtual void Draw(const ::dr4::Rectangle &rect) override;
     virtual void Draw(const ::dr4::Text &text) override;
     virtual void Draw(const ::dr4::Image &image, const ::dr4::Vec2f& pos) override;
