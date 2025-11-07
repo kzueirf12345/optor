@@ -38,11 +38,7 @@ const std::string &optor::dr4::Window::GetTitle() const
 
 ::dr4::Vec2f optor::dr4::Window::GetSize() const 
 {
-    const sf::Vector2u sizeSF = ERROR_HANDLE([this]() {
-        return window_.getSize();
-    });
-
-    return {static_cast<float>(sizeSF.x), static_cast<float>(sizeSF.y)};
+    return {static_cast<float>(size_.x), static_cast<float>(size_.y)};
 }
 
 void optor::dr4::Window::SetSize(const ::dr4::Vec2f& size)
