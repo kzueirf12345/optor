@@ -83,4 +83,6 @@ std::array<optor::Vector3d, 8> optor::Triangle::GetAABB() const
         optor::Vector3d{minPoint.x, maxPoint.y, maxPoint.z},
         optor::Vector3d{maxPoint.x, maxPoint.y, maxPoint.z}
     };
+optor::Vector3d optor::Triangle::GetCoord() const {
+    return (v0_ + v1_ + v2_) / 3.0;
 }

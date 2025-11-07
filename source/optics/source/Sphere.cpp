@@ -91,4 +91,6 @@ std::array<optor::Vector3d, 8> optor::Sphere::GetAABB() const
         optor::Vector3d{minPoint.x, maxPoint.y, maxPoint.z},
         optor::Vector3d{maxPoint.x, maxPoint.y, maxPoint.z}
     };
+optor::Vector3d optor::Sphere::GetCoord() const {
+    return center_;
 }

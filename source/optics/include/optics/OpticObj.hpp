@@ -34,6 +34,7 @@ class OpticObj {
         virtual void Move(const optor::Vector3d& offset) = 0;
 
         virtual std::array<optor::Vector3d, 8> GetAABB() const = 0; 
+        virtual optor::Vector3d GetCoord() const = 0;
 
         [[nodiscard]] virtual std::string GetTypeName() const {return "OpticObject"; };
 

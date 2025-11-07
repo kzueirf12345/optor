@@ -366,12 +366,11 @@ static void CreateObjsList(optor::WidgetManager* manager, optor::SceneWidget* sc
 
         const std::string name = obj->GetTypeName();
 
-        const dr4::Vec2f size = dr4::Text{.text = name, .fontSize = 40, .font = optor::FONT}.GetBounds().size;
+        const dr4::Vec2f size = dr4::Text{.text = "A", .fontSize = 40, .font = optor::FONT}.GetBounds().size;
 
         auto nameWidget = std::make_unique<optor::OpticObjShort>(
-            manager->GetWindow(),
+            manager,
             dr4::Vec2f{list->GetSize().x - optor::INIT_SCROLLBAR_WIDTH - size.y, size.y},
-            manager->GetState(),
             obj
         );
 

@@ -50,4 +50,6 @@ std::array<optor::Vector3d, 8> optor::Plane::GetAABB() const {
         point_ + optor::Vector3d{-INFINITY,  INFINITY,  INFINITY},
         point_ + optor::Vector3d{ INFINITY,  INFINITY,  INFINITY}
     };
+optor::Vector3d optor::Plane::GetCoord() const {
+    return point_;
 }

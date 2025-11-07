@@ -2,6 +2,7 @@
 #include "common/ErrorHandler.hpp"
 #include "optics/OpticObj.hpp"
 #include "optics/Triangle.hpp"
+#include "optics/Vector.hpp"
 
 
 optor::TriangleMesh::TriangleMesh(const Material& material)
@@ -103,4 +104,11 @@ std::array<optor::Vector3d, 8> optor::TriangleMesh::GetAABB() const
         optor::Vector3d{minPoint.x, maxPoint.y, maxPoint.z},
         optor::Vector3d{maxPoint.x, maxPoint.y, maxPoint.z}
     };
+}
+optor::Vector3d optor::TriangleMesh::GetCoord() const {
+    optor::Vector3d center = {0, 0, 0};
+    for (const auto& triangle : triangles_) {
+        center += triangle.GetCoord();
+    }
+    return center / (double)triangles_.size();
 }
