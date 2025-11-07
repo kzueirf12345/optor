@@ -22,11 +22,6 @@ public:
 
     std::array<optor::Vector3d, 8> GetAABB() const override;
     virtual optor::Vector3d GetCoord() const override;
-<<<<<<< HEAD
-=======
-    std::array<optor::Vector3d, 8> GetAABB() const override;
-
->>>>>>> 1b4b6ae (start deepseek not uspeshno)
     [[nodiscard]] virtual std::string GetTypeName() const override {return "Triangle"; };
 
 private:
