@@ -9,13 +9,15 @@
 
 dr4::Rect2f dr4::Text::GetBounds() const
 {
-    const sf::Font& fontSF = dynamic_cast<const optor::dr4::Font*>(font)->font_;
+    // const sf::Font& fontSF = dynamic_cast<const optor::dr4::Font*>(font)->font_;
 
-    sf::Text textSF(text, fontSF, fontSize);
+    // sf::Text textSF(text, fontSF, fontSize);
 
-    sf::FloatRect rectSF =  ERROR_HANDLE([&textSF](){
-        return textSF.getLocalBounds();
-    });
+    // sf::FloatRect rectSF =  ERROR_HANDLE([&textSF](){
+    //     return textSF.getLocalBounds();
+    // });
 
-    return {rectSF.left, rectSF.top, rectSF.width, rectSF.height};
+    // return {rectSF.left, rectSF.top, rectSF.width, rectSF.height};
+
+    return {0, 0, text.size() * 12.f , 30};
 }

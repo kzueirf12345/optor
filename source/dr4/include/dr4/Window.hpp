@@ -30,6 +30,8 @@ public:
     virtual void Display() override;
 
     virtual ::dr4::Texture *CreateTexture() override;
+    virtual ::dr4::Image *CreateImage() override;
+    virtual ::dr4::Font    *CreateFont() override;
 
     virtual std::optional<::dr4::Event> PollEvent() override;
 

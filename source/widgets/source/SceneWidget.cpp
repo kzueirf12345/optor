@@ -8,11 +8,11 @@
 #include "global/Global.hpp"
 #include "common/ErrorHandler.hpp"
 
-optor::SceneWidget::SceneWidget(dr4::Window* window, dr4::DR4Backend* backend, const dr4::Vec2f& size, 
+optor::SceneWidget::SceneWidget(dr4::Window* window, const dr4::Vec2f& size, 
                                 optor::WidgetsState* state)
     :   optor::Widget{size, state},
         texture_{window->CreateTexture()},
-        scene_{backend, size}
+        scene_{window, size}
 {
     ERROR_HANDLE([this, size](){
         texture_->SetSize(size);

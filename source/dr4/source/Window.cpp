@@ -9,6 +9,8 @@
 #include "SFML/Window/Mouse.hpp"
 
 #include "dr4/Window.hpp"
+#include "dr4/Font.hpp"
+#include "dr4/Image.hpp"
 #include "dr4/Texture.hpp"
 
 #include "common/ErrorHandler.hpp"
@@ -55,7 +57,7 @@ void optor::dr4::Window::Open()
 {
     ERROR_HANDLE([this](){
         window_.create(sf::VideoMode(size_.x, size_.y), title_);
-        window_.setFramerateLimit(20);
+        window_.setFramerateLimit(60);
     });
 }
 
@@ -109,6 +111,16 @@ void optor::dr4::Window::Display()
 ::dr4::Texture *optor::dr4::Window::CreateTexture() 
 {
     return new optor::dr4::Texture();
+}
+
+::dr4::Image *optor::dr4::Window::CreateImage()
+{
+    return new optor::dr4::Image();
+}
+
+::dr4::Font    *optor::dr4::Window::CreateFont()
+{
+    return new optor::dr4::Font();
 }
 
 std::optional<::dr4::Event> optor::dr4::Window::PollEvent() 
