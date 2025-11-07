@@ -1,22 +1,38 @@
-#include <cassert>
+#include "dr4/math/vec2.hpp"
+#include "dr4/window.hpp"
 
-#include "hui/Vector.hpp"
 #include "optics/OpticObj.hpp"
+#include "optics/Vector.hpp"
 #include "widgets/WidgetButtonMoveOpticObj.hpp"
 #include "optics/Camera.hpp"
 #include "common/ErrorHandler.hpp"
+#include "widgets/Textable.hpp"
 #include "widgets/WidgetButton.hpp"
-#include <stdexcept>
 
-optor::WidgetButtonMoveOpticObj::WidgetButtonMoveOpticObj(const hui::Vector2d& size, 
-                                                          optor::WidgetsState* state, 
-                                                          const std::string& text,
-                                                          optor::OpticObj* obj, MoveDirection dir)
-    :   optor::WidgetButtonText(size, state, text), obj_(obj), dir_{dir}
-{}
+optor::WidgetButtonMoveOpticObj::WidgetButtonMoveOpticObj(dr4::Window* window, const dr4::Vec2f& size, 
+                                              optor::WidgetsState* state, 
+                                              const std::string& text,
+                                              optor::OpticObj* obj, MoveDirection dir)
+    :   optor::WidgetButton(size, state),
+        optor::Textable(text),
+        texture_{window->CreateTexture()},
+        obj_(obj),
+        dir_(dir)
+{
+    ERROR_HANDLE([this, &size](){
+        texture_->SetSize(size);
+    });
+
+    
+    ERROR_HANDLE([this, &size](){
+        const dr4::Vec2f localBounds = text_.GetBounds().size;
+        text_.pos.x = (size.x - localBounds.x) / 2;
+        text_.pos.y = (size.y - localBounds.y) / 2;
+    });
+}
 
 void optor::WidgetButtonMoveOpticObj::OnIdle() {
-    hui::Vector3d offset = {};
+    optor::Vector3d offset = {};
 
     switch (dir_) {
         case optor::MoveDirection::FORWARD:    { offset = { 0,  0,  1}; break; }
@@ -30,7 +46,7 @@ void optor::WidgetButtonMoveOpticObj::OnIdle() {
             throw std::overflow_error("Unknown move direction enum");
     }
 
-    if (isPressed_ && state_->selectedObj) {
+    if (isPressed_) {
         ERROR_HANDLE(&optor::OpticObj::Move, state_->selectedObj, offset);
     }
 
@@ -39,8 +55,22 @@ void optor::WidgetButtonMoveOpticObj::OnIdle() {
     });
 }
 
-void optor::WidgetButtonMoveOpticObj::SetObj(optor::OpticObj* obj) {
-    assert(obj);
+void optor::WidgetButtonMoveOpticObj::Draw(dr4::Texture &srcTexture) {
+    if (isHide_) { return; }
 
-    obj_ = obj;
+    const dr4::Vec2f pos = rect_.rect.pos;
+
+    rect_.rect.pos = {0, 0};
+    ERROR_HANDLE([this](){
+        optor::Widget::Draw(*texture_);
+    });
+    rect_.rect.pos = pos;
+
+    ERROR_HANDLE([this](){
+        texture_->Draw(text_);
+    });
+
+    ERROR_HANDLE([this, &srcTexture](){
+        srcTexture.Draw(*texture_, rect_.rect.pos);
+    });
 }

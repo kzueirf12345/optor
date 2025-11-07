@@ -18,6 +18,7 @@
 #include "widgets/WidgetScrolledList.hpp"
 #include "widgets/WidgetList.hpp"
 #include "widgets/WidgetText.hpp"
+#include "widgets/WidgetButtonMoveOpticObj.hpp"
 
 optor::OpticObjDesc::OpticObjDesc(dr4::Window* window, const dr4::Vec2f& size, 
                                   optor::WidgetsState* state, optor::OpticObj* obj)
@@ -32,6 +33,7 @@ optor::WidgetHeader* optor::OpticObjDesc::operator()(optor::WidgetChildable* par
     AddCoordInfo(list.get());
     AddColorInfo(list.get());
     AddMaterialFeatures(list.get());
+    AddMoveButtons(list.get());
 
     return dynamic_cast<optor::WidgetHeader*>(parent->AddChild(std::make_unique<optor::WidgetHeader>(
         window_,
@@ -151,4 +153,63 @@ optor::WidgetList* optor::OpticObjDesc::AddMaterialFeatures(optor::WidgetScrolle
     }
 
     return featuresList;
+}
+
+
+optor::WidgetChildable* optor::OpticObjDesc::AddMoveButtons(optor::WidgetScrolledList* list)
+{
+    const float panelHeight = std::max(list->GetSize().y * 0.25f, 120.0f);
+
+    auto movePanel = std::make_unique<optor::WidgetChildable>(
+        dr4::Vec2f{list->GetSize().x, panelHeight},
+        state_,
+        window_
+    );
+
+    constexpr float CENTER_OFFSET = 0.32f;
+
+    const float buttonSize = panelHeight * 0.25f;
+    const float spacing = buttonSize * 0.3f;
+
+    const float diamondCenterX = movePanel->GetSize().x * CENTER_OFFSET; 
+    const float diamondCenterY = movePanel->GetSize().y * 0.5f;
+
+    const float forwardOffsetX = movePanel->GetSize().x * (1 - CENTER_OFFSET) - diamondCenterX;
+
+    struct ButtonInfo {
+        std::string text;
+        dr4::Vec2f offset;
+        MoveDirection dir;
+    };
+
+    std::vector<ButtonInfo> moveButtons = {
+        {"up",       {0.0f, -(buttonSize + spacing)}, MoveDirection::UP},
+        {"down",     {0.0f,  (buttonSize + spacing)}, MoveDirection::DOWN},
+        {"left",     {-(buttonSize + spacing), 0.0f}, MoveDirection::LEFT},
+        {"right",    { (buttonSize + spacing), 0.0f}, MoveDirection::RIGHT},
+        {"forward",  { forwardOffsetX, -2 * spacing}, MoveDirection::FORWARD},
+        {"backward", { forwardOffsetX,  2 * spacing}, MoveDirection::BACKWARD}
+    };
+
+    for (const auto& info : moveButtons) {
+        auto* button = dynamic_cast<optor::WidgetButtonMoveOpticObj*>(movePanel->AddChild(
+            std::make_unique<optor::WidgetButtonMoveOpticObj>(
+                window_,
+                dr4::Vec2f{3.f * buttonSize, buttonSize},
+                state_,
+                info.text,
+                obj_,
+                info.dir
+            )
+        ));
+
+        button->SetPosition({
+            diamondCenterX + info.offset.x - buttonSize,
+            diamondCenterY + info.offset.y - buttonSize / 2.0f
+        });
+    }
+
+    // movePanel->SetPosition(dr4::Vec2f((size_.x - movePanel->GetSize().x) / 2.f, 0));
+
+    return dynamic_cast<optor::WidgetChildable*>(list->AddChild(std::move(movePanel)));
 }
