@@ -30,6 +30,7 @@ class OpticObjDesc {
         optor::WidgetList* AddCoordInfo(optor::WidgetScrolledList* list);
         optor::WidgetList* AddColorInfo(optor::WidgetScrolledList* list);
         optor::WidgetList* AddMaterialFeatures(optor::WidgetScrolledList* list);
+        optor::WidgetChildable* AddMoveButtons(optor::WidgetScrolledList* list);
 
         static std::string FormatDouble(double value);
 

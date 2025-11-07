@@ -2,8 +2,6 @@
 #include "dr4/math/vec2.hpp"
 #include "dr4/texture.hpp"
 #include "global/Global.hpp"
-#include "widgets/Textable.hpp"
-#include "widgets/Widget.hpp"
 #include "common/ErrorHandler.hpp"
 #include "widgets/WidgetText.hpp"
 
@@ -11,7 +9,7 @@ optor::OpticObjShort::OpticObjShort(optor::WidgetManager* manager, const dr4::Ve
     :   optor::WidgetText(manager->GetWindow(), size, manager->GetState(), obj->GetTypeName()),
         obj_(obj),
         desktop_(manager->GetDesktop()),
-        desc_{manager->GetWindow(), dr4::Vec2f(400, 600), manager->GetState(), obj},
+        desc_{manager->GetWindow(), dr4::Vec2f(800, 600), manager->GetState(), obj},
         descButton_(dr4::KEYCODE_E)
 {}
 

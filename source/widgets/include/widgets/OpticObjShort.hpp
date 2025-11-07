@@ -2,7 +2,6 @@
 #define OPTOR_SOURCE_WIDGETS_INCLUDE_WIDGETS_OPTIC_OBJ_SHORT_HPP
 
 #include "dr4/keycodes.hpp"
-#include "dr4/window.hpp"
 #include "optics/OpticObj.hpp"
 #include "widgets/OpticObjDesc.hpp"
 #include "widgets/WidgetChildable.hpp"
