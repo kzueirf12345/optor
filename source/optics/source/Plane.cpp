@@ -42,3 +42,15 @@ void optor::Plane::Move(const optor::Vector3d& offset) {
 optor::Vector3d optor::Plane::GetCoord() const {
     return point_;
 }
+std::array<optor::Vector3d, 8> optor::Plane::GetAABB() const {
+    return {
+        point_ + optor::Vector3d{-INFINITY, -INFINITY, -INFINITY},
+        point_ + optor::Vector3d{ INFINITY, -INFINITY, -INFINITY},
+        point_ + optor::Vector3d{-INFINITY,  INFINITY, -INFINITY},
+        point_ + optor::Vector3d{ INFINITY,  INFINITY, -INFINITY},
+        point_ + optor::Vector3d{-INFINITY, -INFINITY,  INFINITY},
+        point_ + optor::Vector3d{ INFINITY, -INFINITY,  INFINITY},
+        point_ + optor::Vector3d{-INFINITY,  INFINITY,  INFINITY},
+        point_ + optor::Vector3d{ INFINITY,  INFINITY,  INFINITY}
+    };
+}

@@ -1,8 +1,16 @@
 #include <cassert>
+#include <memory>
 
 #include "widgets/SceneWidget.hpp"
 #include "dr4/keycodes.hpp"
+#include "dr4/math/rect.hpp"
+#include "dr4/math/vec2.hpp"
+#include "dr4/texture.hpp"
+#include "optics/AABB.hpp"
 #include "optics/Camera.hpp"
+#include "optics/Light.hpp"
+#include "optics/Material.hpp"
+#include "optics/OpticObj.hpp"
 #include "optics/Scene.hpp"
 #include "widgets/Widget.hpp"
 #include "global/Global.hpp"
@@ -31,11 +39,6 @@ void optor::SceneWidget::Draw(dr4::Texture& srcTexture) {
         optor::Widget::Draw(*texture_);
     });
     rect_.rect.pos = pos;
-
-    // for (size_t i = 0; i < 100; ++i) {
-    //     std::cerr << (int)scene_.GetImage()->GetArray()[i] << " ";
-    // }
-    // std::cerr << std::endl;
 
     ERROR_HANDLE([this](){
         texture_->Draw(*scene_.GetImage(), {0, 0});
@@ -190,10 +193,23 @@ void optor::SceneWidget::RotateCamera(const dr4::Vec2f& mouseOffset) {
 
 void optor::SceneWidget::OnIdle() { 
     if (isHide_) { return ; }
+
+    static optor::OpticObj* prevSelected = nullptr;
     
     ERROR_HANDLE([this](){
         optor::Widget::OnIdle();
     });
+
+    if (state_->selectedObj != prevSelected) {
+        if (prevSelected) {
+            scene_.PopObj();
+        }
+        if (state_->selectedObj)
+        {
+            scene_.AddObj(std::make_unique<optor::AABB>(state_->selectedObj->GetAABB(), optor::materials::SELECTOR));
+        }
+        prevSelected = state_->selectedObj;
+    }
 
     ERROR_HANDLE(&optor::Scene::Update, scene_); // TODO smart update
 

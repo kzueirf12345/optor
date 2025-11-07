@@ -9,7 +9,7 @@
 namespace optor
 {
 
-class FinitPlane final : public OpticObj {
+class FinitPlane : public OpticObj {
     public:
         FinitPlane(const optor::Vector3d& center, const optor::Vector3d& normal, const optor::Vector2d& size);
         FinitPlane(const optor::Vector3d& center, const optor::Vector3d& normal, const optor::Vector2d& size,
@@ -31,6 +31,7 @@ class FinitPlane final : public OpticObj {
 
         virtual void Move(const optor::Vector3d& offset) override final;
 
+        std::array<optor::Vector3d, 8> GetAABB() const override;
         virtual optor::Vector3d GetCoord() const override;
 
         [[nodiscard]] virtual std::string GetTypeName() const override {return "FinitPlane"; };

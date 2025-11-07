@@ -42,6 +42,7 @@ void optor::Scene::Update() {
             image_->SetPixel(x, y, dr4::Color(pixelColor.x * 255, pixelColor.y * 255, pixelColor.z * 255, 255));
         }
     }
+
 }
 
 optor::Vector3d optor::Scene::TraceRay(const optor::Vector3d& origin, const optor::Vector3d& direction, int depth) const {
@@ -84,7 +85,7 @@ optor::Vector3d optor::Scene::CalculateLighting(const optor::OpticObj::Intersect
     
     optor::Vector3d viewDir = !(rayOrigin - point);
     
-    optor::Vector3d result = material.GetAmbientColor();
+    optor::Vector3d result = material.GetDiffuseColor();
     
     for (const Light* light : lights_) {
         optor::Vector3d lightDir = !(light->GetCenter() - point);
@@ -188,6 +189,10 @@ optor::OpticObj* optor::Scene::AddObj(std::unique_ptr<optor::OpticObj> obj) {
         });
     }
     return objs_.back().get();
+}
+
+void optor::Scene::PopObj() {
+    objs_.pop_back();
 }
 
 const optor::Camera& optor::Scene::GetCamera() const  {

@@ -7,7 +7,6 @@
 #include "dr4/math/vec2.hpp"
 #include "dr4/texture.hpp"
 #include "dr4/window.hpp"
-#include "misc/dr4_ifc.hpp"
 
 #include "optics/Vector.hpp"
 #include "optics/Camera.hpp"
@@ -17,6 +16,12 @@
 namespace optor 
 {
 
+struct ScreenPoint {
+    double x, y;
+    bool visible;
+};
+
+
 class Scene {
     public:
         Scene(dr4::Window* window, const dr4::Vec2f& size);
@@ -24,6 +29,8 @@ class Scene {
         virtual void Update();
 
         optor::OpticObj* AddObj(std::unique_ptr<optor::OpticObj> obj);
+
+        void PopObj();
 
         [[nodiscard]] const optor::Camera& GetCamera() const ;
         [[nodiscard]]       optor::Camera& GetCamera();
@@ -64,6 +71,7 @@ class Scene {
         std::optional<optor::Vector3d> Refract(const optor::Vector3d& incident, 
                                                const optor::Vector3d& normal, 
                                                double eta) const;
+
 };
 
 }

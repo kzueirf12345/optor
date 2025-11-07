@@ -63,3 +63,27 @@ void optor::Triangle::Move(const optor::Vector3d& offset) {
 optor::Vector3d optor::Triangle::GetCoord() const {
     return (v0_ + v1_ + v2_) / 3.0;
 }
+std::array<optor::Vector3d, 8> optor::Triangle::GetAABB() const
+{
+    const double minX = std::min({v0_.x, v1_.x, v2_.x});
+    const double minY = std::min({v0_.y, v1_.y, v2_.y});
+    const double minZ = std::min({v0_.z, v1_.z, v2_.z});
+
+    const double maxX = std::max({v0_.x, v1_.x, v2_.x});
+    const double maxY = std::max({v0_.y, v1_.y, v2_.y});
+    const double maxZ = std::max({v0_.z, v1_.z, v2_.z});
+
+    const optor::Vector3d minPoint{minX, minY, minZ};
+    const optor::Vector3d maxPoint{maxX, maxY, maxZ};
+
+    return {
+        optor::Vector3d{minPoint.x, minPoint.y, minPoint.z},
+        optor::Vector3d{maxPoint.x, minPoint.y, minPoint.z},
+        optor::Vector3d{minPoint.x, maxPoint.y, minPoint.z},
+        optor::Vector3d{maxPoint.x, maxPoint.y, minPoint.z},
+        optor::Vector3d{minPoint.x, minPoint.y, maxPoint.z},
+        optor::Vector3d{maxPoint.x, minPoint.y, maxPoint.z},
+        optor::Vector3d{minPoint.x, maxPoint.y, maxPoint.z},
+        optor::Vector3d{maxPoint.x, maxPoint.y, maxPoint.z}
+    };
+}

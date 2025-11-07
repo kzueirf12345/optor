@@ -24,6 +24,10 @@ enum class RotateDirection {
     DOWN
 };
 
+struct Mat4 {
+    double m[4][4];
+};
+
 class Camera {
     public:
         explicit Camera(const optor::Vector3d& position = optor::Vector3d(0, 0, 0), 
@@ -49,6 +53,7 @@ class Camera {
         [[nodiscard]] double        GetFov()      const noexcept;
 
         [[nodiscard]] optor::Vector3d GetRay(const optor::Vector2d& pixel, const dr4::Vec2f& screenSize) const;
+
     
     private:
         void UpdateVectors();

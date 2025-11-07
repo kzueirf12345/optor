@@ -64,6 +64,7 @@ namespace materials
 {
 
 const optor::Material LIGHT          ({1.,   1.,   1.},   {0.,  0.,  0.},  {0.,  0.,  0.},     0.,     0.,  0.,  0. );
+const optor::Material SELECTOR       ({1,    0,    0.},   {1  , 0  , 0  }, {1  , 0  , 0  },    0   ,   0  , 0  , 0  );
 const optor::Material IVORY          ({0.1,  0.1,  0.1},  {0.4, 0.4, 0.3}, {1.0, 1.0, 1.0},    50.0,   0.1, 1.0, 0.0);
 const optor::Material GLASS          ({0.05, 0.05, 0.05}, {0.6, 0.7, 0.8}, {1.0, 1.0, 1.0},    125.0,  0.1, 1.5, 0.8);
 const optor::Material RED_RUBBER     ({0.05, 0.01, 0.01}, {0.3, 0.1, 0.1}, {0.3, 0.3, 0.3},    10.0,   0.0, 1.0, 0.0);

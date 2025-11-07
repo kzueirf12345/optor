@@ -20,8 +20,8 @@ public:
 
     virtual void Move(const optor::Vector3d& offset) override final;
 
+    std::array<optor::Vector3d, 8> GetAABB() const override;
     virtual optor::Vector3d GetCoord() const override;
-
     [[nodiscard]] virtual std::string GetTypeName() const override {return "Triangle"; };
 
 private:
