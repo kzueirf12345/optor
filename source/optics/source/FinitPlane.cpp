@@ -88,3 +88,7 @@ void optor::FinitPlane::Move(const optor::Vector3d& offset) {
 
     ERROR_HANDLE(&optor::FinitPlane::BuildMesh, this);
 }
+
+optor::Vector3d optor::FinitPlane::GetCoord() const {
+    return center_;
+}

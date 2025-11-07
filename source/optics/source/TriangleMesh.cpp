@@ -2,6 +2,7 @@
 #include "common/ErrorHandler.hpp"
 #include "optics/OpticObj.hpp"
 #include "optics/Triangle.hpp"
+#include "optics/Vector.hpp"
 
 
 optor::TriangleMesh::TriangleMesh(const Material& material)
@@ -55,4 +56,12 @@ void optor::TriangleMesh::Move(const optor::Vector3d& offset) {
     for (auto& triangle : triangles_) {
         ERROR_HANDLE(&optor::Triangle::Move, triangle, offset);
     }
+}
+
+optor::Vector3d optor::TriangleMesh::GetCoord() const {
+    optor::Vector3d center = {0, 0, 0};
+    for (const auto& triangle : triangles_) {
+        center += triangle.GetCoord();
+    }
+    return center / (double)triangles_.size();
 }

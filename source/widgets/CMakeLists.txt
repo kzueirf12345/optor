@@ -16,6 +16,7 @@ add_library(widgets STATIC
     source/WidgetCheckbox.cpp
     source/HideCheckbox.cpp
     source/OpticObjShort.cpp
+    source/OpticObjDesc.cpp
     # source/WidgetOpticObjs.cpp
     # source/WidgetButtonMoveOpticObj.cpp
 )

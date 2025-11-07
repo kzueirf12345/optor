@@ -65,3 +65,7 @@ void optor::Sphere::SetRadius(double radius) {
 void optor::Sphere::Move(const optor::Vector3d& offset) {
     center_ += offset;
 }
+
+optor::Vector3d optor::Sphere::GetCoord() const {
+    return center_;
+}

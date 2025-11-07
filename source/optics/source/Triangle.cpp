@@ -59,3 +59,7 @@ void optor::Triangle::Move(const optor::Vector3d& offset) {
     v1_ += offset;
     v2_ += offset;
 }
+
+optor::Vector3d optor::Triangle::GetCoord() const {
+    return (v0_ + v1_ + v2_) / 3.0;
+}

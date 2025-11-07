@@ -16,9 +16,12 @@ class WidgetText: public Widget, public Textable {
 public:
     WidgetText(dr4::Window* window, const dr4::Vec2f& size, optor::WidgetsState* state, const std::string& text);
 
+    virtual ~WidgetText() = default;
+    
     virtual void Draw(dr4::Texture& srcTexture) override;
 
     [[nodiscard]] virtual std::string GetTypeName() const override {return "WidgetText"; };
+
 
 protected:
     std::unique_ptr<dr4::Texture> texture_;

@@ -38,3 +38,7 @@ void optor::Plane::SetNormal(const optor::Vector3d& normal) { normal_ = !normal;
 void optor::Plane::Move(const optor::Vector3d& offset) {
     point_ += offset;
 }
+
+optor::Vector3d optor::Plane::GetCoord() const {
+    return point_;
+}

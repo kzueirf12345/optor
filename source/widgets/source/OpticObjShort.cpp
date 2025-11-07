@@ -1,4 +1,5 @@
 #include "widgets/OpticObjShort.hpp"
+#include "dr4/math/vec2.hpp"
 #include "dr4/texture.hpp"
 #include "global/Global.hpp"
 #include "widgets/Textable.hpp"
@@ -6,10 +7,12 @@
 #include "common/ErrorHandler.hpp"
 #include "widgets/WidgetText.hpp"
 
-optor::OpticObjShort::OpticObjShort(dr4::Window* window, const dr4::Vec2f& size, 
-                                   optor::WidgetsState* state, optor::OpticObj* obj)
-    :   optor::WidgetText(window, size, state, obj->GetTypeName()),
-        obj_(obj)
+optor::OpticObjShort::OpticObjShort(optor::WidgetManager* manager, const dr4::Vec2f& size, optor::OpticObj* obj)
+    :   optor::WidgetText(manager->GetWindow(), size, manager->GetState(), obj->GetTypeName()),
+        obj_(obj),
+        desktop_(manager->GetDesktop()),
+        desc_{manager->GetWindow(), dr4::Vec2f(400, 600), manager->GetState(), obj},
+        descButton_(dr4::KEYCODE_E)
 {}
 
 void optor::OpticObjShort::OnIdle() {
@@ -31,4 +34,14 @@ void optor::OpticObjShort::OnIdle() {
 const optor::OpticObj* optor::OpticObjShort::GetObj() const noexcept
 {
     return obj_;
+}
+
+bool optor::OpticObjShort::OnKeyboardPress (const dr4::Event& event) {
+    if (state_->selectedObj == obj_ && event.key.sym == descButton_) {
+        auto* descWidget = ERROR_HANDLE(desc_, desktop_);
+        descWidget->SetPosition(dr4::Vec2f(AbsCoord() + dr4::Vec2f{GetSize().x, 0}));
+        return true;
+    }
+
+    return optor::WidgetText::OnKeyboardPress(event);
 }
