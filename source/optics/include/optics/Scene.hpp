@@ -7,7 +7,6 @@
 #include "dr4/math/vec2.hpp"
 #include "dr4/texture.hpp"
 #include "dr4/window.hpp"
-#include "misc/dr4_ifc.hpp"
 
 #include "optics/Vector.hpp"
 #include "optics/Camera.hpp"
@@ -31,6 +30,8 @@ class Scene {
 
         optor::OpticObj* AddObj(std::unique_ptr<optor::OpticObj> obj);
 
+        void PopObj();
+
         [[nodiscard]] const optor::Camera& GetCamera() const ;
         [[nodiscard]]       optor::Camera& GetCamera();
         [[nodiscard]] optor::MoveDirection GetMoveDir() const ;
@@ -41,12 +42,6 @@ class Scene {
         void SetMoveDir(optor::MoveDirection moveDir);
 
         OpticObj* GetObjAtPixel(const optor::Vector2d& pixel);
-
-        std::optional<std::array<dr4::Vec2f, 4>> ProjectAABBToScreen(
-            const std::array<optor::Vector3d, 8>& aabb,
-            const optor::Camera& camera,
-            const dr4::Vec2f& screenSize
-        );
 
     private:
         std::unique_ptr<dr4::Image> image_;

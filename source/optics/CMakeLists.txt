@@ -10,6 +10,7 @@ add_library(optics STATIC
     source/FinitPlane.cpp
     source/Vector.cpp
     source/Material.cpp
+    source/AABB.cpp
 )
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")

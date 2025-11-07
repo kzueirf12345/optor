@@ -191,6 +191,10 @@ optor::OpticObj* optor::Scene::AddObj(std::unique_ptr<optor::OpticObj> obj) {
     return objs_.back().get();
 }
 
+void optor::Scene::PopObj() {
+    objs_.pop_back();
+}
+
 const optor::Camera& optor::Scene::GetCamera() const  {
     return camera_;
 }
