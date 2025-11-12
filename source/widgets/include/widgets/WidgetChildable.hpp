@@ -4,7 +4,10 @@
 #include <deque>
 #include <memory>
 
-#include "hui/Renderer.hpp"
+#include "dr4/event.hpp"
+#include "dr4/math/vec2.hpp"
+#include "dr4/texture.hpp"
+#include "dr4/window.hpp"
 #include "widgets/Widget.hpp"
 
 namespace optor 
@@ -12,7 +15,7 @@ namespace optor
 
 class WidgetChildable: public Widget {
     public:
-        WidgetChildable(const hui::Vector2d& pos, optor::WidgetsState* state);
+        WidgetChildable(const dr4::Vec2f& size, optor::WidgetsState* state, dr4::Window* window);
 
         WidgetChildable           (const WidgetChildable&) = delete;
         WidgetChildable& operator=(const WidgetChildable&) = delete;
@@ -21,23 +24,28 @@ class WidgetChildable: public Widget {
 
         virtual ~WidgetChildable() = default;
 
-        virtual void Draw(hui::Renderer* renderer) override;
+        virtual void Draw(dr4::Texture& srcTexture) override;
 
-        virtual bool OnMouseMove      (const hui::Event& event) override;
-        virtual bool OnMousePress     (const hui::Event& event) override;
-        virtual bool OnMouseRelease   (const hui::Event& event) override;
-        virtual bool OnKeyboardPress  (const hui::Event& event) override;
-        virtual bool OnKeyboardRelease(const hui::Event& event) override;
+        virtual bool OnMouseMove      (const dr4::Event& event) override;
+        virtual bool OnMousePress     (const dr4::Event& event) override;
+        virtual bool OnMouseRelease   (const dr4::Event& event) override;
+        virtual bool OnKeyboardPress  (const dr4::Event& event) override;
+        virtual bool OnKeyboardRelease(const dr4::Event& event) override;
         virtual void OnIdle           ()                        override;
 
-        optor::Widget* AddChild(std::unique_ptr<Widget> child);
+        virtual optor::Widget* AddChild(std::unique_ptr<Widget> child);
 
-        [[nodiscard]]       Widget& operator[](size_t ind)       noexcept;
-        [[nodiscard]] const Widget& operator[](size_t ind) const noexcept;
+        optor::Widget* GetChild(size_t ind) const;
 
+        size_t GetChildrenCount() const;
+
+        [[nodiscard]] virtual bool IsInderectedHovered() const override;
+
+        [[nodiscard]] virtual std::string GetTypeName() const override {return "WidgetChildable"; };
 
     protected:
-        hui::Renderer renderer_;
+
+        std::unique_ptr<dr4::Texture> texture_;
 
         std::deque<std::unique_ptr<Widget>> children_;
 

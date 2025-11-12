@@ -1,20 +1,22 @@
 #include <cassert>
 #include <algorithm>
+
 #include "widgets/ScrollBar.hpp"
 #include "common/ErrorHandler.hpp"
+#include "dr4/math/vec2.hpp"
+#include "dr4/texture.hpp"
 #include "global/Global.hpp"
-#include "hui/Renderer.hpp"
-#include "hui/Vector.hpp"
 #include "widgets/WidgetButton.hpp"
 
-optor::ScrollBar::ScrollBar(const hui::Vector2d& size, optor::WidgetsState* state, 
+optor::ScrollBar::ScrollBar(dr4::Window* window, const dr4::Vec2f& size, optor::WidgetsState* state, 
                             ActionT action, bool isHorizontal)
     : optor::Widget(size, state),
       action_{std::move(action)},
+      texture_{window->CreateTexture()},
       isHorizontal_{isHorizontal},
       buttonSize_{        
-        (isHorizontal_ ? BUTTON_SIZE_PERCENT_ : 1.0) * texture_.GetSize().x,
-        (!isHorizontal_ ? BUTTON_SIZE_PERCENT_ : 1.0) * texture_.GetSize().y
+        (isHorizontal_ ? BUTTON_SIZE_PERCENT_ : 1.f) * rect_.rect.size.x,
+        (!isHorizontal_ ? BUTTON_SIZE_PERCENT_ : 1.f) * rect_.rect.size.y
       },
       percentage_{0.0},
       incButton_(
@@ -30,12 +32,15 @@ optor::ScrollBar::ScrollBar(const hui::Vector2d& size, optor::WidgetsState* stat
           state
       ),
       isPressedInc_{false},
-      isPressedDec_{false},
-      renderer_(size)
+      isPressedDec_{false}
 {
     SetIsDraggable(false);
 
-    const hui::Vector2d fullSize = texture_.GetSize();
+    ERROR_HANDLE([this](){
+        texture_->SetSize(rect_.rect.size);
+    });
+
+    const dr4::Vec2f fullSize = rect_.rect.size;
 
     if (isHorizontal_) {
         decButton_.SetPosition({0, 0});
@@ -44,7 +49,7 @@ optor::ScrollBar::ScrollBar(const hui::Vector2d& size, optor::WidgetsState* stat
     } else {
         decButton_.SetPosition({0, fullSize.y - buttonSize_.y});
         incButton_.SetPosition({0, 0});
-        thumbButton_.SetPosition({0, fullSize.y - 2 * buttonSize_.y});
+        thumbButton_.SetPosition({0, buttonSize_.y});
     }
 
     incButton_.SetParent(this);
@@ -60,67 +65,67 @@ optor::ScrollBar::ScrollBar(const hui::Vector2d& size, optor::WidgetsState* stat
     SetBackgroundColor(optor::color::WindowBackground);
 }
 
-void optor::ScrollBar::Move(double shiftPercent) {
-    const double newPercentage = std::clamp(percentage_ + shiftPercent, 0.0, 1.0);
-    const double realShift = newPercentage - percentage_;
+void optor::ScrollBar::Move(float shiftPercent) {
+    const float newPercentage = std::clamp(percentage_ + shiftPercent, 0.f, 1.f);
+    const float realShift = newPercentage - percentage_;
     percentage_ = newPercentage;
 
-    action_(percentage_);
+    action_((isHorizontal_ ? percentage_ : 1 - percentage_));
 
-    const hui::Vector2d barSize = texture_.GetSize();
-    hui::Vector2d thumbPos = thumbButton_.GetPosition();
+    const dr4::Vec2f barSize = rect_.rect.size;
+    dr4::Vec2f thumbPos = thumbButton_.GetPosition();
 
     if (isHorizontal_) {
-        const double travel = barSize.x - 3.0 * buttonSize_.x;
+        const float travel = barSize.x - 3.0 * buttonSize_.x;
         thumbPos.x = buttonSize_.x + percentage_ * travel;
     } else {
-        const double travel = barSize.y - 3.0 * buttonSize_.y;
-        thumbPos.y = barSize.y - buttonSize_.y - percentage_ * travel;
+        const float travel = barSize.y - 3.0 * buttonSize_.y;
+        thumbPos.y = buttonSize_.y + (1 - percentage_) * travel;
     }
 
     thumbButton_.SetPosition(thumbPos);
 }
 
-void optor::ScrollBar::Draw(hui::Renderer* renderer) {
-    assert(renderer);
+void optor::ScrollBar::Draw(dr4::Texture& srcTexture) {
+    if (isHide_) { return; }
 
-    const hui::Vector2d pos = sprite_.GetPosition();
+    const dr4::Vec2f pos = rect_.rect.pos;
 
-    sprite_.SetPosition({0, 0});
+    rect_.rect.pos = {0, 0};
     ERROR_HANDLE([this](){
-        optor::Widget::Draw(&renderer_);
+        optor::Widget::Draw(*texture_);
     });
-    sprite_.SetPosition(pos);
+    rect_.rect.pos = pos;
 
     ERROR_HANDLE([this](){
-        incButton_.Draw(&renderer_);
-        decButton_.Draw(&renderer_);
-        thumbButton_.Draw(&renderer_);
+        incButton_.Draw(*texture_);
     });
 
     ERROR_HANDLE([this](){
-        renderer_.Display();
+        decButton_.Draw(*texture_);
     });
 
-    hui::Sprite sprite = ERROR_HANDLE([this](){
-        return hui::Sprite(ERROR_HANDLE(&hui::Renderer::GetTexture, renderer_));
+    ERROR_HANDLE([this](){
+        thumbButton_.Draw(*texture_);
     });
 
-    ERROR_HANDLE(&hui::Sprite::SetPosition, &sprite, pos);
-
-    ERROR_HANDLE(&hui::Renderer::Draw, renderer, sprite);
+    ERROR_HANDLE([this, &srcTexture](){
+        srcTexture.Draw(*texture_, rect_.rect.pos);
+    });
 }
 
-bool optor::ScrollBar::OnMouseMove(const hui::Event& event) {
-    const hui::Vector2d mouse = event.GetMouseShift();
+bool optor::ScrollBar::OnMouseMove(const dr4::Event& event) {
+    if (isHide_) { return false; }
+
+    const dr4::Vec2f mouse = event.mouseMove.pos;
 
     if (state_->draggedWidget == &thumbButton_) {
-        const hui::Vector2d barSize = texture_.GetSize();
-        const hui::Vector2d thumbSize = thumbButton_.GetSize();
-        const hui::Vector2d absBarPos = AbsCoord();
+        const dr4::Vec2f barSize = rect_.rect.size;
+        const dr4::Vec2f thumbSize = thumbButton_.GetSize();
+        const dr4::Vec2f absBarPos = AbsCoord();
 
-        double curPos;
-        double maxTravel;
+        float curPos;
+        float maxTravel;
 
         if (isHorizontal_) {
             curPos = mouse.x - absBarPos.x - thumbSize.x;
@@ -130,11 +135,12 @@ bool optor::ScrollBar::OnMouseMove(const hui::Event& event) {
             maxTravel = barSize.y - 2.0 * thumbSize.y;
         }
 
-        double newPercent = std::clamp(curPos / maxTravel, 0.0, 1.0);
-        double shift = newPercent - percentage_;
+        float newPercent = std::clamp(curPos / maxTravel, 0.0f, 1.0f);
+        float shift = newPercent - percentage_;
         Move(shift);
     }
 
+    
     if (Propagate(event, &optor::WidgetButton::OnMouseMove)) {
         return true;
     }
@@ -142,13 +148,14 @@ bool optor::ScrollBar::OnMouseMove(const hui::Event& event) {
     return Widget::OnMouseMove(event);
 }
 
-bool optor::ScrollBar::OnMousePress(const hui::Event& event) {
+bool optor::ScrollBar::OnMousePress(const dr4::Event& event) {
+    if (isHide_) { return false; }
 
     if ((state_->hoveredWidget == this 
       || state_->hoveredWidget == &incButton_ 
       || state_->hoveredWidget == &decButton_
       || state_->hoveredWidget == &thumbButton_)
-      && event.GetMouseButton() == CONTROL_BUTTON_) 
+      && event.mouseButton.button == CONTROL_BUTTON_) 
     {
         state_->selectedWidget = this;
     }
@@ -164,15 +171,15 @@ bool optor::ScrollBar::OnMousePress(const hui::Event& event) {
         return true;
     }
 
-    if (state_->hoveredWidget == this && event.GetMouseButton() == CONTROL_BUTTON_) {
+    if (state_->hoveredWidget == this && event.mouseButton.button == CONTROL_BUTTON_) {
         if (isHorizontal_) {
-            if (event.GetMouseCoord().x < AbsCoord().x + thumbButton_.GetPosition().x) {
+            if (event.mouseButton.pos.x < AbsCoord().x + thumbButton_.GetPosition().x) {
                 Move(-MIN_SHIFT_);
             } else {
                 Move(MIN_SHIFT_);
             }
         } else {
-            if (event.GetMouseCoord().y > AbsCoord().y + thumbButton_.GetPosition().y + thumbButton_.GetSize().y) {
+            if (event.mouseButton.pos.y > AbsCoord().y + thumbButton_.GetPosition().y + thumbButton_.GetSize().y) {
                 Move(-MIN_SHIFT_);
             } else {
                 Move(MIN_SHIFT_);
@@ -185,7 +192,9 @@ bool optor::ScrollBar::OnMousePress(const hui::Event& event) {
     return Widget::OnMousePress(event);
 }
 
-bool optor::ScrollBar::OnMouseRelease(const hui::Event& event) {
+bool optor::ScrollBar::OnMouseRelease(const dr4::Event& event) {
+    if (isHide_) { return false; }
+
     const bool thumbWasPressed = thumbButton_.IsPressed();
 
     const bool childrenRes = Propagate(event, &optor::WidgetButton::OnMouseRelease);
@@ -202,20 +211,22 @@ bool optor::ScrollBar::OnMouseRelease(const hui::Event& event) {
     return Widget::OnMouseRelease(event);
 }
 
-bool optor::ScrollBar::OnKeyboardPress(const hui::Event& event) {
-    if (event.GetKeyboardButton() == INC_KEYBOARD_BUTTON_ && state_->selectedWidget == this) {
+bool optor::ScrollBar::OnKeyboardPress(const dr4::Event& event) {
+    if (isHide_) { return false; }
+
+    if (event.key.sym == INC_KEYBOARD_BUTTON_ && state_->selectedWidget == this) {
         Move(MIN_SHIFT_);
         return true;
     }
-    if (event.GetKeyboardButton() == DEC_KEYBOARD_BUTTON_ && state_->selectedWidget == this) {
+    if (event.key.sym == DEC_KEYBOARD_BUTTON_ && state_->selectedWidget == this) {
         Move(-MIN_SHIFT_);
         return true;
     }
-    if (event.GetKeyboardButton() == FULL_KEYBOARD_BUTTON_ && state_->selectedWidget == this) {
+    if (event.key.sym == FULL_KEYBOARD_BUTTON_ && state_->selectedWidget == this) {
         Move(1.0 - percentage_);
         return true;
     }
-    if (event.GetKeyboardButton() == ZERO_KEYBOARD_BUTTON_ && state_->selectedWidget == this) {
+    if (event.key.sym == ZERO_KEYBOARD_BUTTON_ && state_->selectedWidget == this) {
         Move(-percentage_);
         return true;
     }
@@ -223,18 +234,22 @@ bool optor::ScrollBar::OnKeyboardPress(const hui::Event& event) {
     return Widget::OnKeyboardPress(event);
 }
 
-bool optor::ScrollBar::OnKeyboardRelease(const hui::Event&) {
+bool optor::ScrollBar::OnKeyboardRelease(const dr4::Event&) {
+    if (isHide_) { return false; }
+
     return false;
 }
 
 void optor::ScrollBar::OnIdle() {
+    if (isHide_) { return; }
+
     if (incButton_.IsPressed()) Move( MIN_SHIFT_);
     if (decButton_.IsPressed()) Move(-MIN_SHIFT_);
 
     Widget::OnIdle();
 }
 
-bool optor::ScrollBar::Propagate(const hui::Event& event, HandleButtonsT handler)
+bool optor::ScrollBar::Propagate(const dr4::Event& event, HandleButtonsT handler)
 {
     if (ERROR_HANDLE([&](){return handler(incButton_,   event);})) { return true; }
     if (ERROR_HANDLE([&](){return handler(decButton_,   event);})) { return true; }

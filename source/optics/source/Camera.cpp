@@ -3,7 +3,6 @@
 
 #include "optics/Camera.hpp"
 #include "common/ErrorHandler.hpp"
-#include "hui/Vector.hpp"
 #include "common/Utils.hpp"
 
 namespace 
@@ -14,12 +13,12 @@ namespace
     constexpr double MIN_PITCH  = -89.0;
 }
 
-optor::Camera::Camera(const hui::Vector3d& position, const hui::Vector3d& target, double fov)
+optor::Camera::Camera(const optor::Vector3d& position, const optor::Vector3d& target, double fov)
     :   position_{position}, 
-        front_{hui::Vector3d(0, 0, -1)}, 
-        up_{hui::Vector3d(0, 1, 0)}, 
-        right_{hui::Vector3d(1, 0, 0)}, 
-        worldUp_{hui::Vector3d(0, 1, 0)},
+        front_{optor::Vector3d(0, 0, -1)}, 
+        up_{optor::Vector3d(0, 1, 0)}, 
+        right_{optor::Vector3d(1, 0, 0)}, 
+        worldUp_{optor::Vector3d(0, 1, 0)},
         yaw_{INIT_YAW},
         pitch_{INIT_PITCH},
         fov_{fov}
@@ -32,7 +31,7 @@ optor::Camera::Camera(const hui::Vector3d& position, const hui::Vector3d& target
 
 void optor::Camera::Move(MoveDirection direction, double speed) {
     switch (direction) {
-        case MoveDirection::FORWARD: // REVIEW
+        case MoveDirection::FORWARD:
             position_ -= front_ * speed;
             break;
         case MoveDirection::BACKWARD:
@@ -79,7 +78,7 @@ void optor::Camera::Rotate(RotateDirection direction, double speed) {
     ERROR_HANDLE(&optor::Camera::UpdateVectors, this);
 }
 
-void optor::Camera::SetPosition(const hui::Vector3d& position) noexcept {
+void optor::Camera::SetPosition(const optor::Vector3d& position) noexcept {
     position_ = position;
 }
 
@@ -97,19 +96,19 @@ void optor::Camera::SetFov(double fov) noexcept {
     fov_ = fov;
 }
 
-hui::Vector3d optor::Camera::GetPosition() const noexcept {
+optor::Vector3d optor::Camera::GetPosition() const noexcept {
     return position_;
 }
 
-hui::Vector3d optor::Camera::GetFront() const noexcept {
+optor::Vector3d optor::Camera::GetFront() const noexcept {
     return front_;
 }
 
-hui::Vector3d optor::Camera::GetRight() const noexcept {
+optor::Vector3d optor::Camera::GetRight() const noexcept {
     return right_;
 }
 
-hui::Vector3d optor::Camera::GetUp() const noexcept {
+optor::Vector3d optor::Camera::GetUp() const noexcept {
     return up_;
 }
 
@@ -125,7 +124,7 @@ double optor::Camera::GetFov() const noexcept {
     return fov_;
 }
 
-hui::Vector3d optor::Camera::GetRay(const hui::Vector2d& pixel, const hui::Vector2d& screenSize) const {
+optor::Vector3d optor::Camera::GetRay(const optor::Vector2d& pixel, const dr4::Vec2f& screenSize) const {
     double normalizedX = (2.0 * pixel.x) / screenSize.x - 1.0;
     double normalizedY = 1.0 - (2.0 * pixel.y) / screenSize.y;
     
@@ -133,12 +132,12 @@ hui::Vector3d optor::Camera::GetRay(const hui::Vector2d& pixel, const hui::Vecto
     
     double scale = std::tan(common::Deg2Rad(fov_ / 2.0));
     
-    hui::Vector3d rayDirection;
+    optor::Vector3d rayDirection;
     rayDirection.x = normalizedX * aspectRatio * scale;
     rayDirection.y = normalizedY * scale;
     rayDirection.z = -1.0;
     
-    hui::Vector3d worldRayDirection = 
+    optor::Vector3d worldRayDirection = 
         right_ * rayDirection.x + 
         up_    * rayDirection.y + 
         front_ * rayDirection.z;
@@ -147,7 +146,7 @@ hui::Vector3d optor::Camera::GetRay(const hui::Vector2d& pixel, const hui::Vecto
 }
 
 void optor::Camera::UpdateVectors() {
-    hui::Vector3d newFront;
+    optor::Vector3d newFront;
     newFront.x = std::cos(common::Deg2Rad(yaw_)) * std::cos(common::Deg2Rad(pitch_));
     newFront.y = std::sin(common::Deg2Rad(pitch_));
     newFront.z = std::sin(common::Deg2Rad(yaw_)) * std::cos(common::Deg2Rad(pitch_));

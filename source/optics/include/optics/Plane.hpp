@@ -2,7 +2,8 @@
 #define OPTOR_SOURCE_OPTICS_INCLUDE_OPTICS_PLANE_HPP
 
 #include <optional>
-#include "hui/Vector.hpp"
+
+#include "optics/Vector.hpp"
 #include "optics/OpticObj.hpp"
 
 namespace optor 
@@ -10,23 +11,28 @@ namespace optor
 
 class Plane : public OpticObj {
     public:
-        Plane(const hui::Vector3d& point, const hui::Vector3d& normal);
-        Plane(const hui::Vector3d& point, const hui::Vector3d& normal, const Material& material);
+        Plane(const optor::Vector3d& point, const optor::Vector3d& normal);
+        Plane(const optor::Vector3d& point, const optor::Vector3d& normal, const Material& material);
 
         [[nodiscard]] std::optional<Intersection> 
-            IntersectRay(const hui::Vector3d& rayBegin, const hui::Vector3d& rayDirection) override;
+            IntersectRay(const optor::Vector3d& rayBegin, const optor::Vector3d& rayDirection) override;
 
-        [[nodiscard]] const hui::Vector3d& GetPoint()  const noexcept;
-        [[nodiscard]] const hui::Vector3d& GetNormal() const noexcept;
+        [[nodiscard]] const optor::Vector3d& GetPoint()  const noexcept;
+        [[nodiscard]] const optor::Vector3d& GetNormal() const noexcept;
 
-        void SetPoint(const hui::Vector3d& point);
-        void SetNormal(const hui::Vector3d& normal);
+        void SetPoint(const optor::Vector3d& point);
+        void SetNormal(const optor::Vector3d& normal);
 
-        virtual void Move(const hui::Vector3d& offset) override final;
+        virtual void Move(const optor::Vector3d& offset) override final;
+
+        std::array<optor::Vector3d, 8> GetAABB() const override;
+        virtual optor::Vector3d GetCoord() const override;
+
+        [[nodiscard]] virtual std::string GetTypeName() const override {return "Plane"; };
 
     protected:
-        hui::Vector3d point_;
-        hui::Vector3d normal_;
+        optor::Vector3d point_;
+        optor::Vector3d normal_;
 };
 
 }

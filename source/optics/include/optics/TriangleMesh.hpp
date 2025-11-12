@@ -10,7 +10,7 @@
 namespace optor
 {
 
-class TriangleMesh final : public OpticObj {
+class TriangleMesh : public OpticObj {
     public:
         TriangleMesh() = default;
         explicit TriangleMesh(const Material& material);
@@ -18,12 +18,17 @@ class TriangleMesh final : public OpticObj {
         void AddTriangle(const Triangle& triangle);
         void Clear() noexcept;
 
-        [[nodiscard]] std::optional<Intersection> IntersectRay(const hui::Vector3d& rayOrigin, 
-                                                            const hui::Vector3d& rayDir) override;
+        [[nodiscard]] std::optional<Intersection> IntersectRay(const optor::Vector3d& rayOrigin, 
+                                                            const optor::Vector3d& rayDir) override;
         
         virtual void SetMaterial(const Material& material) override;
 
-        virtual void Move(const hui::Vector3d& offset) override final;
+        virtual void Move(const optor::Vector3d& offset) override final;
+
+        std::array<optor::Vector3d, 8> GetAABB() const override;
+        virtual optor::Vector3d GetCoord() const override;
+
+        [[nodiscard]] virtual std::string GetTypeName() const override {return "TriangleMesh"; };
 
     private:
         std::vector<Triangle> triangles_;

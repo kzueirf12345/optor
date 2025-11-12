@@ -3,7 +3,7 @@
 
 #include <optional>
 
-#include "hui/Vector.hpp"
+#include "optics/Vector.hpp"
 #include "optics/Material.hpp"
 #include "optics/OpticObj.hpp"
 
@@ -13,24 +13,29 @@ namespace optor
 class Sphere: public optor::OpticObj {
     public:
         Sphere(double radius);
-        Sphere(double radius, const hui::Vector3d& center);
-        Sphere(double radius, const hui::Vector3d& center, const Material& material);
+        Sphere(double radius, const optor::Vector3d& center);
+        Sphere(double radius, const optor::Vector3d& center, const Material& material);
         
         [[nodiscard]] std::optional<Intersection> 
-            IntersectRay(const hui::Vector3d& rayBegin, const hui::Vector3d& rayDirection) override;
+            IntersectRay(const optor::Vector3d& rayBegin, const optor::Vector3d& rayDirection) override;
 
 
-        [[nodiscard]] const hui::Vector3d& GetCenter()  const noexcept;
+        [[nodiscard]] const optor::Vector3d& GetCenter()  const noexcept;
         [[nodiscard]] double               GetRadius()  const noexcept;
         [[nodiscard]] double               GetRadius2() const noexcept;
 
-        void SetCenter(const hui::Vector3d& center);
+        void SetCenter(const optor::Vector3d& center);
         void SetRadius(double radius);
 
-        virtual void Move(const hui::Vector3d& offset) override final;
+        virtual void Move(const optor::Vector3d& offset) override final;
+
+        std::array<optor::Vector3d, 8> GetAABB() const override;
+        virtual optor::Vector3d GetCoord() const override;
+
+        [[nodiscard]] virtual std::string GetTypeName() const override {return "Sphere"; };
 
     protected:
-        hui::Vector3d center_;
+        optor::Vector3d center_;
         double radius_;
         double radius2_;
 

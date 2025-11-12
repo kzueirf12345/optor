@@ -3,46 +3,41 @@
 
 #include <memory>
 
-#include "hui/Vector.hpp"
-#include "hui/Window.hpp"
-#include "optics/OpticObj.hpp"
+#include "dr4/texture.hpp"
+#include "dr4/window.hpp"
+
+#include "widgets/WidgetsState.hpp"
 
 namespace optor {
 
 class Widget;
 class WidgetChildable;
-
-struct WidgetsState {
-    const optor::Widget* hoveredWidget;
-    const optor::Widget* draggedWidget;
-    const optor::Widget* selectedWidget;
-    hui::Vector2d        prevMouseCoord;
-
-    optor::OpticObj* selectedObj;
-};
     
 class WidgetManager {
     public:
-        WidgetManager();
+        WidgetManager(dr4::Window* window);
 
         WidgetManager           (const WidgetManager&) = delete;
         WidgetManager& operator=(const WidgetManager&) = delete;
         WidgetManager           (WidgetManager&&)      = delete;
         WidgetManager& operator=(WidgetManager&&)      = delete;
 
-        void Draw(hui::Window* window);
-        void HandleEvents(hui::Window* window);
+        void Draw();
+        void HandleEvents();
         
-        optor::WidgetChildable* SetDesktop(std::unique_ptr<optor::WidgetChildable> desktop) noexcept;
+        optor::WidgetChildable* SetDesktop(std::unique_ptr<optor::WidgetChildable> desktop) ;
 
-        [[nodiscard]] const optor::WidgetChildable* GetDesktop() const noexcept;
-        [[nodiscard]]       optor::WidgetChildable* GetDesktop()       noexcept;
-        [[nodiscard]] const optor::WidgetsState*    GetState()   const noexcept;
-        [[nodiscard]]       optor::WidgetsState*    GetState()         noexcept;
+        [[nodiscard]] const optor::WidgetChildable* GetDesktop() const ;
+        [[nodiscard]]       optor::WidgetChildable* GetDesktop()       ;
+        [[nodiscard]] const optor::WidgetsState*    GetState()   const ;
+        [[nodiscard]]       optor::WidgetsState*    GetState()         ;
+        [[nodiscard]]       dr4::Window*            GetWindow()        ;
 
     protected:
 
     private:
+        dr4::Window* const window_;
+        std::unique_ptr<dr4::Texture> texture_;
         std::unique_ptr<optor::WidgetChildable> desktop_;
         optor::WidgetsState state_;
 };

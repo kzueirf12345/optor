@@ -1,14 +1,23 @@
 add_library(widgets STATIC
     source/Widget.cpp
     source/WidgetChildable.cpp
-    source/SceneWidget.cpp
     source/WidgetManager.cpp
+    source/SceneWidget.cpp
     source/WidgetButton.cpp
+    source/Textable.cpp
     source/WidgetButtonCamera.cpp
-    source/WidgetButtonText.cpp
-    source/WidgetOpticObj.cpp
-    source/WidgetOpticObjs.cpp
+    source/WidgetHeader.cpp
     source/ScrollBar.cpp
+    source/WidgetList.cpp
+    source/WidgetScrolledList.cpp
+    source/HideButton.cpp
+    source/WidgetText.cpp
+    source/TopBar.cpp
+    source/WidgetCheckbox.cpp
+    source/HideCheckbox.cpp
+    source/OpticObjShort.cpp
+    source/OpticObjDesc.cpp
+    # source/WidgetOpticObjs.cpp
     source/WidgetButtonMoveOpticObj.cpp
 )
 
@@ -38,9 +47,14 @@ target_include_directories(widgets
 
 target_link_libraries(widgets
     PRIVATE 
-        sfml-graphics
+        # SDL3_ttf
+        # SDL3
         common
-        hui
+        libs
+        dr4
         global
         optics
 )
+
+# add_subdirectory(external/SDL_ttf)
+# target_link_libraries(твоя_цель PRIVATE SDL3_ttf)

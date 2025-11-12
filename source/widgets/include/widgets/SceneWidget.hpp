@@ -1,8 +1,11 @@
 #ifndef OPTOR_SOURCE_WIDGETS_INCLUDE_WIDGETS_RENDER_WIDGET_HPP
 #define OPTOR_SOURCE_WIDGETS_INCLUDE_WIDGETS_RENDER_WIDGET_HPP
 
-#include "hui/Renderer.hpp"
-#include "hui/Vector.hpp"
+#include "dr4/texture.hpp"
+#include "dr4/math/vec2.hpp"
+#include "dr4/window.hpp"
+#include "misc/dr4_ifc.hpp"
+
 #include "optics/Scene.hpp"
 #include "widgets/Widget.hpp"
 
@@ -11,28 +14,29 @@ namespace optor
 
 class SceneWidget: public optor::Widget {
     public:
-        SceneWidget(const hui::Vector2d& size, optor::WidgetsState* state);
+        SceneWidget(dr4::Window* window, const dr4::Vec2f& size, optor::WidgetsState* state);
         
-        virtual void Draw(hui::Renderer* renderer) override final;
+        virtual void Draw(dr4::Texture& srcTexture) override final;
         
-        virtual bool OnMouseMove   (const hui::Event& event) override;
-        virtual bool OnMousePress   (const hui::Event& event) override;
-        virtual bool OnKeyboardPress  (const hui::Event& event) override;
-        virtual bool OnKeyboardRelease(const hui::Event& event) override;
+        virtual bool OnMouseMove      (const dr4::Event& event) override;
+        virtual bool OnMousePress     (const dr4::Event& event) override;
+        virtual bool OnKeyboardPress  (const dr4::Event& event) override;
+        virtual bool OnKeyboardRelease(const dr4::Event& event) override;
         virtual void OnIdle() override final;
 
         optor::OpticObj* AddObj(std::unique_ptr<optor::OpticObj> obj);
 
-        [[nodiscard]] const optor::Camera& GetCamera() const noexcept;
-        [[nodiscard]]       optor::Camera& GetCamera()       noexcept;
-        [[nodiscard]] const optor::Scene&  GetScene()  const noexcept;
+        [[nodiscard]] const optor::Camera& GetCamera() const ;
+        [[nodiscard]]       optor::Camera& GetCamera()       ;
+        [[nodiscard]] const optor::Scene&  GetScene()  const ;
+
+        [[nodiscard]] virtual std::string GetTypeName() const override {return "SceneWidget"; };
         
     protected:
         optor::Scene scene_;
+        std::unique_ptr<dr4::Texture> texture_;
 
-        hui::Renderer renderer_;
-
-        void RotateCamera(const hui::Vector2d& mouseOffset);
+        void RotateCamera(const dr4::Vec2f& mouseOffset);
 
     private:
 };

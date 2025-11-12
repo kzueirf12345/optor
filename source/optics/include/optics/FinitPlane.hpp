@@ -4,37 +4,42 @@
 #include "OpticObj.hpp"
 #include "TriangleMesh.hpp"
 #include "Material.hpp"
-#include "hui/Vector.hpp"
+#include "optics/Vector.hpp"
 
 namespace optor
 {
 
-class FinitPlane final : public OpticObj {
+class FinitPlane : public OpticObj {
     public:
-        FinitPlane(const hui::Vector3d& center, const hui::Vector3d& normal, const hui::Vector2d& size);
-        FinitPlane(const hui::Vector3d& center, const hui::Vector3d& normal, const hui::Vector2d& size,
+        FinitPlane(const optor::Vector3d& center, const optor::Vector3d& normal, const optor::Vector2d& size);
+        FinitPlane(const optor::Vector3d& center, const optor::Vector3d& normal, const optor::Vector2d& size,
                    const Material& material);
 
         [[nodiscard]] std::optional<Intersection> 
-            IntersectRay(const hui::Vector3d& rayOrigin,const hui::Vector3d& rayDir) override;
+            IntersectRay(const optor::Vector3d& rayOrigin,const optor::Vector3d& rayDir) override;
 
-        [[nodiscard]] hui::Vector3d GetCenter() const noexcept;
-        [[nodiscard]] hui::Vector3d GetNormal() const noexcept;
-        [[nodiscard]] hui::Vector2d GetSize()   const noexcept;
+        [[nodiscard]] optor::Vector3d GetCenter() const noexcept;
+        [[nodiscard]] optor::Vector3d GetNormal() const noexcept;
+        [[nodiscard]] optor::Vector2d GetSize()   const noexcept;
         [[nodiscard]] double        GetWidth()  const noexcept;
         [[nodiscard]] double        GetHeight() const noexcept;
 
-        void SetCenter  (const hui::Vector3d& center);
-        void SetNormal  (const hui::Vector3d& normal);
-        void SetSize    (const hui::Vector2d& size_);
+        void SetCenter  (const optor::Vector3d& center);
+        void SetNormal  (const optor::Vector3d& normal);
+        void SetSize    (const optor::Vector2d& size_);
         virtual void SetMaterial(const Material& material) override;
 
-        virtual void Move(const hui::Vector3d& offset) override final;
+        virtual void Move(const optor::Vector3d& offset) override final;
+
+        std::array<optor::Vector3d, 8> GetAABB() const override;
+        virtual optor::Vector3d GetCoord() const override;
+
+        [[nodiscard]] virtual std::string GetTypeName() const override {return "FinitPlane"; };
 
     private:
-        hui::Vector3d center_;
-        hui::Vector3d normal_;
-        hui::Vector2d size_;
+        optor::Vector3d center_;
+        optor::Vector3d normal_;
+        optor::Vector2d size_;
         TriangleMesh mesh_;
 
         void BuildMesh();
