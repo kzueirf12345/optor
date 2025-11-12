@@ -35,6 +35,15 @@
 #include "optics/Sphere.hpp"
 #include "widgets/WidgetCheckbox.hpp"
 
+// FIXME move selected obj
+// FIXME update OpticObj info
+// FIXME update ldd
+// FIXME update sfml 
+// FIXME install sdl3
+// TODO add optic obj
+// TODO remove optic obj
+// TODO change optic obj features
+
 ::dr4::Font* optor::FONT = nullptr;
 
 static void CreateScene(dr4::Window* window, dr4::DR4Backend* backend, optor::WidgetManager* manager);
@@ -43,9 +52,10 @@ static void CreateObjsList(optor::WidgetManager* manager, optor::SceneWidget* sc
 
 int main() {
     void* libdr4 = dlopen("./build/source/dr4/libdr4.so", RTLD_LAZY);
-    
+    // void* libdr4 = dlopen("./dist/plugin/libswuix_sdl3.so", RTLD_LAZY);
+
     if (!libdr4) {
-        std::cerr << "error" << dlerror();
+        std::cerr << "error: " << dlerror() << std::endl;
         throw std::runtime_error("Can't open lib");
     }
 
