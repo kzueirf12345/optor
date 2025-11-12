@@ -380,7 +380,7 @@ static dr4::KeyCode KeyCodeSF2DR4(sf::Keyboard::Key code) noexcept
 
 #undef CASE_RET_TYPE_
 
-size_t utf8_encode(uint32_t cp, char out[5]) {
+size_t EncodeUTF8(uint32_t cp, char out[5]) {
     if (cp > 0x10FFFFu) return 0;
     if (cp >= 0xD800u && cp <= 0xDFFFu) return 0;
 
