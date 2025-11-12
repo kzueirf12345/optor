@@ -16,7 +16,6 @@
 #include "common/ErrorHandler.hpp"
 #include "global/Global.hpp"
 #include "optics/Vector.hpp"
-#include "widgets/HideButton.hpp"
 #include "widgets/OpticObjShort.hpp"
 #include "widgets/TopBar.hpp"
 #include "widgets/Widget.hpp"
@@ -27,13 +26,11 @@
 #include "widgets/WidgetChildable.hpp"
 #include "widgets/SceneWidget.hpp"
 #include "widgets/WidgetButtonCamera.hpp"
-#include "widgets/WidgetList.hpp"
 #include "optics/FinitPlane.hpp"
 #include "optics/Plane.hpp"
 #include "optics/Light.hpp"
 #include "optics/Triangle.hpp"
 #include "optics/Sphere.hpp"
-#include "widgets/WidgetCheckbox.hpp"
 
 // FIXME move selected obj
 // FIXME update OpticObj info
@@ -54,6 +51,7 @@ int main() {
     void* libdr4 = dlopen("./build/source/dr4/libdr4.so", RTLD_LAZY);
     // void* libdr4 = dlopen("./dist/plugin/libswuix_sdl3.so", RTLD_LAZY);
 
+    
     if (!libdr4) {
         std::cerr << "error: " << dlerror() << std::endl;
         throw std::runtime_error("Can't open lib");
@@ -72,6 +70,12 @@ int main() {
         throw std::runtime_error("Can't get window");
     }
 
+    ERROR_HANDLE([window](){
+        window->Open();
+        window->SetSize({optor::PROGRAM_WIDTH, optor::PROGRAM_HEIGHT});
+        window->SetTitle("0xCEBAEBA1DEDA");
+    });
+
     optor::FONT = window->CreateFont();
 
     if (!optor::FONT) {
@@ -86,11 +90,6 @@ int main() {
 
 try 
 {
-    ERROR_HANDLE([window](){
-        window->SetSize({optor::PROGRAM_WIDTH, optor::PROGRAM_HEIGHT});
-        window->SetTitle("0xCEBAEBA1DEDA");
-        window->Open();
-    });
 
     optor::WidgetManager manager(window);
 
@@ -107,6 +106,10 @@ try
     while (ERROR_HANDLE(&dr4::Window::IsOpen, window)) {
         
         ERROR_HANDLE(&optor::WidgetManager::HandleEvents, &manager);
+
+        if (!ERROR_HANDLE(&dr4::Window::IsOpen, window)) {
+            break;
+        }
         
         ERROR_HANDLE(&dr4::Window::Clear, window, optor::color::Poison);
         
@@ -205,16 +208,16 @@ void CreateScene(dr4::Window* window, dr4::DR4Backend* backend, optor::WidgetMan
         ));
     }));
 
-    auto mesh = std::make_unique<optor::TriangleMesh>(optor::materials::FABRIC);
+    // auto mesh = std::make_unique<optor::TriangleMesh>(optor::materials::FABRIC);
 
-    mesh->AddTriangle({{-2, -1, 8}, {-3, -3, 9}, {-1, -3, 9}});
-    mesh->AddTriangle({{-2, -1, 8}, {-1, -3, 9}, {-1, -3, 7}});
-    mesh->AddTriangle({{-2, -1, 8}, {-1, -3, 7}, {-3, -3, 7}});
-    mesh->AddTriangle({{-2, -1, 8}, {-3, -3, 7}, {-3, -3, 9}});
-    mesh->AddTriangle({{-3, -3, 9}, {-1, -3, 9}, {-1, -3, 7}});
-    mesh->AddTriangle({{-3, -3, 9}, {-1, -3, 7}, {-3, -3, 7}});
+    // mesh->AddTriangle({{-2, -1, 8}, {-3, -3, 9}, {-1, -3, 9}});
+    // mesh->AddTriangle({{-2, -1, 8}, {-1, -3, 9}, {-1, -3, 7}});
+    // mesh->AddTriangle({{-2, -1, 8}, {-1, -3, 7}, {-3, -3, 7}});
+    // mesh->AddTriangle({{-2, -1, 8}, {-3, -3, 7}, {-3, -3, 9}});
+    // mesh->AddTriangle({{-3, -3, 9}, {-1, -3, 9}, {-1, -3, 7}});
+    // mesh->AddTriangle({{-3, -3, 9}, {-1, -3, 7}, {-3, -3, 7}});
 
-    sceneWidget->AddObj(std::move(mesh));
+    // sceneWidget->AddObj(std::move(mesh));
 
     auto* plane = dynamic_cast<optor::FinitPlane*>(ERROR_HANDLE([sceneWidget](){
         return sceneWidget->AddObj(std::make_unique<optor::FinitPlane>(

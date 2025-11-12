@@ -51,6 +51,15 @@ void optor::dr4::Window::SetSize(const ::dr4::Vec2f& size)
 
 void optor::dr4::Window::Open() 
 {
+    if (size_.x == 0) {
+        size_.x = 2300;
+    }
+    if (size_.y == 0) {
+        size_.y = 1100;
+    }
+    if (title_ == "") {
+        title_ = "0xCEBA";
+    }
     ERROR_HANDLE([this](){
         window_.create(sf::VideoMode(size_.x, size_.y), title_);
         window_.setFramerateLimit(60);

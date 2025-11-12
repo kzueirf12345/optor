@@ -64,7 +64,7 @@ void optor::WidgetManager::HandleEvents() {
         switch (event->type) {
             case dr4::Event::Type::QUIT:
                 ERROR_HANDLE(&dr4::Window::Close, window_);
-                break;
+                return;
 
             case dr4::Event::Type::MOUSE_MOVE: {
                 bool childRes = false;
