@@ -6,23 +6,27 @@
 #include "common/ErrorHandler.hpp"
 #include "widgets/WidgetCheckbox.hpp"
 
-optor::WidgetCheckbox::WidgetCheckbox(dr4::Window* window, const ::dr4::Vec2f& size, 
+optor::WidgetCheckbox::WidgetCheckbox(const ::dr4::Vec2f& size, 
                                       optor::WidgetsState* state, ActionT action, bool isPressed)
     :   optor::WidgetButton(size, state),\
-        texture_{window->CreateTexture()},
+        texture_{state->window->CreateTexture()},
         action_(action),
-        pressedText_{.text = "V", .color = optor::color::TextPrimary, .font = optor::FONT }
+        pressedText_{state->window->CreateText()}
 {
+    pressedText_->SetText("V");
+    pressedText_->SetColor(optor::color::TextPrimary);
+    pressedText_->SetFont(optor::FONT);
+
     isPressed_ = isPressed;
     
     ERROR_HANDLE([this](){
-        texture_->SetSize(rect_.rect.size);
+        texture_->SetSize(rect_->GetSize());
     });
 
     ERROR_HANDLE([this, &size](){
-        const ::dr4::Vec2f localBounds = pressedText_.GetBounds().size;
-        pressedText_.pos.x = (size.x - localBounds.x) / 2;
-        pressedText_.pos.y = (size.y - localBounds.y) / 2;
+        const ::dr4::Vec2f localBounds = pressedText_->GetBounds();
+        pressedText_->SetPos((size.x - localBounds.x) / 2,
+                             (size.y - localBounds.y) / 2);
     });
 }
 
@@ -54,21 +58,21 @@ bool optor::WidgetCheckbox::OnMouseRelease(const ::dr4::Event& event) {
 void optor::WidgetCheckbox::Draw(::dr4::Texture &srcTexture) {
     if (isHide_) { return; }
 
-    const ::dr4::Vec2f pos = rect_.rect.pos;
+    const ::dr4::Vec2f pos = rect_->GetPos();
 
-    rect_.rect.pos = {0, 0};
+    rect_->SetPos({0, 0});
     ERROR_HANDLE([this](){
         optor::Widget::Draw(*texture_);
     });
-    rect_.rect.pos = pos;
+    rect_->SetPos(pos);
 
     if (isPressed_) {
         ERROR_HANDLE([this](){
-            texture_->Draw(pressedText_);
+            texture_->Draw(*pressedText_);
         });
     }
 
     ERROR_HANDLE([this, &srcTexture](){
-        srcTexture.Draw(*texture_, rect_.rect.pos);
+        srcTexture.Draw(*texture_);
     });
 }

@@ -4,7 +4,6 @@
 #include <memory>
 
 #include "dr4/math/vec2.hpp"
-#include "dr4/texture.hpp"
 
 #include "widgets/Widget.hpp"
 #include "widgets/WidgetButton.hpp"

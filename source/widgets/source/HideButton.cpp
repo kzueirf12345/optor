@@ -35,11 +35,11 @@ void optor::HideButton::OnIdle() {
 
     if (IsInderectedHovered()) {
         isPressed_ = true;
-        rect_.fill = pressedColor_;
+        rect_->SetFillColor(pressedColor_);
         widget_->SetIsHide(false);
     } else {
         isPressed_ = false;
-        rect_.fill = releasedColor_;
+        rect_->SetFillColor(releasedColor_);
         widget_->SetIsHide(true);
     }
 
@@ -53,8 +53,8 @@ bool optor::HideButton::IsInderectedHovered() const {
 }
 
 void optor::HideButton::SetPosition(const dr4::Vec2f& position){
-    widget_->SetPosition(widget_->GetPosition() + (position - rect_.rect.pos));
-    rect_.rect.pos = position;
+    widget_->SetPosition(widget_->GetPosition() + (position - rect_->GetPos()));
+    rect_->GetPos() = position;
 }
 
 optor::Widget* optor::HideButton::GetWidget() const {

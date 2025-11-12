@@ -20,15 +20,15 @@
 #include "widgets/WidgetText.hpp"
 #include "widgets/WidgetButtonMoveOpticObj.hpp"
 
-optor::OpticObjDesc::OpticObjDesc(dr4::Window* window, const dr4::Vec2f& size, 
+optor::OpticObjDesc::OpticObjDesc(const dr4::Vec2f& size, 
                                   optor::WidgetsState* state, optor::OpticObj* obj)
-    : window_{window}, size_{size}, state_{state}, obj_{obj}
+    : size_{size}, state_{state}, obj_{obj}
 {}
 
 
 optor::WidgetHeader* optor::OpticObjDesc::operator()(optor::WidgetChildable* parent)
 {
-    auto list = std::make_unique<optor::WidgetScrolledList>(window_, size_, state_);
+    auto list = std::make_unique<optor::WidgetScrolledList>(size_, state_);
 
     AddCoordInfo(list.get());
     AddColorInfo(list.get());
@@ -36,7 +36,6 @@ optor::WidgetHeader* optor::OpticObjDesc::operator()(optor::WidgetChildable* par
     AddMoveButtons(list.get());
 
     return dynamic_cast<optor::WidgetHeader*>(parent->AddChild(std::make_unique<optor::WidgetHeader>(
-        window_,
         std::move(list),
         obj_->GetTypeName(),
         optor::WidgetHeader::CloseMode::REMOVE
@@ -53,10 +52,10 @@ std::string optor::OpticObjDesc::FormatDouble(double value)
 
 optor::WidgetList* optor::OpticObjDesc::AddCoordInfo(optor::WidgetScrolledList* list)
 {
-    auto* coordList = dynamic_cast<optor::WidgetList*>(list->AddChild(std::make_unique<optor::WidgetList>(window_, state_)));
+    auto* coordList = dynamic_cast<optor::WidgetList*>(list->AddChild(std::make_unique<optor::WidgetList>(state_)));
 
     const optor::Vector3d coord = obj_->GetCoord();
-    const float strHeight = dr4::Text{.text = "x:", .fontSize = 40, .font = optor::FONT}.GetBounds().size.y;
+    const float strHeight = dr4::Text{.text = "x:", .fontSize = 40, .font = optor::FONT}.GetBounds().size.y;//FIXME
 
     const std::array<std::string, 3> coordStrs = {
         "x: " + FormatDouble(coord.x),
@@ -66,7 +65,7 @@ optor::WidgetList* optor::OpticObjDesc::AddCoordInfo(optor::WidgetScrolledList* 
 
     for (const auto& str : coordStrs) {
         auto* textWidget = dynamic_cast<optor::WidgetText*>(coordList->AddChild(std::make_unique<optor::WidgetText>(
-            window_, dr4::Vec2f{list->GetSize().x, strHeight}, state_, str
+            dr4::Vec2f{list->GetSize().x, strHeight}, state_, str
         )));
         textWidget->GetText()->pos.x = INIT_WIDGET_BORDER_THICKNESS;
     }
@@ -77,7 +76,7 @@ optor::WidgetList* optor::OpticObjDesc::AddCoordInfo(optor::WidgetScrolledList* 
 
 optor::WidgetList* optor::OpticObjDesc::AddColorInfo(optor::WidgetScrolledList* list)
 {
-    auto* colorList = dynamic_cast<optor::WidgetList*>(list->AddChild(std::make_unique<optor::WidgetList>(window_, state_)));
+    auto* colorList = dynamic_cast<optor::WidgetList*>(list->AddChild(std::make_unique<optor::WidgetList>(state_)));
 
     const optor::Material& material = obj_->GetMaterial();
     const optor::Vector3d amb = material.GetAmbientColor() * 255.0;
@@ -98,7 +97,7 @@ optor::WidgetList* optor::OpticObjDesc::AddColorInfo(optor::WidgetScrolledList* 
         {"Specular", specColor, spec}
     };
 
-    const float strHeight = dr4::Text{.text = "Color", .fontSize = 40, .font = optor::FONT}.GetBounds().size.y;
+    const float strHeight = dr4::Text{.text = "Color", .fontSize = 40, .font = optor::FONT}.GetBounds().size.y; //FIXME
 
     for (auto& info : infos) {
         std::string colorStr = info.label + ": { "
@@ -107,11 +106,11 @@ optor::WidgetList* optor::OpticObjDesc::AddColorInfo(optor::WidgetScrolledList* 
             + std::to_string((int)info.rgb.z) + " }";
 
         auto* colorWidget = dynamic_cast<optor::WidgetChildable*>(colorList->AddChild(std::make_unique<optor::WidgetChildable>(
-            dr4::Vec2f{list->GetSize().x, strHeight}, state_, window_
+            dr4::Vec2f{list->GetSize().x, strHeight}, state_
         )));
 
         auto* textWidget = dynamic_cast<optor::WidgetText*>(colorWidget->AddChild(std::make_unique<optor::WidgetText>(
-            window_, dr4::Text{.text = colorStr, .fontSize = 40, .font = optor::FONT}.GetBounds().size, state_, colorStr
+            dr4::Text{.text = colorStr, .fontSize = 40, .font = optor::FONT}.GetBounds().size, state_, colorStr //FIXME
         )));
         textWidget->SetOutlineThickness(0);
 
@@ -128,7 +127,7 @@ optor::WidgetList* optor::OpticObjDesc::AddColorInfo(optor::WidgetScrolledList* 
 
 optor::WidgetList* optor::OpticObjDesc::AddMaterialFeatures(optor::WidgetScrolledList* list)
 {
-    auto* featuresList = dynamic_cast<optor::WidgetList*>(list->AddChild(std::make_unique<optor::WidgetList>(window_, state_)));
+    auto* featuresList = dynamic_cast<optor::WidgetList*>(list->AddChild(std::make_unique<optor::WidgetList>(state_)));
 
     const optor::Material& material = obj_->GetMaterial();
 
@@ -147,7 +146,7 @@ optor::WidgetList* optor::OpticObjDesc::AddMaterialFeatures(optor::WidgetScrolle
     for (auto& f : features) {
         std::string str = f.name + ": " + FormatDouble(f.value);
         auto* widget = dynamic_cast<optor::WidgetText*>(featuresList->AddChild(std::make_unique<optor::WidgetText>(
-            window_, dr4::Vec2f{list->GetSize().x, strHeight}, state_, str
+            dr4::Vec2f{list->GetSize().x, strHeight}, state_, str
         )));
         widget->GetText()->pos.x = INIT_WIDGET_BORDER_THICKNESS;
     }
@@ -162,8 +161,7 @@ optor::WidgetChildable* optor::OpticObjDesc::AddMoveButtons(optor::WidgetScrolle
 
     auto movePanel = std::make_unique<optor::WidgetChildable>(
         dr4::Vec2f{list->GetSize().x, panelHeight},
-        state_,
-        window_
+        state_
     );
 
     constexpr float CENTER_OFFSET = 0.32f;
@@ -194,7 +192,6 @@ optor::WidgetChildable* optor::OpticObjDesc::AddMoveButtons(optor::WidgetScrolle
     for (const auto& info : moveButtons) {
         auto* button = dynamic_cast<optor::WidgetButtonMoveOpticObj*>(movePanel->AddChild(
             std::make_unique<optor::WidgetButtonMoveOpticObj>(
-                window_,
                 dr4::Vec2f{3.f * buttonSize, buttonSize},
                 state_,
                 info.text,

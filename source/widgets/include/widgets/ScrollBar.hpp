@@ -9,7 +9,6 @@
 #include "dr4/math/vec2.hpp"
 #include "dr4/texture.hpp"
 #include "dr4/event.hpp"
-#include "dr4/window.hpp"
 
 #include "widgets/Widget.hpp"
 #include "widgets/WidgetButton.hpp"
@@ -27,8 +26,10 @@ class ScrollBar: public Widget {
 
         using ActionT = std::function<void(float)>; 
 
-        ScrollBar(dr4::Window* window, const dr4::Vec2f& size, optor::WidgetsState* state, 
+        ScrollBar(const dr4::Vec2f& size, optor::WidgetsState* state, 
                   ActionT action, bool isHorizontal = false);
+
+        virtual void SetPosition(const dr4::Vec2f& position) override;
 
         virtual void Draw(dr4::Texture& srcTexture) override;
 

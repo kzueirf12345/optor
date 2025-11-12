@@ -19,34 +19,34 @@
 
 static dr4::Vec2f curAbsPosition;
 
-optor::TopBarButton::TopBarButton(dr4::Window* window, const dr4::Vec2f& size, optor::WidgetsState* state, 
+optor::TopBarButton::TopBarButton(const dr4::Vec2f& size, optor::WidgetsState* state, 
                 std::unique_ptr<optor::Widget> widget, const std::string& text, WidgetPos pos)
 :   HideButton(size, state, std::move(widget)),
-    Textable(text),
-    texture_{window->CreateTexture()},
+    Textable(text, state->window),
+    texture_{state->window->CreateTexture()},
     widgetPos_(pos)
 {
     ERROR_HANDLE([this](){
-        texture_->SetSize(rect_.rect.size);
+        texture_->SetSize(rect_->GetSize());
     });
 
     ERROR_HANDLE([this, &size](){
-        const dr4::Vec2f localBounds = text_.GetBounds().size;
-        text_.pos.x = (size.x - localBounds.x) / 2;
-        text_.pos.y = (size.y - localBounds.y) / 2;
+        const dr4::Vec2f localBounds = text_->GetBounds();
+        text_->SetPos((size.x - localBounds.x) / 2,
+                      (size.y - localBounds.y) / 2);
     });
 
     switch (pos) {
         case optor::TopBarButton::WidgetPos::BOTTOM:
-            widget_->SetPosition(AbsCoord() + dr4::Vec2f(0, rect_.rect.size.y));
+            widget_->SetPosition(AbsCoord() + dr4::Vec2f(0, rect_->GetSize().y));
             break;
 
         case optor::TopBarButton::WidgetPos::RIGHT:
-            widget_->SetPosition(AbsCoord() + dr4::Vec2f(rect_.rect.size.x, 0));
+            widget_->SetPosition(AbsCoord() + dr4::Vec2f(rect_->GetSize().x, 0));
             break;
 
         case optor::TopBarButton::WidgetPos::BOTTOM_RIGHT:
-            widget_->SetPosition(AbsCoord() + dr4::Vec2f(rect_.rect.size.x, rect_.rect.size.y));
+            widget_->SetPosition(AbsCoord() + dr4::Vec2f(rect_->GetSize().x, rect_->GetSize().y));
             break;
     }
 }
@@ -55,20 +55,20 @@ void optor::TopBarButton::Draw(dr4::Texture& srcTexture)
 {
     if (isHide_) { return; }
     
-    const dr4::Vec2f pos = rect_.rect.pos;
+    const dr4::Vec2f pos = rect_->GetPos();
 
-    rect_.rect.pos = {0, 0};
+    rect_->SetPos({0, 0});
     ERROR_HANDLE([this](){
         optor::HideButton::Draw(*texture_);
     });
-    rect_.rect.pos = pos;
+    rect_->SetPos(pos);
 
     ERROR_HANDLE([this](){
-        texture_->Draw(text_);
+        texture_->Draw(*text_);
     });
 
     ERROR_HANDLE([this, &srcTexture](){
-        srcTexture.Draw(*texture_, rect_.rect.pos);
+        srcTexture.Draw(*texture_);
     });
 }
 
@@ -87,21 +87,14 @@ optor::TopBar::TopBar(optor::WidgetManager* manager)
                 manager->GetDesktop()->GetSize().x,
                 manager->GetDesktop()->GetSize().y / 15.f
             ),
-            manager->GetState(),
-            manager->GetWindow()
+            manager->GetState()
         ),
-        texture_{manager->GetWindow()->CreateTexture()},
         manager_(manager)
 {
-    ERROR_HANDLE([this](){
-        texture_->SetSize(rect_.rect.size);
-    });
-
     curAbsPosition = {0, 0};
 
     auto* view = dynamic_cast<optor::TopBarButton*>(AddChild(std::make_unique<optor::TopBarButton>(
-        manager->GetWindow(),
-        dr4::Vec2f(dr4::Text{.text = "view", .fontSize = 40, .font = optor::FONT}.GetBounds().size.x, rect_.rect.size.y), 
+        dr4::Vec2f(dr4::Text{.text = "view", .fontSize = 40, .font = optor::FONT}.GetBounds().size.x, rect_.rect.size.y), //FIXME
         manager_->GetState(), 
         std::move(CreateViewList(manager_, manager_->GetDesktop())), 
         "view",
@@ -119,7 +112,6 @@ static std::unique_ptr<optor::Widget> CreateViewList(optor::WidgetManager* manag
     assert(parent);
 
     auto list = std::make_unique<optor::WidgetList>(
-        manager->GetWindow(),
         manager->GetState()
     );
 
@@ -152,7 +144,7 @@ static void HandleChild(optor::Widget* child, optor::WidgetList* list, optor::Wi
         name = child->GetTypeName();
     }
 
-    dr4::Vec2f size = dr4::Text{.text = name.value(), .fontSize = 40, .font = optor::FONT}.GetBounds().size;
+    dr4::Vec2f size = dr4::Text{.text = name.value(), .fontSize = 40, .font = optor::FONT}.GetBounds().size; //FIXME
 
     const auto* childableChild = dynamic_cast<const optor::WidgetChildable*>(child);
 
@@ -162,7 +154,6 @@ static void HandleChild(optor::Widget* child, optor::WidgetList* list, optor::Wi
         auto sublist = std::move(CreateViewList(manager, childableChild));
 
         textWidget = std::make_unique<optor::TopBarButton>(
-            manager->GetWindow(),
             size, 
             manager->GetState(), 
             std::move(sublist), 
@@ -172,14 +163,13 @@ static void HandleChild(optor::Widget* child, optor::WidgetList* list, optor::Wi
 
     } else {
         textWidget = std::make_unique<optor::WidgetText>(
-            manager->GetWindow(),
             size,
             manager->GetState(),
             name.value()
         );
     }
 
-    dynamic_cast<optor::Textable*>(textWidget.get())->GetText()->pos.x = 0;
+    dynamic_cast<optor::Textable*>(textWidget.get())->GetText()->pos.x = 0; //FIXME
     
     ERROR_HANDLE([&textWidget, &size](){
         textWidget->SetPosition({size.y, 0});
@@ -188,7 +178,6 @@ static void HandleChild(optor::Widget* child, optor::WidgetList* list, optor::Wi
     textWidget->SetOutlineThickness(0);
 
     auto checkBox = std::make_unique<optor::HideCheckbox>(
-        manager->GetWindow(),
         dr4::Vec2f{size.y, size.y},
         manager->GetState(),
         (headerChild ? headerChild : child)
@@ -201,8 +190,7 @@ static void HandleChild(optor::Widget* child, optor::WidgetList* list, optor::Wi
         list,
         std::make_unique<optor::WidgetChildable>(
             dr4::Vec2f({size.x + size.y, size.y}),
-            manager->GetState(),
-            manager->GetWindow()
+            manager->GetState()
         )
     ));
 

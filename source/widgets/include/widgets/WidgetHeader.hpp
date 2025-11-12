@@ -4,7 +4,6 @@
 #include <memory>
 
 #include "dr4/texture.hpp"
-#include "dr4/window.hpp"
 
 #include "widgets/Textable.hpp"
 #include "widgets/Widget.hpp"
@@ -19,7 +18,9 @@ public:
         REMOVE
     };
 
-    WidgetHeader(dr4::Window* window, std::unique_ptr<optor::Widget> widget, const std::string& title, CloseMode closeMode);
+    WidgetHeader(std::unique_ptr<optor::Widget> widget, const std::string& title, CloseMode closeMode);
+
+    virtual void SetPosition(const dr4::Vec2f& position) override;
 
     virtual void Draw       (dr4::Texture& srcTexture) override;
     

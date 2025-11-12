@@ -6,10 +6,10 @@
 #include "widgets/WidgetText.hpp"
 
 optor::OpticObjShort::OpticObjShort(optor::WidgetManager* manager, const dr4::Vec2f& size, optor::OpticObj* obj)
-    :   optor::WidgetText(manager->GetWindow(), size, manager->GetState(), obj->GetTypeName()),
+    :   optor::WidgetText(size, manager->GetState(), obj->GetTypeName()),
         obj_(obj),
         desktop_(manager->GetDesktop()),
-        desc_{manager->GetWindow(), dr4::Vec2f(800, 600), manager->GetState(), obj},
+        desc_{dr4::Vec2f(800, 600), manager->GetState(), obj},
         descButton_(dr4::KEYCODE_E)
 {}
 
@@ -21,9 +21,9 @@ void optor::OpticObjShort::OnIdle() {
     }
 
     if (state_->selectedObj == obj_) {
-        text_.color = optor::color::Green;
+        text_->SetColor(optor::color::Green);
     } else {
-        text_.color = optor::color::TextPrimary;
+        text_->SetColor(optor::color::TextPrimary);
     }
 
     optor::WidgetText::OnIdle();

@@ -2,22 +2,22 @@ add_library(widgets STATIC
     source/Widget.cpp
     source/WidgetChildable.cpp
     source/WidgetManager.cpp
-    # source/SceneWidget.cpp
-    # source/WidgetButton.cpp
-    # source/Textable.cpp
-    # source/WidgetButtonCamera.cpp
-    # source/WidgetHeader.cpp
-    # source/ScrollBar.cpp
-    # source/WidgetList.cpp
-    # source/WidgetScrolledList.cpp
-    # source/HideButton.cpp
-    # source/WidgetText.cpp
-    # source/TopBar.cpp
-    # source/WidgetCheckbox.cpp
-    # source/HideCheckbox.cpp
-    # source/OpticObjShort.cpp
-    # source/OpticObjDesc.cpp
-    # source/WidgetButtonMoveOpticObj.cpp
+    source/SceneWidget.cpp
+    source/WidgetButton.cpp
+    source/Textable.cpp
+    source/WidgetButtonCamera.cpp
+    source/WidgetHeader.cpp
+    source/ScrollBar.cpp
+    source/WidgetList.cpp
+    source/WidgetScrolledList.cpp
+    source/HideButton.cpp
+    source/WidgetText.cpp
+    source/TopBar.cpp
+    source/WidgetCheckbox.cpp
+    source/HideCheckbox.cpp
+    source/OpticObjShort.cpp
+    source/OpticObjDesc.cpp
+    source/WidgetButtonMoveOpticObj.cpp
 )
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")

@@ -103,7 +103,7 @@ static const inline std::string FONT_PATH = "./assets/TokyoNight.ttf";
 
 extern ::dr4::Font* FONT;
 
-static constexpr inline double STRING_BLOCK_HEIGHT = 50.;
+static constexpr inline float STRING_BLOCK_HEIGHT = 50.;
 
 }
 

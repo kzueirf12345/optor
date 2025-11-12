@@ -10,7 +10,7 @@ namespace optor
 
 class HideCheckbox: public WidgetCheckbox {
 public:
-    HideCheckbox(dr4::Window* window, const ::dr4::Vec2f& size, optor::WidgetsState* state, optor::Widget* widget);
+    HideCheckbox(const ::dr4::Vec2f& size, optor::WidgetsState* state, optor::Widget* widget);
     
     virtual void OnIdle() override;
 

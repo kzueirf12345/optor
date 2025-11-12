@@ -8,15 +8,15 @@
 #include "global/Global.hpp"
 #include "widgets/WidgetButton.hpp"
 
-optor::ScrollBar::ScrollBar(dr4::Window* window, const dr4::Vec2f& size, optor::WidgetsState* state, 
+optor::ScrollBar::ScrollBar(const dr4::Vec2f& size, optor::WidgetsState* state, 
                             ActionT action, bool isHorizontal)
     : optor::Widget(size, state),
       action_{std::move(action)},
-      texture_{window->CreateTexture()},
+      texture_{state->window->CreateTexture()},
       isHorizontal_{isHorizontal},
       buttonSize_{        
-        (isHorizontal_ ? BUTTON_SIZE_PERCENT_ : 1.f) * rect_.rect.size.x,
-        (!isHorizontal_ ? BUTTON_SIZE_PERCENT_ : 1.f) * rect_.rect.size.y
+        (isHorizontal_ ? BUTTON_SIZE_PERCENT_ : 1.f) * rect_->GetSize().x,
+        (!isHorizontal_ ? BUTTON_SIZE_PERCENT_ : 1.f) * rect_->GetSize().y
       },
       percentage_{0.0},
       incButton_(
@@ -37,10 +37,10 @@ optor::ScrollBar::ScrollBar(dr4::Window* window, const dr4::Vec2f& size, optor::
     SetIsDraggable(false);
 
     ERROR_HANDLE([this](){
-        texture_->SetSize(rect_.rect.size);
+        texture_->SetSize(rect_->GetSize());
     });
 
-    const dr4::Vec2f fullSize = rect_.rect.size;
+    const dr4::Vec2f fullSize = rect_->GetSize();
 
     if (isHorizontal_) {
         decButton_.SetPosition({0, 0});
@@ -72,7 +72,7 @@ void optor::ScrollBar::Move(float shiftPercent) {
 
     action_((isHorizontal_ ? percentage_ : 1 - percentage_));
 
-    const dr4::Vec2f barSize = rect_.rect.size;
+    const dr4::Vec2f barSize = rect_->GetSize();
     dr4::Vec2f thumbPos = thumbButton_.GetPosition();
 
     if (isHorizontal_) {
@@ -89,13 +89,13 @@ void optor::ScrollBar::Move(float shiftPercent) {
 void optor::ScrollBar::Draw(dr4::Texture& srcTexture) {
     if (isHide_) { return; }
 
-    const dr4::Vec2f pos = rect_.rect.pos;
+    const dr4::Vec2f pos = rect_->GetPos();
 
-    rect_.rect.pos = {0, 0};
+    rect_->SetPos({0, 0});
     ERROR_HANDLE([this](){
         optor::Widget::Draw(*texture_);
     });
-    rect_.rect.pos = pos;
+    rect_->SetPos(pos);
 
     ERROR_HANDLE([this](){
         incButton_.Draw(*texture_);
@@ -110,7 +110,7 @@ void optor::ScrollBar::Draw(dr4::Texture& srcTexture) {
     });
 
     ERROR_HANDLE([this, &srcTexture](){
-        srcTexture.Draw(*texture_, rect_.rect.pos);
+        srcTexture.Draw(*texture_);
     });
 }
 
@@ -120,7 +120,7 @@ bool optor::ScrollBar::OnMouseMove(const dr4::Event& event) {
     const dr4::Vec2f mouse = event.mouseMove.pos;
 
     if (state_->draggedWidget == &thumbButton_) {
-        const dr4::Vec2f barSize = rect_.rect.size;
+        const dr4::Vec2f barSize = rect_->GetSize();
         const dr4::Vec2f thumbSize = thumbButton_.GetSize();
         const dr4::Vec2f absBarPos = AbsCoord();
 

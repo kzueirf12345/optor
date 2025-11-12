@@ -12,7 +12,7 @@ namespace optor
 
 class WidgetScrolledList : public WidgetChildable {
     public:
-        WidgetScrolledList(dr4::Window* window, const dr4::Vec2f& size, optor::WidgetsState* state);
+        WidgetScrolledList(const dr4::Vec2f& size, optor::WidgetsState* state);
 
         virtual void Scroll(float percentage);
 

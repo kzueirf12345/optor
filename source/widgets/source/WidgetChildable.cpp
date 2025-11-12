@@ -9,15 +9,15 @@
 #include "dr4/texture.hpp"
 #include "widgets/Widget.hpp"
 
-optor::WidgetChildable::WidgetChildable(const dr4::Vec2f& size, optor::WidgetsState* state, dr4::Window* window)
-    :   Widget{size, state}, children_{}, texture_{window->CreateTexture()}
+optor::WidgetChildable::WidgetChildable(const dr4::Vec2f& size, optor::WidgetsState* state)
+    :   Widget{size, state}, children_{}, texture_{state->window->CreateTexture()}
 {
     ERROR_HANDLE([this, size](){
         texture_->SetSize(size);
     });
 }
 
-void optor::WidgetChildable::SetPosition(const dr4::Vec2f& position) { // FIXME reimplement in other classes with texture
+void optor::WidgetChildable::SetPosition(const dr4::Vec2f& position) {
     optor::Widget::SetPosition(position);
     texture_->SetPos(position);
 }

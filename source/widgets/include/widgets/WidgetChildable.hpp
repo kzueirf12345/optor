@@ -7,7 +7,6 @@
 #include "dr4/event.hpp"
 #include "dr4/math/vec2.hpp"
 #include "dr4/texture.hpp"
-#include "dr4/window.hpp"
 #include "widgets/Widget.hpp"
 
 namespace optor 
@@ -15,7 +14,7 @@ namespace optor
 
 class WidgetChildable: public Widget {
     public:
-        WidgetChildable(const dr4::Vec2f& size, optor::WidgetsState* state, dr4::Window* window);
+        WidgetChildable(const dr4::Vec2f& size, optor::WidgetsState* state);
 
         WidgetChildable           (const WidgetChildable&) = delete;
         WidgetChildable& operator=(const WidgetChildable&) = delete;
