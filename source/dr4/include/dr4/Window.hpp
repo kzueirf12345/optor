@@ -5,6 +5,7 @@
 
 #include "dr4/window.hpp"
 #include <SFML/System/Vector2.hpp>
+#include <chrono>
 
 namespace optor
 {
@@ -51,6 +52,8 @@ private:
     sf::RenderWindow window_;
     std::string title_;
     sf::Vector2u size_;
+
+    std::chrono::time_point<std::chrono::high_resolution_clock> ctorTime_;
 };
 
 }

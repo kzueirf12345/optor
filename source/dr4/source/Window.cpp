@@ -1,3 +1,4 @@
+#include <chrono>
 #include <optional>
 
 #include <SFML/Window/Keyboard.hpp>
@@ -13,6 +14,8 @@
 #include "dr4/Font.hpp"
 #include "dr4/Image.hpp"
 #include "dr4/Texture.hpp"
+#include "dr4/Line.hpp"
+#include "dr4/Circle.hpp"
 
 #include "dr4/event.hpp"
 #include "dr4/keycodes.hpp"
@@ -30,7 +33,8 @@ static size_t EncodeUTF8(uint32_t cp, char out[5]);
 optor::dr4::Window::Window()
     :   window_{},
         size_{2400, 1100},
-        title_{"0xCEBAEBALDEDA"}
+        title_{"0xCEBAEBALDEDA"},
+        ctorTime_(std::chrono::high_resolution_clock::now())
 {}
 
 void optor::dr4::Window::SetTitle(const std::string &title) 
@@ -115,19 +119,39 @@ void optor::dr4::Window::Display()
     });
 }
 
-::dr4::Texture *optor::dr4::Window::CreateTexture() 
-{
+double optor::dr4::Window::GetTime() {
+    return std::chrono::duration_cast<std::chrono::seconds>(
+        std::chrono::high_resolution_clock::now() - ctorTime_
+    ).count();
+}
+
+::dr4::Texture  *optor::dr4::Window::CreateTexture()    {
     return new optor::dr4::Texture();
 }
-
-::dr4::Image *optor::dr4::Window::CreateImage()
-{
+::dr4::Image    *optor::dr4::Window::CreateImage()      {
     return new optor::dr4::Image();
 }
-
-::dr4::Font    *optor::dr4::Window::CreateFont()
-{
+::dr4::Font     *optor::dr4::Window::CreateFont()       {
     return new optor::dr4::Font();
+}
+::dr4::Line      *optor::dr4::Window::CreateLine()      {
+    return new optor::dr4::Line();
+}
+::dr4::Circle    *optor::dr4::Window::CreateCircle()    {
+    return new optor::dr4::Circle();
+}
+::dr4::Rectangle *optor::dr4::Window::CreateRectangle() {
+    return new optor::dr4::Rectangle();
+}
+::dr4::Text      *optor::dr4::Window::CreateText()      {
+    return new optor::dr4::Text();
+}
+
+void optor::dr4::Window::StartTextInput() {
+    //PASS
+}
+void optor::dr4::Window::StopTextInput() {
+    //PASS
 }
 
 std::optional<::dr4::Event> optor::dr4::Window::PollEvent() 

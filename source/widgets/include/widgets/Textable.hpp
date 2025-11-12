@@ -2,6 +2,7 @@
 #define OPTOR_SOURCE_WIDGETS_INCLUDE_WIDGETS_WIDGET_BUTTON_TEXT_HPP
 
 #include "dr4/texture.hpp"
+#include <memory>
 
 namespace optor 
 {
@@ -17,7 +18,7 @@ class Textable {
         [[nodiscard]] virtual std::string GetTypeName() const {return "Textable"; };
 
     protected:
-        ::dr4::Text text_;
+        std::unique_ptr<::dr4::Text> text_;
 };
 
 }

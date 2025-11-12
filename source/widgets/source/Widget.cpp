@@ -6,12 +6,12 @@
 #include "dr4/keycodes.hpp"
 #include "dr4/math/rect.hpp"
 #include "dr4/math/vec2.hpp"
-#include "dr4/mousecodes.hpp"
+#include "dr4/mouse_buttons.hpp"
 #include "dr4/texture.hpp"
 #include "global/Global.hpp"
 
 optor::Widget::Widget(const dr4::Vec2f& size, optor::WidgetsState* state)
-    :   rect_{{{0, 0}, size}, optor::color::WindowBackground, INIT_WIDGET_BORDER_THICKNESS, optor::color::WindowBorder}, 
+    :   rect_{state->window->CreateRectangle()}, 
         parent_{nullptr}, 
         state_{state}, 
         isDraggable_{true}, 
@@ -23,30 +23,35 @@ optor::Widget::Widget(const dr4::Vec2f& size, optor::WidgetsState* state)
         mustRemoved_(false),
         name_{std::nullopt},
         isHide_{false}
-{}
+{
+    rect_->SetSize(size);
+    rect_->SetFillColor(optor::color::WindowBackground);
+    rect_->SetBorderColor(optor::color::WindowBorder);
+    rect_->SetBorderThickness(2);
+}
 
 void optor::Widget::Draw(dr4::Texture& srcTexture) {
     if (isHide_) { return; }
 
     ERROR_HANDLE([this, &srcTexture](){
-        srcTexture.Draw(rect_);
+        srcTexture.Draw(*rect_);
     });
 }
 
 void optor::Widget::SetPosition(const dr4::Vec2f& position) {
-    rect_.rect.pos = position;
+    rect_->SetPos(position);
 }
 
 void optor::Widget::SetBackgroundColor(const dr4::Color& color) {
-    rect_.fill = color;
+    rect_->SetFillColor(color);
 }
 
 void optor::Widget::SetBorderColor(const dr4::Color& color) {
-    rect_.borderColor = color;
+    rect_->SetBorderColor(color);
 }
 
 void optor::Widget::SetOutlineThickness(double thickness) {
-    rect_.borderThickness = thickness;
+    rect_->SetBorderThickness(thickness);
 }
 
 void optor::Widget::SetParent(optor::Widget* parent)  {
@@ -61,7 +66,7 @@ void optor::Widget::SetIsFreeDraggable(const bool isFreeDraggable)  {
     isFreeDraggable_ = isFreeDraggable;
 }
 
-void optor::Widget::SetDragButton(dr4::MouseCode dragButton)  {
+void optor::Widget::SetDragButton(dr4::MouseButtonType dragButton)  {
     dragButton_ = dragButton;
 }
 
@@ -69,7 +74,7 @@ void optor::Widget::SetIsSelectable(const bool isSelectable)  {
     isSelectable_ = isSelectable;
 }
 
-void optor::Widget::SetSelectButton(dr4::MouseCode selectButton)  {
+void optor::Widget::SetSelectButton(dr4::MouseButtonType selectButton)  {
     selectButton_ = selectButton;
 }
 
@@ -90,19 +95,19 @@ void optor::Widget::SetIsHide (const bool isHide) {
 
 
 dr4::Vec2f optor::Widget::AbsCoord() const {
-    dr4::Vec2f absCoord = rect_.rect.pos;
+    dr4::Vec2f absCoord = rect_->GetPos();
     for (const auto* ancestor = parent_; ancestor != nullptr; ancestor = ancestor->parent_) {
-        absCoord = absCoord + ancestor->rect_.rect.pos;
+        absCoord = absCoord + ancestor->rect_->GetPos();
     }
     return std::move(absCoord);
 }
 
 dr4::Vec2f optor::Widget::GetSize() const {
-    return rect_.rect.size;
+    return rect_->GetSize();
 }
 
 dr4::Vec2f optor::Widget::GetPosition() const {
-    return rect_.rect.pos;
+    return rect_->GetPos();
 }
 
 optor::WidgetsState* optor::Widget::GetState() const {
@@ -110,13 +115,13 @@ optor::WidgetsState* optor::Widget::GetState() const {
 }
 
 dr4::Color optor::Widget::GetBackgroundColor () const {
-    return rect_.fill;
+    return rect_->GetFillColor();
 }
 dr4::Color optor::Widget::GetBorderColor     () const {
-    return rect_.borderColor;
+    return rect_->GetBorderColor();
 }
 double     optor::Widget::GetOutlineThickness() const {
-    return rect_.borderThickness;
+    return rect_->GetBorderThickness();
 }
 
 optor::Widget* optor::Widget::GetParent() const {
@@ -129,13 +134,13 @@ bool optor::Widget::GetIsDraggable           () const {
 bool optor::Widget::GetIsFreeDraggable       () const {
     return isFreeDraggable_;
 }
-dr4::MouseCode optor::Widget::GetDragButton  () const {
+dr4::MouseButtonType optor::Widget::GetDragButton  () const {
     return dragButton_;
 }
 bool optor::Widget::GetIsSelectable          () const {
     return isSelectable_;
 }
-dr4::MouseCode optor::Widget::GetSelectButton() const {
+dr4::MouseButtonType optor::Widget::GetSelectButton() const {
     return selectButton_;
 }
 dr4::KeyCode optor::Widget::GetUnselectButton() const {
@@ -159,7 +164,7 @@ bool optor::Widget::OnMouseMove(const dr4::Event& event) {
         return true;
     }
 
-    if (dr4::Rect2f(AbsCoord(), rect_.rect.size).Contains(event.mouseMove.pos)) {
+    if (dr4::Rect2f(AbsCoord(), rect_->GetSize()).Contains(event.mouseMove.pos)) {
         state_->hoveredWidget = this;
         return true;
     }
@@ -225,17 +230,17 @@ void optor::Widget::OnIdle() {
 
 bool optor::Widget::OnMe(const dr4::Vec2f& absCoord) const {
     const dr4::Vec2f leftCorner  = AbsCoord();
-    const dr4::Vec2f rightCorner = leftCorner + rect_.rect.size;
+    const dr4::Vec2f rightCorner = leftCorner + rect_->GetSize();
 
     return leftCorner.x <= absCoord.x && absCoord.x <= rightCorner.x 
         && leftCorner.y <= absCoord.y && absCoord.y <= rightCorner.y;
 }
 
 void optor::Widget::Drag(const dr4::Vec2f& shift) {
-    rect_.rect.pos = rect_.rect.pos + shift;
+    rect_->SetPos(rect_->GetPos() + shift);
 
     if (!isFreeDraggable_ && parent_) {
-        rect_.rect.pos = rect_.rect.pos.Clamped({0, 0}, parent_->rect_.rect.size - rect_.rect.size);
+        rect_->SetPos(rect_->GetPos().Clamped({0, 0}, parent_->rect_->GetSize() - rect_->GetSize()));
     }
 }
 

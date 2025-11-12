@@ -35,7 +35,7 @@ optor::WidgetHeader::WidgetHeader(dr4::Window* window, std::unique_ptr<optor::Wi
         texture_->SetSize(rect_.rect.size);
     });
 
-    SetDragButton(dr4::MouseCode::MOUSECODE_LEFT);
+    SetDragButton(dr4::MouseButtonType::MOUSECODE_LEFT);
     SetPosition(widget_->GetPosition() + dr4::Vec2f{0, -INIT_HEADER_HEIGHT});
     SetParent(widget_->GetParent());
     SetBackgroundColor(optor::color::Black);
@@ -118,7 +118,7 @@ bool optor::WidgetHeader::OnMousePress     (const dr4::Event& event)
     }
 
     if (dr4::Rect2f(AbsCoord() + closeRect_.rect.pos, closeRect_.rect.size).Contains(event.mouseButton.pos)
-     && event.mouseButton.button == dr4::MouseCode::MOUSECODE_LEFT
+     && event.mouseButton.button == dr4::MouseButtonType::MOUSECODE_LEFT
     ) {
         state_->hoveredWidget = parent_;
         if (closeMode_ == optor::WidgetHeader::CloseMode::HIDE) {

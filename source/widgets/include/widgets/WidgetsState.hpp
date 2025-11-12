@@ -7,6 +7,7 @@
 
 #include "dr4/math/vec2.hpp"
 
+#include "dr4/window.hpp"
 #include "optics/OpticObj.hpp"
 
 namespace optor 
@@ -15,6 +16,7 @@ namespace optor
 class Widget;
 
 struct WidgetsState {
+    dr4::Window* window;
 
     const optor::Widget* hoveredWidget;
     const optor::Widget* draggedWidget;

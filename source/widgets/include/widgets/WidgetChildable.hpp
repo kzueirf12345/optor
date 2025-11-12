@@ -24,6 +24,8 @@ class WidgetChildable: public Widget {
 
         virtual ~WidgetChildable() = default;
 
+        virtual void SetPosition(const dr4::Vec2f& position) override;
+
         virtual void Draw(dr4::Texture& srcTexture) override;
 
         virtual bool OnMouseMove      (const dr4::Event& event) override;

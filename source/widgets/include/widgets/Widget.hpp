@@ -1,9 +1,11 @@
 #ifndef OPTOR_SOURCE_WIDGETS_INCLUDE_WIDGETS_WIDGET_HPP
 #define OPTOR_SOURCE_WIDGETS_INCLUDE_WIDGETS_WIDGET_HPP
 
+#include <memory>
+
 #include "dr4/event.hpp"
 #include "dr4/keycodes.hpp"
-#include "dr4/mousecodes.hpp"
+#include "dr4/mouse_buttons.hpp"
 #include "dr4/texture.hpp"
 #include "dr4/math/vec2.hpp"
 
@@ -34,9 +36,9 @@ class Widget {
         void SetParent          (optor::Widget* parent);  
         void SetIsDraggable     (const bool isDraggable);
         void SetIsFreeDraggable (const bool isFreeDraggable);
-        void SetDragButton      (dr4::MouseCode dragButton);
+        void SetDragButton      (dr4::MouseButtonType dragButton);
         void SetIsSelectable    (const bool isSelectable);
-        void SetSelectButton    (dr4::MouseCode selectButton);
+        void SetSelectButton    (dr4::MouseButtonType selectButton);
         void SetUnselectButton  (dr4::KeyCode unselectButton);
         void SetMustRemoved     (const bool mustRemoved);
         void SetName            (const std::string& name);
@@ -53,9 +55,9 @@ class Widget {
         [[nodiscard]] optor::Widget*             GetParent          () const;
         [[nodiscard]] bool                       GetIsDraggable     () const;
         [[nodiscard]] bool                       GetIsFreeDraggable () const;
-        [[nodiscard]] dr4::MouseCode             GetDragButton      () const;
+        [[nodiscard]] dr4::MouseButtonType             GetDragButton      () const;
         [[nodiscard]] bool                       GetIsSelectable    () const;
-        [[nodiscard]] dr4::MouseCode             GetSelectButton    () const;
+        [[nodiscard]] dr4::MouseButtonType             GetSelectButton    () const;
         [[nodiscard]] dr4::KeyCode               GetUnselectButton  () const;
         [[nodiscard]] bool                       GetMustRemoved     () const;
         [[nodiscard]] std::optional<std::string> GetName            () const;
@@ -65,17 +67,17 @@ class Widget {
 
         [[nodiscard]] virtual std::string GetTypeName() const {return "Widget"; };
     protected:
-        dr4::Rectangle rect_;
+        std::unique_ptr<dr4::Rectangle> rect_;
 
         optor::Widget* parent_;
         optor::WidgetsState* const state_;
 
         bool isDraggable_;
-        dr4::MouseCode dragButton_;
+        dr4::MouseButtonType dragButton_;
         bool isFreeDraggable_;
 
         bool isSelectable_;
-        dr4::MouseCode selectButton_;
+        dr4::MouseButtonType selectButton_;
         dr4::KeyCode  unselectButton_;
 
         bool mustRemoved_;

@@ -39,7 +39,7 @@ protected:
     std::unique_ptr<dr4::Texture> texture_;
     std::unique_ptr<optor::Widget> widget_;
 
-    dr4::Rectangle closeRect_;
+    std::unique_ptr<dr4::Rectangle> closeRect_;
 
     CloseMode closeMode_;
 
