@@ -10,6 +10,7 @@ add_library(dr4 SHARED
     source/Image.cpp
     source/Font.cpp
     source/text.cpp
+    
 )
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")

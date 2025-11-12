@@ -1,6 +1,7 @@
-#include <SFML/Window/Keyboard.hpp>
 #include <optional>
 
+#include <SFML/Window/Keyboard.hpp>
+#include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/Text.hpp>
@@ -13,15 +14,24 @@
 #include "dr4/Image.hpp"
 #include "dr4/Texture.hpp"
 
-#include "common/ErrorHandler.hpp"
 #include "dr4/event.hpp"
 #include "dr4/keycodes.hpp"
-#include "dr4/mousecodes.hpp"
+#include "dr4/mouse_buttons.hpp"
 #include "dr4/texture.hpp"
 
-static dr4::MouseCode MouseCodeSF2DR4(sf::Mouse::Button code) noexcept;
-static dr4::KeyCode   KeyCodeSF2DR4(sf::Keyboard::Key code) noexcept;
-static dr4::KeyMode   KeyModeSF2DR4(sf::Event::KeyEvent event) noexcept;
+#include "common/ErrorHandler.hpp"
+
+static dr4::MouseButtonType MouseCodeSF2DR4(sf::Mouse::Button code) noexcept;
+static dr4::KeyCode           KeyCodeSF2DR4(sf::Keyboard::Key code) noexcept;
+static dr4::KeyMode           KeyModeSF2DR4(sf::Event::KeyEvent event) noexcept;
+
+static size_t EncodeUTF8(uint32_t cp, char out[5]);
+
+optor::dr4::Window::Window()
+    :   window_{},
+        size_{2400, 1100},
+        title_{"0xCEBAEBALDEDA"}
+{}
 
 void optor::dr4::Window::SetTitle(const std::string &title) 
 {
@@ -41,7 +51,7 @@ const std::string &optor::dr4::Window::GetTitle() const
     return {static_cast<float>(size_.x), static_cast<float>(size_.y)};
 }
 
-void optor::dr4::Window::SetSize(const ::dr4::Vec2f& size)
+void optor::dr4::Window::SetSize(::dr4::Vec2f size)
 {
     ERROR_HANDLE([this, &size](){
         size_ = {static_cast<unsigned int>(size.x), static_cast<unsigned int>(size.y)};
@@ -51,15 +61,6 @@ void optor::dr4::Window::SetSize(const ::dr4::Vec2f& size)
 
 void optor::dr4::Window::Open() 
 {
-    if (size_.x == 0) {
-        size_.x = 2300;
-    }
-    if (size_.y == 0) {
-        size_.y = 1100;
-    }
-    if (title_ == "") {
-        title_ = "0xCEBA";
-    }
     ERROR_HANDLE([this](){
         window_.create(sf::VideoMode(size_.x, size_.y), title_);
         window_.setFramerateLimit(60);
@@ -80,25 +81,26 @@ void optor::dr4::Window::Close()
     });
 }
 
-void optor::dr4::Window::Clear(const ::dr4::Color &color) 
+void optor::dr4::Window::Clear(::dr4::Color color) 
 {
     ERROR_HANDLE([this, &color](){
         window_.clear(sf::Color(color.r, color.g, color.b, color.a));
     });
 }
 
-void optor::dr4::Window::Draw(const ::dr4::Texture &texture, ::dr4::Vec2f pos) 
-{
-    const sf::Texture textureSF = ERROR_HANDLE([&texture](){
-        return dynamic_cast<const optor::dr4::Texture&>(texture).renderTexture_.getTexture();
+void optor::dr4::Window::Draw(const ::dr4::Texture &texture) {
+    const optor::dr4::Texture& myTexture = dynamic_cast<const optor::dr4::Texture&>(texture);
+
+    const sf::Texture textureSF = ERROR_HANDLE([&myTexture](){
+        return myTexture.renderTexture_.getTexture();
     });
     
-     sf::Sprite spriteSF = ERROR_HANDLE([&textureSF](){
+    sf::Sprite spriteSF = ERROR_HANDLE([&textureSF](){
         return sf::Sprite(textureSF);
     });
 
-    ERROR_HANDLE([&spriteSF, &pos](){
-        spriteSF.setPosition(pos.x, pos.y);
+    ERROR_HANDLE([this, &spriteSF, &myTexture](){
+        spriteSF.setPosition(myTexture.pos_.x, myTexture.pos_.y);
     });
 
     ERROR_HANDLE([this, &spriteSF](){
@@ -192,22 +194,33 @@ std::optional<::dr4::Event> optor::dr4::Window::PollEvent()
                 }
             };
 
-            event.mouseWheel.delta = eventSF.mouseWheel.delta;
+            if (eventSF.mouseWheelScroll.wheel == sf::Mouse::Wheel::HorizontalWheel) {
+                event.mouseWheel.deltaX = eventSF.mouseWheel.delta;
+            } else {
+                event.mouseWheel.deltaY = eventSF.mouseWheel.delta;
+            }
+
             break;
         }
 
         case sf::Event::EventType::KeyPressed: {
             event.type = ::dr4::Event::Type::KEY_DOWN;
             event.key.sym = KeyCodeSF2DR4(eventSF.key.code);
-            event.key.mod = KeyModeSF2DR4(eventSF.key);
+            event.key.mods = static_cast<uint16_t>(KeyModeSF2DR4(eventSF.key));
             break;
         }
 
         case sf::Event::EventType::KeyReleased: {
             event.type = ::dr4::Event::Type::KEY_UP;
             event.key.sym = KeyCodeSF2DR4(eventSF.key.code);
-            event.key.mod = KeyModeSF2DR4(eventSF.key);
+            event.key.mods = static_cast<uint16_t>(KeyModeSF2DR4(eventSF.key));
             break;
+        }
+
+        case sf::Event::EventType::TextEntered: {
+            static char textEnteredStr[5] = {}; // REVIEW
+            EncodeUTF8(eventSF.text.unicode, textEnteredStr);
+            event.text.unicode = textEnteredStr;
         }
 
         case sf::Event::EventType::Closed: {
@@ -243,16 +256,16 @@ static dr4::KeyMode KeyModeSF2DR4(sf::Event::KeyEvent event) noexcept
 #define CASE_RET_TYPE_(guiType, huiType) \
         case guiType: return huiType
 
-static dr4::MouseCode MouseCodeSF2DR4(sf::Mouse::Button code) noexcept 
+static dr4::MouseButtonType MouseCodeSF2DR4(sf::Mouse::Button code) noexcept 
 {
     switch (code) {
-        CASE_RET_TYPE_(sf::Mouse::Button::Left,         dr4::MOUSECODE_LEFT);
-        CASE_RET_TYPE_(sf::Mouse::Button::Right,        dr4::MOUSECODE_RIGHT);
-        CASE_RET_TYPE_(sf::Mouse::Button::Middle,       dr4::MOUSECODE_MIDDLE);  
+        CASE_RET_TYPE_(sf::Mouse::Button::Left,         dr4::MouseButtonType::LEFT);
+        CASE_RET_TYPE_(sf::Mouse::Button::Right,        dr4::MouseButtonType::RIGHT);
+        CASE_RET_TYPE_(sf::Mouse::Button::Middle,       dr4::MouseButtonType::MIDDLE);  
         default:
-            return dr4::MOUSECODE_UNKNOWN;
+            return dr4::MouseButtonType::UNKNOWN;
     }
-    return dr4::MOUSECODE_UNKNOWN;
+    return dr4::MouseButtonType::UNKNOWN;
 }
 
 static dr4::KeyCode KeyCodeSF2DR4(sf::Keyboard::Key code) noexcept 
@@ -366,3 +379,33 @@ static dr4::KeyCode KeyCodeSF2DR4(sf::Keyboard::Key code) noexcept
 }
 
 #undef CASE_RET_TYPE_
+
+size_t utf8_encode(uint32_t cp, char out[5]) {
+    if (cp > 0x10FFFFu) return 0;
+    if (cp >= 0xD800u && cp <= 0xDFFFu) return 0;
+
+    if (cp <= 0x7Fu) {
+        out[0] = static_cast<char>(cp);
+        out[1] = '\0';
+        return 1;
+    }
+    if (cp <= 0x7FFu) {
+        out[0] = static_cast<char>(0xC0u | (cp >> 6));
+        out[1] = static_cast<char>(0x80u | (cp & 0x3Fu));
+        out[2] = '\0';
+        return 2;
+    }
+    if (cp <= 0xFFFFu) {
+        out[0] = static_cast<char>(0xE0u | (cp >> 12));
+        out[1] = static_cast<char>(0x80u | ((cp >> 6) & 0x3Fu));
+        out[2] = static_cast<char>(0x80u | (cp & 0x3Fu));
+        out[3] = '\0';
+        return 3;
+    }
+    out[0] = static_cast<char>(0xF0u | (cp >> 18));
+    out[1] = static_cast<char>(0x80u | ((cp >> 12) & 0x3Fu));
+    out[2] = static_cast<char>(0x80u | ((cp >> 6) & 0x3Fu));
+    out[3] = static_cast<char>(0x80u | (cp & 0x3Fu));
+    out[4] = '\0';
+    return 4;
+}
