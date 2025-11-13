@@ -65,16 +65,14 @@ float optor::dr4::Rectangle::GetBorderThickness() const {
 void optor::dr4::Rectangle::DrawOn(::dr4::Texture& texture) const {
     optor::dr4::Texture& myTexture = dynamic_cast<optor::dr4::Texture&>(texture);
 
-    sf::RectangleShape drawableRect = rect_;
-
-    const sf::Vector2f prevPosSF = rect_.getPosition();
-
-    ERROR_HANDLE([&drawableRect, &myTexture, &prevPosSF](){
-        drawableRect.setPosition(prevPosSF.x + myTexture.zero_.x, prevPosSF.y + myTexture.zero_.y);
-    });
-
-    ERROR_HANDLE([&drawableRect, &myTexture](){
-        myTexture.renderTexture_.draw(drawableRect);
+    ERROR_HANDLE([this, &myTexture](){
+        myTexture.renderTexture_.draw(
+            rect_,
+            sf::RenderStates().transform.translate(
+                myTexture.zero_.x, 
+                myTexture.zero_.y
+            )
+        );
     });
 
     ERROR_HANDLE([&myTexture](){

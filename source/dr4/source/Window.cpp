@@ -95,20 +95,14 @@ void optor::dr4::Window::Clear(::dr4::Color color)
 void optor::dr4::Window::Draw(const ::dr4::Texture &texture) {
     const optor::dr4::Texture& myTexture = dynamic_cast<const optor::dr4::Texture&>(texture);
 
-    const sf::Texture textureSF = ERROR_HANDLE([&myTexture](){
-        return myTexture.renderTexture_.getTexture();
-    });
-    
-    sf::Sprite spriteSF = ERROR_HANDLE([&textureSF](){
-        return sf::Sprite(textureSF);
-    });
-
-    ERROR_HANDLE([this, &spriteSF, &myTexture](){
-        spriteSF.setPosition(myTexture.pos_.x, myTexture.pos_.y);
-    });
-
-    ERROR_HANDLE([this, &spriteSF](){
-        window_.draw(spriteSF);
+    ERROR_HANDLE([this, &myTexture](){
+        window_.draw(
+            myTexture.sprite_,
+            sf::RenderStates().transform.translate(
+                myTexture.pos_.x, 
+                myTexture.pos_.y
+            )
+        );
     });
 }
 

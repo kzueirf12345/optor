@@ -108,16 +108,14 @@ const ::dr4::Font   &optor::dr4::Text::GetFont() const {
 void optor::dr4::Text::DrawOn(::dr4::Texture& texture) const {
     optor::dr4::Texture& myTexture = dynamic_cast<optor::dr4::Texture&>(texture);
 
-    sf::Text drawableText = text_;
-
-    const sf::Vector2f prevPosSF = text_.getPosition();
-
-    ERROR_HANDLE([&drawableText, &myTexture, &prevPosSF](){
-        drawableText.setPosition(prevPosSF.x + myTexture.zero_.x, prevPosSF.y + myTexture.zero_.y);
-    });
-
-    ERROR_HANDLE([&drawableText, &myTexture](){
-        myTexture.renderTexture_.draw(drawableText);
+    ERROR_HANDLE([this, &myTexture](){
+        myTexture.renderTexture_.draw(
+            text_,
+            sf::RenderStates().transform.translate(
+                myTexture.zero_.x, 
+                myTexture.zero_.y
+            )
+        );
     });
 
     ERROR_HANDLE([this, &myTexture](){

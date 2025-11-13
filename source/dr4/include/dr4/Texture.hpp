@@ -2,6 +2,7 @@
 #define OPTOR_SOURCE_DR4_INCLUDE_DR4_TEXTURE_HPP
 
 #include <SFML/Graphics/RenderTexture.hpp>
+#include <SFML/Graphics/Sprite.hpp>
 
 #include "dr4/Rectangle.hpp"
 #include "dr4/math/vec2.hpp"
@@ -56,6 +57,10 @@ private:
     sf::RenderTexture renderTexture_;
     ::dr4::Vec2f zero_;
     ::dr4::Vec2f pos_;
+
+    sf::Sprite sprite_;
+
+    void Redraw();
 };
 
 }

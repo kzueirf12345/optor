@@ -76,16 +76,14 @@ float optor::dr4::Circle::GetBorderThickness() const {
 void optor::dr4::Circle::DrawOn(::dr4::Texture& texture) const {
     optor::dr4::Texture& myTexture = dynamic_cast<optor::dr4::Texture&>(texture);
 
-    sf::CircleShape drawableCircle = circle_;
-
-    const sf::Vector2f prevPosSF = circle_.getPosition();
-
-    ERROR_HANDLE([&drawableCircle, &myTexture, &prevPosSF](){
-        drawableCircle.setPosition(prevPosSF.x + myTexture.zero_.x, prevPosSF.y + myTexture.zero_.y);
-    });
-
-    ERROR_HANDLE([&drawableCircle, &myTexture](){
-        myTexture.renderTexture_.draw(drawableCircle);
+    ERROR_HANDLE([this, &myTexture](){
+        myTexture.renderTexture_.draw(
+            circle_,
+            sf::RenderStates().transform.translate(
+                myTexture.zero_.x, 
+                myTexture.zero_.y
+            )
+        );
     });
 
     ERROR_HANDLE([&myTexture](){

@@ -15,8 +15,10 @@
 optor::dr4::Texture::Texture()
     :   renderTexture_{},
         pos_{},
-        zero_{}
-{}
+        zero_{},
+        sprite_()
+{
+}
 
 void optor::dr4::Texture::SetSize(::dr4::Vec2f size) 
 {
@@ -24,6 +26,7 @@ void optor::dr4::Texture::SetSize(::dr4::Vec2f size)
         renderTexture_.create(static_cast<unsigned int>(size.x), static_cast<unsigned int>(size.y));
         renderTexture_.clear();
     });
+    Redraw();
 }
 
 ::dr4::Vec2f optor::dr4::Texture::GetSize() const 
@@ -57,6 +60,7 @@ void optor::dr4::Texture::Clear(::dr4::Color color) {
     ERROR_HANDLE([this, &color](){
         renderTexture_.clear({color.r, color.g, color.b, color.a});
     });
+    Redraw();
 }
 
 void optor::dr4::Texture::SetZero(::dr4::Vec2f pos) {
@@ -67,22 +71,16 @@ void optor::dr4::Texture::SetZero(::dr4::Vec2f pos) {
 }
 
 void optor::dr4::Texture::DrawOn(::dr4::Texture& texture) const {
-    const sf::Texture textureSF = ERROR_HANDLE([this](){ // TODO smart redraw
-        return renderTexture_.getTexture();
-    });
-    
-    sf::Sprite spriteSF = ERROR_HANDLE([&textureSF](){
-        return sf::Sprite(textureSF);
-    });
-    
     optor::dr4::Texture& myTexture = dynamic_cast<optor::dr4::Texture&>(texture);
 
-    ERROR_HANDLE([this, &spriteSF, &myTexture](){
-        spriteSF.setPosition(pos_.x + myTexture.zero_.x, pos_.y + myTexture.zero_.y);
-    });
-
-    ERROR_HANDLE([this, &myTexture, &spriteSF](){
-        myTexture.renderTexture_.draw(spriteSF);
+    ERROR_HANDLE([this, &myTexture](){
+        myTexture.renderTexture_.draw(
+            sprite_,
+            sf::RenderStates().transform.translate(
+                pos_.x + myTexture.zero_.x, 
+                pos_.y + myTexture.zero_.y
+            )
+        );
     });
 
     ERROR_HANDLE([this, &myTexture](){
@@ -96,4 +94,11 @@ void optor::dr4::Texture::SetPos(::dr4::Vec2f pos) {
 
 ::dr4::Vec2f optor::dr4::Texture::GetPos() const {
     return pos_;
+}
+
+
+void optor::dr4::Texture::Redraw() {
+    sprite_ = ERROR_HANDLE([this](){
+        return sf::Sprite(renderTexture_.getTexture());
+    });
 }

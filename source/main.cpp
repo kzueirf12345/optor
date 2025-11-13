@@ -47,8 +47,6 @@ static void CreateScene(dr4::DR4Backend* backend, optor::WidgetManager* manager)
 static void CreateCameraButtons(dr4::DR4Backend* backend, optor::WidgetManager* manager, optor::SceneWidget* sceneWidget);
 static void CreateObjsList(optor::WidgetManager* manager, optor::SceneWidget* sceneWidget);
 
-//FIXME SET_POSITION OVERRIDE
-
 int main() {
     void* libdr4 = dlopen("./build/source/dr4/libdr4.so", RTLD_LAZY);
     // void* libdr4 = dlopen("./dist/plugin/libswuix_sdl3.so", RTLD_LAZY);
@@ -106,6 +104,7 @@ try
     });
 
     while (ERROR_HANDLE(&dr4::Window::IsOpen, window)) {
+
         
         ERROR_HANDLE(&optor::WidgetManager::HandleEvents, &manager);
 

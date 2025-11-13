@@ -1,8 +1,8 @@
+#include <cmath>
+
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/PrimitiveType.hpp>
 #include <SFML/Graphics/VertexArray.hpp>
-#include <cmath>
-#include <cstddef>
 
 #include "dr4/Line.hpp"
 #include "dr4/Texture.hpp"
@@ -67,16 +67,14 @@ float optor::dr4::Line::GetThickness() const {
 void optor::dr4::Line::DrawOn(::dr4::Texture& texture) const {
     optor::dr4::Texture& myTexture = dynamic_cast<optor::dr4::Texture&>(texture);
 
-    sf::VertexArray drawableVertices = vertices_;
-
-    for (size_t vertInd = 0; vertInd < 4; ++vertInd) {
-        auto& vert = drawableVertices[vertInd];
-        vert.position.x += myTexture.zero_.x;
-        vert.position.y += myTexture.zero_.y;
-    }
-
-    ERROR_HANDLE([&drawableVertices, &myTexture](){
-        myTexture.renderTexture_.draw(drawableVertices);
+    ERROR_HANDLE([this, &myTexture](){
+        myTexture.renderTexture_.draw(
+            vertices_,
+            sf::RenderStates().transform.translate(
+                pos_.x + offset_.x + myTexture.zero_.x, 
+                pos_.y + offset_.y + myTexture.zero_.y
+            )
+        );
     });
 
     ERROR_HANDLE([&myTexture](){
@@ -86,7 +84,6 @@ void optor::dr4::Line::DrawOn(::dr4::Texture& texture) const {
 
 void optor::dr4::Line::SetPos(::dr4::Vec2f pos) {
     pos_ = pos;
-    UpdateVertices();
 }
 
 ::dr4::Vec2f optor::dr4::Line::GetPos() const {
@@ -111,20 +108,20 @@ void optor::dr4::Line::UpdateOffset() {
 void optor::dr4::Line::UpdateVertices() {
     ERROR_HANDLE([this](){
         vertices_[0].position = sf::Vector2f(
-            start_.x + pos_.x + offset_.x, 
-            start_.y + pos_.y + offset_.y
+            start_.x, 
+            start_.y
         );
         vertices_[1].position = sf::Vector2f(
-            end_.x + pos_.x + offset_.x, 
-            end_.y + pos_.y + offset_.y
+            end_.x, 
+            end_.y
         );
         vertices_[2].position = sf::Vector2f(
-            end_.x + pos_.x - offset_.x, 
-            end_.y + pos_.y - offset_.y
+            end_.x, 
+            end_.y
         );
         vertices_[3].position = sf::Vector2f(
-            start_.x + pos_.x - offset_.x, 
-            start_.y + pos_.y - offset_.y
+            start_.x, 
+            start_.y
         );
     });
 }
