@@ -82,10 +82,6 @@ void optor::dr4::Texture::DrawOn(::dr4::Texture& texture) const {
             )
         );
     });
-
-    ERROR_HANDLE([this, &myTexture](){
-        myTexture.renderTexture_.display();
-    });
 }
 
 void optor::dr4::Texture::SetPos(::dr4::Vec2f pos) {
@@ -98,6 +94,10 @@ void optor::dr4::Texture::SetPos(::dr4::Vec2f pos) {
 
 
 void optor::dr4::Texture::Redraw() {
+    ERROR_HANDLE([this](){
+        renderTexture_.display();
+    });
+
     sprite_ = ERROR_HANDLE([this](){
         return sf::Sprite(renderTexture_.getTexture());
     });

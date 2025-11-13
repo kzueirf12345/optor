@@ -89,6 +89,5 @@ void optor::dr4::Image::DrawOn(::dr4::Texture& texture) const
         states.transform.translate(pos_.x + myTexture.zero_.x,
                                    pos_.y + myTexture.zero_.y);
         myTexture.renderTexture_.draw(pixels_, states);
-        myTexture.renderTexture_.display();
     });
 }

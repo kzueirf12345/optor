@@ -117,10 +117,6 @@ void optor::dr4::Text::DrawOn(::dr4::Texture& texture) const {
             )
         );
     });
-
-    ERROR_HANDLE([this, &myTexture](){
-        myTexture.renderTexture_.display();
-    });
 }
 
 void optor::dr4::Text::SetPos(::dr4::Vec2f pos) {

@@ -76,10 +76,6 @@ void optor::dr4::Line::DrawOn(::dr4::Texture& texture) const {
             )
         );
     });
-
-    ERROR_HANDLE([&myTexture](){
-        myTexture.renderTexture_.display();
-    });
 }
 
 void optor::dr4::Line::SetPos(::dr4::Vec2f pos) {
