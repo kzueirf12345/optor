@@ -37,9 +37,12 @@
 // FIXME update ldd
 // FIXME update sfml 
 // FIXME install sdl3 //YES
+// FIXME scroll bar elements pos
+// FIXME border
 // TODO add optic obj
 // TODO remove optic obj
 // TODO change optic obj features
+
 
 ::dr4::Font* optor::FONT = nullptr;
 
