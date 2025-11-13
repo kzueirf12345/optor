@@ -4,7 +4,6 @@
 #include <memory>
 
 #include "dr4/texture.hpp"
-#include "dr4/window.hpp"
 
 #include "widgets/Textable.hpp"
 #include "widgets/Widget.hpp"

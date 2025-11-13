@@ -5,7 +5,6 @@
 
 #include "dr4/math/vec2.hpp"
 #include "dr4/texture.hpp"
-#include "dr4/window.hpp"
 
 #include "widgets/HideButton.hpp"
 #include "widgets/Textable.hpp"

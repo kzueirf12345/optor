@@ -21,6 +21,11 @@ optor::WidgetText::WidgetText(const dr4::Vec2f& size, optor::WidgetsState* state
     });
 }
 
+void optor::WidgetText::SetPosition(const dr4::Vec2f& position) {
+    optor::Widget::SetPosition(position);
+    texture_->SetPos(position);
+}
+
 void optor::WidgetText::Draw(dr4::Texture& srcTexture)
 {
     if (isHide_) { return; }

@@ -65,6 +65,11 @@ optor::ScrollBar::ScrollBar(const dr4::Vec2f& size, optor::WidgetsState* state,
     SetBackgroundColor(optor::color::WindowBackground);
 }
 
+void optor::ScrollBar::SetPosition(const dr4::Vec2f& position) {
+    optor::Widget::SetPosition(position);
+    texture_->SetPos(position);
+}
+
 void optor::ScrollBar::Move(float shiftPercent) {
     const float newPercentage = std::clamp(percentage_ + shiftPercent, 0.f, 1.f);
     const float realShift = newPercentage - percentage_;

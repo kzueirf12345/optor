@@ -31,6 +31,11 @@ optor::WidgetButtonMoveOpticObj::WidgetButtonMoveOpticObj(const dr4::Vec2f& size
     });
 }
 
+void optor::WidgetButtonMoveOpticObj::SetPosition(const dr4::Vec2f& position) {
+    optor::Widget::SetPosition(position);
+    texture_->SetPos(position);
+}
+
 void optor::WidgetButtonMoveOpticObj::OnIdle() {
     optor::Vector3d offset = {};
 

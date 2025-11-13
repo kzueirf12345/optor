@@ -241,11 +241,11 @@ std::optional<::dr4::Event> optor::dr4::Window::PollEvent()
             break;
         }
 
-        case sf::Event::EventType::TextEntered: {
-            static char textEnteredStr[5] = {}; // REVIEW
-            EncodeUTF8(eventSF.text.unicode, textEnteredStr);
-            event.text.unicode = textEnteredStr;
-        }
+        // case sf::Event::EventType::TextEntered: {
+        //     // static char textEnteredStr[5] = {}; // REVIEW
+        //     // EncodeUTF8(eventSF.text.unicode, textEnteredStr);
+        //     // event.text.unicode = textEnteredStr;
+        // }
 
         case sf::Event::EventType::Closed: {
             event.type = ::dr4::Event::Type::QUIT;

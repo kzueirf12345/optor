@@ -30,6 +30,11 @@ optor::WidgetButtonCamera::WidgetButtonCamera(const dr4::Vec2f& size,
     });
 }
 
+void optor::WidgetButtonCamera::SetPosition(const dr4::Vec2f& position) {
+    optor::Widget::SetPosition(position);
+    texture_->SetPos(position);
+}
+
 void optor::WidgetButtonCamera::OnIdle() {
     if (isHide_) { return; }
 

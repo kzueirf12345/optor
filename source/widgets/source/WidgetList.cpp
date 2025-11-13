@@ -28,7 +28,7 @@ optor::Widget* optor::WidgetList::AddChild(std::unique_ptr<Widget> child)
     });
 
     ERROR_HANDLE([this, &size](){
-        texture_->SetSize(size);
+        texture_->SetSize(rect_->GetSize());
     });
 
     return childPtr;

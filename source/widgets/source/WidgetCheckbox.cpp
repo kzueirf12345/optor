@@ -30,6 +30,11 @@ optor::WidgetCheckbox::WidgetCheckbox(const ::dr4::Vec2f& size,
     });
 }
 
+void optor::WidgetCheckbox::SetPosition(const dr4::Vec2f& position) {
+    optor::Widget::SetPosition(position);
+    texture_->SetPos(position);
+}
+
 bool optor::WidgetCheckbox::OnMousePress  (const ::dr4::Event& event) {
     if (isHide_) { return false; }
 

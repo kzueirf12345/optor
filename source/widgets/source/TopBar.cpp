@@ -10,7 +10,6 @@
 #include "widgets/HideCheckbox.hpp"
 #include "widgets/Textable.hpp"
 #include "widgets/Widget.hpp"
-#include "widgets/WidgetCheckbox.hpp"
 #include "widgets/WidgetChildable.hpp"
 #include "widgets/WidgetHeader.hpp"
 #include "widgets/WidgetList.hpp"
@@ -49,6 +48,11 @@ optor::TopBarButton::TopBarButton(const dr4::Vec2f& size, optor::WidgetsState* s
             widget_->SetPosition(AbsCoord() + dr4::Vec2f(rect_->GetSize().x, rect_->GetSize().y));
             break;
     }
+}
+
+void optor::TopBarButton::SetPosition(const dr4::Vec2f& position) {
+    optor::Widget::SetPosition(position);
+    texture_->SetPos(position);
 }
 
 void optor::TopBarButton::Draw(dr4::Texture& srcTexture)
@@ -94,7 +98,7 @@ optor::TopBar::TopBar(optor::WidgetManager* manager)
     curAbsPosition = {0, 0};
 
     auto* view = dynamic_cast<optor::TopBarButton*>(AddChild(std::make_unique<optor::TopBarButton>(
-        dr4::Vec2f(dr4::Text{.text = "view", .fontSize = 40, .font = optor::FONT}.GetBounds().size.x, rect_.rect.size.y), //FIXME
+        dr4::Vec2f(std::string("view").size() * 12.f, rect_->GetSize().y),
         manager_->GetState(), 
         std::move(CreateViewList(manager_, manager_->GetDesktop())), 
         "view",
@@ -144,7 +148,15 @@ static void HandleChild(optor::Widget* child, optor::WidgetList* list, optor::Wi
         name = child->GetTypeName();
     }
 
-    dr4::Vec2f size = dr4::Text{.text = name.value(), .fontSize = 40, .font = optor::FONT}.GetBounds().size; //FIXME
+    dr4::Text* textName = manager->GetWindow()->CreateText();
+
+    textName->SetText(name.value());
+    textName->SetFont(optor::FONT);
+    textName->SetFontSize(40);
+
+    dr4::Vec2f size = textName->GetBounds();
+
+    delete textName;
 
     const auto* childableChild = dynamic_cast<const optor::WidgetChildable*>(child);
 
@@ -169,7 +181,9 @@ static void HandleChild(optor::Widget* child, optor::WidgetList* list, optor::Wi
         );
     }
 
-    dynamic_cast<optor::Textable*>(textWidget.get())->GetText()->pos.x = 0; //FIXME
+    auto textableText = dynamic_cast<optor::Textable*>(textWidget.get())->GetText();
+
+    textableText->SetPos(0, textableText->GetPos().y);
     
     ERROR_HANDLE([&textWidget, &size](){
         textWidget->SetPosition({size.y, 0});

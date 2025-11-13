@@ -3,13 +3,10 @@
 
 #include "widgets/SceneWidget.hpp"
 #include "dr4/keycodes.hpp"
-#include "dr4/math/rect.hpp"
 #include "dr4/math/vec2.hpp"
 #include "dr4/texture.hpp"
 #include "optics/AABB.hpp"
 #include "optics/Camera.hpp"
-#include "optics/Light.hpp"
-#include "optics/Material.hpp"
 #include "optics/OpticObj.hpp"
 #include "optics/Scene.hpp"
 #include "widgets/Widget.hpp"
@@ -27,6 +24,11 @@ optor::SceneWidget::SceneWidget(const dr4::Vec2f& size,
     });
 
     ERROR_HANDLE(&optor::Scene::Update, scene_);
+}
+
+void optor::SceneWidget::SetPosition(const dr4::Vec2f& position) {
+    optor::Widget::SetPosition(position);
+    texture_->SetPos(position);
 }
 
 void optor::SceneWidget::Draw(dr4::Texture& srcTexture) {

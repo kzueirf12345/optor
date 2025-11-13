@@ -237,10 +237,10 @@ bool optor::Widget::OnMe(const dr4::Vec2f& absCoord) const {
 }
 
 void optor::Widget::Drag(const dr4::Vec2f& shift) {
-    rect_->SetPos(rect_->GetPos() + shift);
+    SetPosition(GetPosition() + shift);
 
     if (!isFreeDraggable_ && parent_) {
-        rect_->SetPos(rect_->GetPos().Clamped({0, 0}, parent_->rect_->GetSize() - rect_->GetSize()));
+        SetPosition(GetPosition().Clamped({0, 0}, parent_->rect_->GetSize() - rect_->GetSize()));
     }
 }
 

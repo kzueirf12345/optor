@@ -62,6 +62,11 @@ optor::WidgetHeader::WidgetHeader(std::unique_ptr<optor::Widget> widget,
     });
 }
 
+void optor::WidgetHeader::SetPosition(const dr4::Vec2f& position) {
+    optor::Widget::SetPosition(position);
+    texture_->SetPos(position);
+}
+
 void optor::WidgetHeader::Draw (dr4::Texture& srcTexture) 
 {
     if (isHide_) { return; }

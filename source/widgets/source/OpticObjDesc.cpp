@@ -55,7 +55,7 @@ optor::WidgetList* optor::OpticObjDesc::AddCoordInfo(optor::WidgetScrolledList* 
     auto* coordList = dynamic_cast<optor::WidgetList*>(list->AddChild(std::make_unique<optor::WidgetList>(state_)));
 
     const optor::Vector3d coord = obj_->GetCoord();
-    const float strHeight = dr4::Text{.text = "x:", .fontSize = 40, .font = optor::FONT}.GetBounds().size.y;//FIXME
+    const float strHeight = STRING_BLOCK_HEIGHT;
 
     const std::array<std::string, 3> coordStrs = {
         "x: " + FormatDouble(coord.x),
@@ -67,7 +67,7 @@ optor::WidgetList* optor::OpticObjDesc::AddCoordInfo(optor::WidgetScrolledList* 
         auto* textWidget = dynamic_cast<optor::WidgetText*>(coordList->AddChild(std::make_unique<optor::WidgetText>(
             dr4::Vec2f{list->GetSize().x, strHeight}, state_, str
         )));
-        textWidget->GetText()->pos.x = INIT_WIDGET_BORDER_THICKNESS;
+        textWidget->GetText()->SetPos(INIT_WIDGET_BORDER_THICKNESS, textWidget->GetText()->GetPos().y);
     }
 
     return coordList;
@@ -97,7 +97,7 @@ optor::WidgetList* optor::OpticObjDesc::AddColorInfo(optor::WidgetScrolledList* 
         {"Specular", specColor, spec}
     };
 
-    const float strHeight = dr4::Text{.text = "Color", .fontSize = 40, .font = optor::FONT}.GetBounds().size.y; //FIXME
+    const float strHeight = STRING_BLOCK_HEIGHT;
 
     for (auto& info : infos) {
         std::string colorStr = info.label + ": { "
@@ -110,7 +110,7 @@ optor::WidgetList* optor::OpticObjDesc::AddColorInfo(optor::WidgetScrolledList* 
         )));
 
         auto* textWidget = dynamic_cast<optor::WidgetText*>(colorWidget->AddChild(std::make_unique<optor::WidgetText>(
-            dr4::Text{.text = colorStr, .fontSize = 40, .font = optor::FONT}.GetBounds().size, state_, colorStr //FIXME
+            dr4::Vec2f{colorStr.size() * 12.f, STRING_BLOCK_HEIGHT}, state_, colorStr
         )));
         textWidget->SetOutlineThickness(0);
 
@@ -141,14 +141,14 @@ optor::WidgetList* optor::OpticObjDesc::AddMaterialFeatures(optor::WidgetScrolle
         {"Refractivity", material.GetRefractivity()}
     };
 
-    const float strHeight = dr4::Text{.text = "0", .fontSize = 40, .font = optor::FONT}.GetBounds().size.y;
+    const float strHeight = STRING_BLOCK_HEIGHT;
 
     for (auto& f : features) {
         std::string str = f.name + ": " + FormatDouble(f.value);
         auto* widget = dynamic_cast<optor::WidgetText*>(featuresList->AddChild(std::make_unique<optor::WidgetText>(
             dr4::Vec2f{list->GetSize().x, strHeight}, state_, str
         )));
-        widget->GetText()->pos.x = INIT_WIDGET_BORDER_THICKNESS;
+        widget->GetText()->SetPos(INIT_WIDGET_BORDER_THICKNESS, widget->GetText()->GetPos().y);
     }
 
     return featuresList;
