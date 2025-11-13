@@ -3,24 +3,21 @@
 
 #include "widgets/SceneWidget.hpp"
 #include "dr4/keycodes.hpp"
-#include "dr4/math/rect.hpp"
 #include "dr4/math/vec2.hpp"
 #include "dr4/texture.hpp"
 #include "optics/AABB.hpp"
 #include "optics/Camera.hpp"
-#include "optics/Light.hpp"
-#include "optics/Material.hpp"
 #include "optics/OpticObj.hpp"
 #include "optics/Scene.hpp"
 #include "widgets/Widget.hpp"
 #include "global/Global.hpp"
 #include "common/ErrorHandler.hpp"
 
-optor::SceneWidget::SceneWidget(dr4::Window* window, const dr4::Vec2f& size, 
+optor::SceneWidget::SceneWidget(const dr4::Vec2f& size, 
                                 optor::WidgetsState* state)
     :   optor::Widget{size, state},
-        texture_{window->CreateTexture()},
-        scene_{window, size}
+        texture_{state->window->CreateTexture()},
+        scene_{state->window, size}
 {
     ERROR_HANDLE([this, size](){
         texture_->SetSize(size);
@@ -29,23 +26,28 @@ optor::SceneWidget::SceneWidget(dr4::Window* window, const dr4::Vec2f& size,
     ERROR_HANDLE(&optor::Scene::Update, scene_);
 }
 
+void optor::SceneWidget::SetPosition(const dr4::Vec2f& position) {
+    optor::Widget::SetPosition(position);
+    texture_->SetPos(position);
+}
+
 void optor::SceneWidget::Draw(dr4::Texture& srcTexture) {
     if (isHide_) { return; }
 
-    const dr4::Vec2f pos = rect_.rect.pos;
+    const dr4::Vec2f pos = rect_->GetPos();
 
-    rect_.rect.pos = {0, 0};
+    rect_->SetPos({0, 0});
     ERROR_HANDLE([this](){
         optor::Widget::Draw(*texture_);
     });
-    rect_.rect.pos = pos;
+    rect_->SetPos(pos);
 
     ERROR_HANDLE([this](){
-        texture_->Draw(*scene_.GetImage(), {0, 0});
+        texture_->Draw(*scene_.GetImage());
     });
 
     ERROR_HANDLE([this, &srcTexture](){
-        srcTexture.Draw(*texture_, rect_.rect.pos);
+        srcTexture.Draw(*texture_);
     });
 }
 

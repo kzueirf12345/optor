@@ -5,7 +5,6 @@
 #include <functional>
 
 #include "dr4/texture.hpp"
-#include "dr4/window.hpp"
 #include "dr4/math/vec2.hpp"
 
 #include "widgets/WidgetButton.hpp"
@@ -17,7 +16,9 @@ class WidgetCheckbox: public WidgetButton {
     public:
         using ActionT = std::function<void(bool)>; 
 
-        WidgetCheckbox(dr4::Window* window, const ::dr4::Vec2f& size, optor::WidgetsState* state, ActionT action, bool isPressed = true);
+        WidgetCheckbox(const ::dr4::Vec2f& size, optor::WidgetsState* state, ActionT action, bool isPressed = true);
+
+        virtual void SetPosition(const dr4::Vec2f& position) override;
         
         virtual bool OnMousePress  (const ::dr4::Event& event) override;
         virtual bool OnMouseRelease(const ::dr4::Event& event) override;
@@ -29,7 +30,7 @@ class WidgetCheckbox: public WidgetButton {
     protected:
         std::unique_ptr<::dr4::Texture> texture_;
 
-        ::dr4::Text pressedText_;
+        std::unique_ptr<::dr4::Text> pressedText_;
         ActionT action_;
 };
 

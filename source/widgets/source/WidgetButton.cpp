@@ -10,7 +10,7 @@ optor::WidgetButton::WidgetButton(const ::dr4::Vec2f& size, optor::WidgetsState*
         pressedColor_(optor::color::ButtonPressed),
         releasedColor_(optor::color::ButtonReleased)
 {
-    rect_.fill = releasedColor_;
+    rect_->SetFillColor(releasedColor_);
     ERROR_HANDLE([this](){SetIsDraggable(false);});
 }
 
@@ -22,7 +22,7 @@ bool optor::WidgetButton::OnMousePress  (const ::dr4::Event& event) {
         if (isSelectable_) { 
             state_->selectedWidget = this; 
         }
-        rect_.fill = pressedColor_;
+        rect_->SetFillColor(pressedColor_);
         return true;
     }
 
@@ -38,7 +38,7 @@ bool optor::WidgetButton::OnMouseRelease(const ::dr4::Event& event) {
     
     if (isPressed_ && event.mouseButton.button == pressButton_) {
         isPressed_ = false;
-        rect_.fill = releasedColor_;
+        rect_->SetFillColor(releasedColor_);
         return true;
     }
 
@@ -52,13 +52,13 @@ bool optor::WidgetButton::OnMouseRelease(const ::dr4::Event& event) {
 void optor::WidgetButton::SetReleasedColor(const ::dr4::Color& color) {
     releasedColor_ = color;
     if (!isPressed_) {
-        rect_.fill = releasedColor_;
+        rect_->SetFillColor(releasedColor_);
     }
 }
 void optor::WidgetButton::SetPressedColor (const ::dr4::Color& color) {
     pressedColor_ = color;
     if (isPressed_) {
-        rect_.fill = pressedColor_;
+        rect_->SetFillColor(pressedColor_);
     }
 }
 

@@ -12,10 +12,9 @@
 
 // static optor::WidgetChildable* CreateMoveOpticButtons(optor::WidgetChildable* parent, optor::WidgetsState* state);
 
-optor::WidgetScrolledList::WidgetScrolledList(dr4::Window* window, const dr4::Vec2f& size, optor::WidgetsState* state)
-    :   optor::WidgetChildable(size, state, window),
+optor::WidgetScrolledList::WidgetScrolledList(const dr4::Vec2f& size, optor::WidgetsState* state)
+    :   optor::WidgetChildable(size, state),
         scrollbar_{std::make_unique<optor::ScrollBar>(
-            window, 
             dr4::Vec2f{INIT_SCROLLBAR_WIDTH, size.y}, 
             state, 
             [this](float percentage){ return this->Scroll(percentage); },
@@ -23,7 +22,7 @@ optor::WidgetScrolledList::WidgetScrolledList(dr4::Window* window, const dr4::Ve
         )}
 {
     ERROR_HANDLE([this](){
-        scrollbar_->SetPosition({rect_.rect.size.x - INIT_SCROLLBAR_WIDTH, 0});
+        scrollbar_->SetPosition({rect_->GetSize().x - INIT_SCROLLBAR_WIDTH, 0});
     });
 
     ERROR_HANDLE([this](){
@@ -33,20 +32,20 @@ optor::WidgetScrolledList::WidgetScrolledList(dr4::Window* window, const dr4::Ve
 
 void optor::WidgetScrolledList::Scroll(float percentage) {
     const float maxSize = GetListSize();
-    const float diffSize = rect_.rect.size.y - maxSize;
+    const float diffSize = rect_->GetSize().y - maxSize;
     baseOffset_ = diffSize * percentage;
 }
 
 void optor::WidgetScrolledList::Draw(dr4::Texture& srcTexture) {
     if (isHide_) { return; }
 
-    dr4::Vec2f pos = rect_.rect.pos;
+    dr4::Vec2f pos = rect_->GetPos();
 
-    rect_.rect.pos = {0, 0};
+    rect_->SetPos({0, 0});
     ERROR_HANDLE([this](){
         optor::Widget::Draw(*texture_);
     });
-    rect_.rect.pos = pos;
+    rect_->SetPos(pos);
 
     for (const auto& child : children_) {
         pos = child->GetPosition();
@@ -69,7 +68,7 @@ void optor::WidgetScrolledList::Draw(dr4::Texture& srcTexture) {
     });
 
     ERROR_HANDLE([this, &srcTexture](){
-        srcTexture.Draw(*texture_, rect_.rect.pos);
+        srcTexture.Draw(*texture_);
     });
 }
 
@@ -189,203 +188,3 @@ void optor::WidgetScrolledList::OnIdle()
         optor::WidgetChildable::OnIdle();
     });
 }
-
-
-// static optor::WidgetChildable* CreateMoveOpticButtons(optor::WidgetChildable* parent, optor::WidgetsState* state) {
-//     assert(manager);
-//     assert(sceneWidget);
-
-//     auto* moveOpticButtons = dynamic_cast<optor::WidgetChildable*>(ERROR_HANDLE(
-//         &optor::WidgetChildable::AddChild, 
-//         parent, 
-//         std::make_unique<optor::WidgetChildable>(
-//             hui::Vector2d{750, 400},
-//             state
-//         )
-//     ));
-
-//     auto* leftButton = dynamic_cast<optor::WidgetButtonMoveOpticObj*>(ERROR_HANDLE(
-//         &optor::WidgetChildable::AddChild, 
-//         moveOpticButtons, 
-//         std::make_unique<optor::WidgetButtonMoveOpticObj>(
-//             hui::Vector2d{200, 100},
-//             state,
-//             "left",
-//             state->selectedObj,
-//             optor::MoveDirection::LEFT
-//         )
-//     ));
-
-//     ERROR_HANDLE(&optor::Widget::SetPosition, leftButton, hui::Vector2d(50, 150));
-
-//     auto* rightButton = dynamic_cast<optor::WidgetButtonMoveOpticObj*>(ERROR_HANDLE(
-//         &optor::WidgetChildable::AddChild, 
-//         moveOpticButtons, 
-//         std::make_unique<optor::WidgetButtonMoveOpticObj>(
-//             hui::Vector2d{200, 100},
-//             state,
-//             "right",
-//             state->selectedObj,
-//             optor::MoveDirection::RIGHT
-//         )
-//     ));
-
-//     ERROR_HANDLE(&optor::Widget::SetPosition, rightButton, hui::Vector2d(250, 150));
-
-//     auto* upButton = dynamic_cast<optor::WidgetButtonMoveOpticObj*>(ERROR_HANDLE(
-//         &optor::WidgetChildable::AddChild, 
-//         moveOpticButtons, 
-//         std::make_unique<optor::WidgetButtonMoveOpticObj>(
-//             hui::Vector2d{200, 100},
-//             state,
-//             "up",
-//             state->selectedObj,
-//             optor::MoveDirection::UP
-//         )
-//     ));
-
-//     ERROR_HANDLE(&optor::Widget::SetPosition, upButton, hui::Vector2d(150, 45));
-
-//     auto* downButton = dynamic_cast<optor::WidgetButtonMoveOpticObj*>(ERROR_HANDLE(
-//         &optor::WidgetChildable::AddChild, 
-//         moveOpticButtons, 
-//         std::make_unique<optor::WidgetButtonMoveOpticObj>(
-//             hui::Vector2d{200, 100},
-//             state,
-//             "down",
-//             state->selectedObj,
-//             optor::MoveDirection::DOWN
-//         )
-//     ));
-
-//     ERROR_HANDLE(&optor::Widget::SetPosition, downButton, hui::Vector2d(150, 255));
-
-//     auto* forwardButton = dynamic_cast<optor::WidgetButtonMoveOpticObj*>(ERROR_HANDLE(
-//         &optor::WidgetChildable::AddChild, 
-//         moveOpticButtons, 
-//         std::make_unique<optor::WidgetButtonMoveOpticObj>(
-//             hui::Vector2d{200, 100},
-//             state,
-//             "forward",
-//             state->selectedObj,
-//             optor::MoveDirection::FORWARD
-//         )
-//     ));
-
-//     ERROR_HANDLE(&optor::Widget::SetPosition, forwardButton, hui::Vector2d(500, 100));
-
-//         auto* backwordButton = dynamic_cast<optor::WidgetButtonMoveOpticObj*>(ERROR_HANDLE(
-//         &optor::WidgetChildable::AddChild, 
-//         moveOpticButtons, 
-//         std::make_unique<optor::WidgetButtonMoveOpticObj>(
-//             hui::Vector2d{200, 100},
-//             state,
-//             "backword",
-//             state->selectedObj,
-//             optor::MoveDirection::BACKWARD
-//         )
-//     ));
-
-//     ERROR_HANDLE(&optor::Widget::SetPosition, backwordButton, hui::Vector2d(500, 200));
-
-//     return moveOpticButtons;
-// }
-
-
-/*!SECTION
-
-    auto* cameraButtons = dynamic_cast<optor::WidgetChildable*>(ERROR_HANDLE(
-        &optor::WidgetChildable::AddChild, 
-        manager->GetDesktop(), 
-        std::make_unique<optor::WidgetChildable>(
-            hui::Vector2d{750, 400},
-            manager->GetState()
-        )
-    ));
-
-    ERROR_HANDLE(&optor::Widget::SetPosition, cameraButtons, hui::Vector2d(1350, 100));
-
-    auto* leftButton = dynamic_cast<optor::WidgetButtonCamera*>(ERROR_HANDLE(
-        &optor::WidgetChildable::AddChild, 
-        cameraButtons, 
-        std::make_unique<optor::WidgetButtonCamera>(
-            hui::Vector2d{200, 100},
-            manager->GetState(),
-            "left",
-            &sceneWidget->GetCamera(),
-            optor::MoveDirection::LEFT
-        )
-    ));
-
-    ERROR_HANDLE(&optor::Widget::SetPosition, leftButton, hui::Vector2d(50, 150));
-
-    auto* rightButton = dynamic_cast<optor::WidgetButtonCamera*>(ERROR_HANDLE(
-        &optor::WidgetChildable::AddChild, 
-        cameraButtons, 
-        std::make_unique<optor::WidgetButtonCamera>(
-            hui::Vector2d{200, 100},
-            manager->GetState(),
-            "right",
-            &sceneWidget->GetCamera(),
-            optor::MoveDirection::RIGHT
-        )
-    ));
-
-    ERROR_HANDLE(&optor::Widget::SetPosition, rightButton, hui::Vector2d(250, 150));
-
-    auto* upButton = dynamic_cast<optor::WidgetButtonCamera*>(ERROR_HANDLE(
-        &optor::WidgetChildable::AddChild, 
-        cameraButtons, 
-        std::make_unique<optor::WidgetButtonCamera>(
-            hui::Vector2d{200, 100},
-            manager->GetState(),
-            "up",
-            &sceneWidget->GetCamera(),
-            optor::MoveDirection::UP
-        )
-    ));
-
-    ERROR_HANDLE(&optor::Widget::SetPosition, upButton, hui::Vector2d(150, 45));
-
-    auto* downButton = dynamic_cast<optor::WidgetButtonCamera*>(ERROR_HANDLE(
-        &optor::WidgetChildable::AddChild, 
-        cameraButtons, 
-        std::make_unique<optor::WidgetButtonCamera>(
-            hui::Vector2d{200, 100},
-            manager->GetState(),
-            "down",
-            &sceneWidget->GetCamera(),
-            optor::MoveDirection::DOWN
-        )
-    ));
-
-    ERROR_HANDLE(&optor::Widget::SetPosition, downButton, hui::Vector2d(150, 255));
-
-    auto* forwardButton = dynamic_cast<optor::WidgetButtonCamera*>(ERROR_HANDLE(
-        &optor::WidgetChildable::AddChild, 
-        cameraButtons, 
-        std::make_unique<optor::WidgetButtonCamera>(
-            hui::Vector2d{200, 100},
-            manager->GetState(),
-            "forward",
-            &sceneWidget->GetCamera(),
-            optor::MoveDirection::FORWARD
-        )
-    ));
-
-    ERROR_HANDLE(&optor::Widget::SetPosition, forwardButton, hui::Vector2d(500, 100));
-
-        auto* backwordButton = dynamic_cast<optor::WidgetButtonCamera*>(ERROR_HANDLE(
-        &optor::WidgetChildable::AddChild, 
-        cameraButtons, 
-        std::make_unique<optor::WidgetButtonCamera>(
-            hui::Vector2d{200, 100},
-            manager->GetState(),
-            "backword",
-            &sceneWidget->GetCamera(),
-            optor::MoveDirection::BACKWARD
-        )
-    ));
-
-    ERROR_HANDLE(&optor::Widget::SetPosition, backwordButton, hui::Vector2d(500, 200));
-*/

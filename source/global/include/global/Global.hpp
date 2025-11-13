@@ -4,7 +4,7 @@
 #include <string>
 
 #include "dr4/keycodes.hpp"
-#include "dr4/mousecodes.hpp"
+#include "dr4/mouse_buttons.hpp"
 #include "dr4/math/color.hpp"
 
 #include "dr4/texture.hpp"
@@ -88,10 +88,10 @@ static constexpr inline float INIT_WIDGET_BORDER_THICKNESS = 5;
 static constexpr inline float INIT_HEADER_HEIGHT = 50;
 static constexpr inline float INIT_SCROLLBAR_WIDTH = 50;
 
-static constexpr inline ::dr4::MouseCode    INIT_DRAG_WINDOW_BUTTON_         = ::dr4::MOUSECODE_MIDDLE;
-static constexpr inline ::dr4::MouseCode    INIT_SELECT_WINDOW_BUTTON_       = ::dr4::MOUSECODE_LEFT;
-static constexpr inline ::dr4::KeyCode      INIT_UNSELECT_WINDOW_BUTTON_     = ::dr4::KEYCODE_ESCAPE;
-static constexpr inline ::dr4::MouseCode    INIT_PRESS_BUTTON_BUTTON_        = ::dr4::MOUSECODE_LEFT;
+static constexpr inline ::dr4::MouseButtonType    INIT_DRAG_WINDOW_BUTTON_         = ::dr4::MouseButtonType::MIDDLE;
+static constexpr inline ::dr4::MouseButtonType    INIT_SELECT_WINDOW_BUTTON_       = ::dr4::MouseButtonType::LEFT;
+static constexpr inline ::dr4::KeyCode            INIT_UNSELECT_WINDOW_BUTTON_     = ::dr4::KEYCODE_ESCAPE;
+static constexpr inline ::dr4::MouseButtonType    INIT_PRESS_BUTTON_BUTTON_        = ::dr4::MouseButtonType::LEFT;
 
 static constexpr inline double CAMERA_MOVE_SPEED   = 1;
 static constexpr inline double CAMERA_ROTATE_SPEED = 0.1;
@@ -103,7 +103,7 @@ static const inline std::string FONT_PATH = "./assets/TokyoNight.ttf";
 
 extern ::dr4::Font* FONT;
 
-static constexpr inline double STRING_BLOCK_HEIGHT = 50.;
+static constexpr inline float STRING_BLOCK_HEIGHT = 50.;
 
 }
 

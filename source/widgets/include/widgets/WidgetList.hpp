@@ -9,7 +9,7 @@ namespace optor
 
 class WidgetList : public WidgetChildable {
     public:
-        WidgetList(dr4::Window* window, optor::WidgetsState* state);
+        WidgetList(optor::WidgetsState* state);
 
         virtual optor::Widget* AddChild(std::unique_ptr<Widget> child) override;
 

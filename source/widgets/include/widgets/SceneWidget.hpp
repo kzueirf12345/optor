@@ -3,8 +3,6 @@
 
 #include "dr4/texture.hpp"
 #include "dr4/math/vec2.hpp"
-#include "dr4/window.hpp"
-#include "misc/dr4_ifc.hpp"
 
 #include "optics/Scene.hpp"
 #include "widgets/Widget.hpp"
@@ -14,7 +12,9 @@ namespace optor
 
 class SceneWidget: public optor::Widget {
     public:
-        SceneWidget(dr4::Window* window, const dr4::Vec2f& size, optor::WidgetsState* state);
+        SceneWidget(const dr4::Vec2f& size, optor::WidgetsState* state);
+
+        virtual void SetPosition(const dr4::Vec2f& position) override;
         
         virtual void Draw(dr4::Texture& srcTexture) override final;
         

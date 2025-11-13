@@ -4,7 +4,11 @@
 
 #include "common/ErrorHandler.hpp"
 
-void optor::dr4::Font::loadFromFile(const std::string& path)
+optor::dr4::Font::Font()
+    :   font_{}
+{}
+
+void optor::dr4::Font::LoadFromFile(const std::string& path)
 {
     ERROR_HANDLE([this, &path](){
         if (!font_.loadFromFile(path)) {
@@ -12,3 +16,32 @@ void optor::dr4::Font::loadFromFile(const std::string& path)
         }
     });
 }
+
+void optor::dr4::Font::LoadFromBuffer(const void *buffer, size_t size) {
+        ERROR_HANDLE([this, buffer, &size](){
+        if (!font_.loadFromMemory(buffer, size)) {
+            throw std::runtime_error("Can't load font from buffer");
+        }
+    });
+}
+
+float optor::dr4::Font::GetAscent(float fontSize) const {
+    sf::Uint32 character = 'H';
+    
+    const sf::Glyph& glyph = font_.getGlyph(character, fontSize, false);
+    
+    return -glyph.bounds.top;
+}
+
+float optor::dr4::Font::GetDescent(float fontSize) const {
+    sf::Uint32 character = 'g';
+    
+    const sf::Glyph& glyph = font_.getGlyph(character, fontSize, false);
+    
+    float bottom = glyph.bounds.top + glyph.bounds.height;
+    return std::max(0.0f, bottom);
+}
+
+optor::dr4::Font::Font(sf::Font font)
+    :   font_{std::move(font)}
+{}

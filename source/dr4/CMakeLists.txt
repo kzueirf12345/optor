@@ -4,12 +4,15 @@ add_library(dr4 SHARED
     source/math/rect.cpp
     source/math/vec2.cpp
 
+    source/Backend.cpp
+    source/Circle.cpp
+    source/Font.cpp
+    source/Image.cpp
+    source/Line.cpp
+    source/Rectangle.cpp
+    source/Text.cpp
     source/Texture.cpp
     source/Window.cpp 
-    source/Backend.cpp
-    source/Image.cpp
-    source/Font.cpp
-    source/text.cpp
 )
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")

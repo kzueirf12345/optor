@@ -2,7 +2,7 @@
 #define OPTOR_SOURCE_WIDGETS_INCLUDE_WIDGETS_WIDGET_BUTTON_HPP
 
 #include "dr4/math/color.hpp"
-#include "dr4/mousecodes.hpp"
+#include "dr4/mouse_buttons.hpp"
 #include "widgets/Widget.hpp"
 
 namespace optor 
@@ -24,7 +24,7 @@ class WidgetButton: public Widget {
         
     protected:
         bool isPressed_;
-        ::dr4::MouseCode pressButton_;
+        ::dr4::MouseButtonType pressButton_;
 
         ::dr4::Color  pressedColor_;
         ::dr4::Color releasedColor_;

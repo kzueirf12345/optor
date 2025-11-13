@@ -1,0 +1,107 @@
+#include <SFML/Graphics/CircleShape.hpp>
+#include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/ConvexShape.hpp>
+
+#include "dr4/Circle.hpp"
+#include "dr4/Texture.hpp"
+#include "common/ErrorHandler.hpp"
+#include "dr4/math/vec2.hpp"
+
+optor::dr4::Circle::Circle()
+    :   circle_(1)
+{}
+    
+void optor::dr4::Circle::SetCenter(::dr4::Vec2f center) {
+    ERROR_HANDLE([this, &center](){
+        SetPos(center);
+    });
+}
+
+void optor::dr4::Circle::SetRadius(float radius) {
+    ERROR_HANDLE([this, radius](){
+        circle_.setRadius(radius);
+    });
+}
+
+void optor::dr4::Circle::SetFillColor(::dr4::Color color) {
+    ERROR_HANDLE([this, &color](){
+        circle_.setFillColor({color.r, color.g, color.b, color.a});
+    });
+}
+
+void optor::dr4::Circle::SetBorderColor(::dr4::Color color) {
+    ERROR_HANDLE([this, &color](){
+        circle_.setOutlineColor({color.r, color.g, color.b, color.a});
+    });
+}
+
+void optor::dr4::Circle::SetBorderThickness(float thickness) {
+    ERROR_HANDLE([this, thickness](){
+        circle_.setOutlineThickness(thickness);
+    });
+}
+
+::dr4::Vec2f optor::dr4::Circle::GetCenter() const {
+    return ERROR_HANDLE([this](){
+        return GetPos() - ::dr4::Vec2f{circle_.getRadius(), circle_.getRadius()};
+    });
+}
+
+float optor::dr4::Circle::GetRadius() const {
+    return ERROR_HANDLE([this](){
+        return circle_.getRadius();
+    });
+}
+
+::dr4::Color optor::dr4::Circle::GetFillColor() const {
+    return ERROR_HANDLE([this](){
+        sf::Color colorSF = circle_.getFillColor();
+        return ::dr4::Color{colorSF.r, colorSF.g, colorSF.b, colorSF.a};
+    });
+}
+
+::dr4::Color optor::dr4::Circle::GetBorderColor() const {
+    return ERROR_HANDLE([this](){
+        sf::Color colorSF = circle_.getOutlineColor();
+        return ::dr4::Color{colorSF.r, colorSF.g, colorSF.b, colorSF.a};
+    });
+}
+
+float optor::dr4::Circle::GetBorderThickness() const {
+    return ERROR_HANDLE([this](){
+        return circle_.getOutlineThickness();
+    });
+}
+
+void optor::dr4::Circle::DrawOn(::dr4::Texture& texture) const {
+    optor::dr4::Texture& myTexture = dynamic_cast<optor::dr4::Texture&>(texture);
+
+    sf::CircleShape drawableCircle = circle_;
+
+    const sf::Vector2f prevPosSF = circle_.getPosition();
+
+    ERROR_HANDLE([&drawableCircle, &myTexture, &prevPosSF](){
+        drawableCircle.setPosition(prevPosSF.x + myTexture.zero_.x, prevPosSF.y + myTexture.zero_.y);
+    });
+
+    ERROR_HANDLE([&drawableCircle, &myTexture](){
+        myTexture.renderTexture_.draw(drawableCircle);
+    });
+
+    ERROR_HANDLE([&myTexture](){
+        myTexture.renderTexture_.display();
+    });
+}
+
+void optor::dr4::Circle::SetPos(::dr4::Vec2f pos) {
+    ERROR_HANDLE([this, &pos](){
+        circle_.setPosition({pos.x, pos.y});
+    });
+}
+
+::dr4::Vec2f optor::dr4::Circle::GetPos() const {
+    return ERROR_HANDLE([this](){
+        sf::Vector2f posSF = circle_.getPosition();
+        return ::dr4::Vec2f{posSF.x, posSF.y};
+    });
+}

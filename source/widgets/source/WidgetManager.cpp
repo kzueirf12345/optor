@@ -23,11 +23,12 @@ optor::WidgetManager::WidgetManager(dr4::Window* window)
         texture_->SetSize({optor::PROGRAM_WIDTH, optor::PROGRAM_HEIGHT});
     });
 
+    state_.window = window;
+
     desktop_ = ERROR_HANDLE([this, window](){
         return std::make_unique<optor::WidgetChildable>(
             dr4::Vec2f{optor::PROGRAM_WIDTH, optor::PROGRAM_HEIGHT},
-            &state_,
-            window
+            &state_
         );
     });
     ERROR_HANDLE(&optor::Widget::SetBackgroundColor, desktop_, optor::color::ProgramBackground);
@@ -52,7 +53,7 @@ void optor::WidgetManager::Draw() {
     }
 
     ERROR_HANDLE([this](){
-        window_->Draw(*texture_, {0, 0});
+        window_->Draw(*texture_);
     });
 }
 

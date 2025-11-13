@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics/Font.hpp>
 
+#include "dr4/Text.hpp"
 #include "dr4/Texture.hpp"
 
 namespace optor
@@ -10,18 +11,28 @@ namespace optor
 namespace dr4 
 {
 
-class Font : public ::dr4::Font { 
+class Font final: public ::dr4::Font { 
+
+    friend optor::dr4::Text;
 
 public:
-    friend ::dr4::Text;
-    friend optor::dr4::Texture;
 
-    virtual void loadFromFile(const std::string& path) override;
+    Font();
+
+    virtual void LoadFromFile(const std::string &path) override;
+    virtual void LoadFromBuffer(const void *buffer, size_t size) override;
+
+    virtual float GetAscent (float fontSize) const override;
+    virtual float GetDescent(float fontSize) const override;
 
 protected:
 private:
 
     sf::Font font_;
+
+private:
+
+    explicit Font(sf::Font font);
 };
 
 }

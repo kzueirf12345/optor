@@ -9,24 +9,29 @@
 #include "dr4/texture.hpp"
 #include "widgets/Widget.hpp"
 
-optor::WidgetChildable::WidgetChildable(const dr4::Vec2f& size, optor::WidgetsState* state, dr4::Window* window)
-    :   Widget{size, state}, children_{}, texture_{window->CreateTexture()}
+optor::WidgetChildable::WidgetChildable(const dr4::Vec2f& size, optor::WidgetsState* state)
+    :   Widget{size, state}, children_{}, texture_{state->window->CreateTexture()}
 {
     ERROR_HANDLE([this, size](){
         texture_->SetSize(size);
     });
 }
 
+void optor::WidgetChildable::SetPosition(const dr4::Vec2f& position) {
+    optor::Widget::SetPosition(position);
+    texture_->SetPos(position);
+}
+
 void optor::WidgetChildable::Draw(dr4::Texture& srcTexture) {
     if (isHide_) { return; }
 
-    const dr4::Vec2f pos = rect_.rect.pos;
+    const dr4::Vec2f pos = rect_->GetPos();
 
-    rect_.rect.pos = {0, 0};
+    rect_->SetPos({0, 0});
     ERROR_HANDLE([this](){
         optor::Widget::Draw(*texture_);
     });
-    rect_.rect.pos = pos;
+    rect_->SetPos(pos);
 
     for (const auto& child : children_) {
         ERROR_HANDLE([this, &child](){
@@ -35,7 +40,7 @@ void optor::WidgetChildable::Draw(dr4::Texture& srcTexture) {
     }
 
     ERROR_HANDLE([this, &srcTexture](){
-        srcTexture.Draw(*texture_, rect_.rect.pos);
+        srcTexture.Draw(*texture_);
     });
 }
 
