@@ -52,7 +52,7 @@ static void CreateObjsList(optor::WidgetManager* manager, optor::SceneWidget* sc
 
 int main() {
     void* libdr4 = dlopen("./build/source/dr4/libdr4.so", RTLD_LAZY);
-    // void* libdr4 = dlopen("./plugins/dr4/v1/libSeva.so", RTLD_LAZY);
+    // void* libdr4 = dlopen("./plugins/dr4/v1/artem/libswuix_sdl3.so", RTLD_LAZY);
     
     if (!libdr4) {
         std::cerr << "error: " << dlerror() << std::endl;
