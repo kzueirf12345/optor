@@ -3,11 +3,26 @@
 
 #include "cum/geomprim_ifc.hpp"
 #include "cum/version.hpp"
+#include <cstddef>
 
 namespace optor
 {
 namespace geomprim 
 {
+
+enum class ObjType: size_t {
+    RECTANGLE = 1
+};
+
+inline static const ::dr4::Color FillColor(0x20, 0x21, 0x2d, 0xff);
+inline static const ::dr4::Color BorderColor(0xd7, 0x46, 0x4e, 0xff);
+inline static const ::dr4::Color TransparentColor(0x0, 0x00, 0x0, 0x00);
+
+inline static constexpr float OutlineThickness = 5;
+inline static const dr4::Vec2f OutlineThicknessVec = {
+    optor::geomprim::OutlineThickness,
+    optor::geomprim::OutlineThickness
+};
 
 class Backend final: public hui::GeomPrimBackend
 { 

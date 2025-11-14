@@ -5,6 +5,7 @@
 #include <deque>
 #include <memory>
 
+#include "cum/geomprim_ifc.hpp"
 #include "dr4/math/vec2.hpp"
 
 #include "dr4/window.hpp"
@@ -17,6 +18,7 @@ class Widget;
 
 struct WidgetsState {
     dr4::Window* window;
+    hui::GeomPrimBackend* geomPrimBackend;
 
     const optor::Widget* hoveredWidget;
     const optor::Widget* draggedWidget;

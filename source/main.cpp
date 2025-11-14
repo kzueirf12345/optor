@@ -7,14 +7,17 @@
 #include <cassert>
 #include <string>
 
+#include "cum/geomprim_ifc.hpp"
 #include "dr4/math/color.hpp"
 #include "dr4/math/vec2.hpp"
+#include "dr4/texture.hpp"
 #include "global/Global.hpp"
 #include "cum/dr4_ifc.hpp"
 #include "dr4/window.hpp"
 
 #include "common/ErrorHandler.hpp"
 #include "global/Global.hpp"
+#include "hui/geomprim.hpp"
 #include "optics/Vector.hpp"
 #include "widgets/OpticObjShort.hpp"
 #include "widgets/TopBar.hpp"
@@ -46,11 +49,127 @@
 
 ::dr4::Font* optor::FONT = nullptr;
 
+static dr4::DR4Backend* OpenDR4Plugin();
+static hui::GeomPrimBackend* OpenGeomPrimPlugin();
+
+
 static void CreateScene(dr4::DR4Backend* backend, optor::WidgetManager* manager);
 static void CreateCameraButtons(dr4::DR4Backend* backend, optor::WidgetManager* manager, optor::SceneWidget* sceneWidget);
 static void CreateObjsList(optor::WidgetManager* manager, optor::SceneWidget* sceneWidget);
 
 int main() {
+
+
+// ==========DR4===========
+    dr4::DR4Backend* dr4Backend = OpenDR4Plugin();
+
+    dr4::Window* window = dr4Backend->CreateWindow();
+
+    if (!window) {
+        delete dr4Backend;
+        throw std::runtime_error("Can't get window");
+    }
+
+    ERROR_HANDLE([window](){
+        window->Open();
+        window->SetSize({optor::PROGRAM_WIDTH, optor::PROGRAM_HEIGHT});
+        window->SetTitle("0xCEBAEBA1DEDA");
+        window->Open();
+    });
+
+    optor::FONT = window->CreateFont();
+
+    if (!optor::FONT) {
+        delete dr4Backend;
+        delete window;
+        throw std::runtime_error("Can't get font");
+    }
+
+    ERROR_HANDLE([](){
+        optor::FONT->LoadFromFile(optor::FONT_PATH);
+    });
+
+//==========DR4=================
+//==========GeomPrim=================
+    hui::GeomPrimBackend* geomPrimBackend = OpenGeomPrimPlugin();
+
+    hui::GeomPrim* prim = geomPrimBackend->CreateGeomPrim(1, window);
+
+    // std::unique_ptr<dr4::Texture> tempTexture(window->CreateTexture());
+    // tempTexture->SetSize({100, 100});
+    // tempTexture->Clear({0, 0, 0, 0});
+    // tempTexture->Draw(*prim);
+
+//==========GeomPrim=================
+
+    optor::WidgetManager manager(window, geomPrimBackend);
+
+    ERROR_HANDLE([dr4Backend, &manager](){
+        CreateScene(dr4Backend, &manager);
+    });
+
+    auto* topbar = ERROR_HANDLE([&manager](){
+        return manager.GetDesktop()->AddChild(std::make_unique<optor::TopBar>(
+            &manager
+        ));
+    });
+
+try 
+{
+    while (ERROR_HANDLE(&dr4::Window::IsOpen, window)) {
+
+        ERROR_HANDLE(&optor::WidgetManager::HandleEvents, &manager);
+
+        if (!ERROR_HANDLE(&dr4::Window::IsOpen, window)) {
+            break;
+        }
+        
+        ERROR_HANDLE(&dr4::Window::Clear, window, optor::color::Poison);
+
+        
+        ERROR_HANDLE(&optor::WidgetManager::Draw, &manager);
+        // ERROR_HANDLE(&dr4::Window::Draw, window, *tempTexture);
+
+        ERROR_HANDLE(&dr4::Window::Display, window);
+    }
+} 
+catch(...) 
+{
+    std::cerr << "Something went wrong\n";
+    delete prim;
+    delete geomPrimBackend;
+    delete dr4Backend;
+    delete window;
+
+    throw;
+}
+    delete prim;
+    delete geomPrimBackend;
+    delete dr4Backend;
+    delete window;
+    
+    return EXIT_SUCCESS;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        // ВОВА ГЕЙ + ПИДОР
+}
+
+static hui::GeomPrimBackend* OpenGeomPrimPlugin() {
+    void* libdr4 = dlopen("./build/source/geomprim/libgeomprim.so", RTLD_LAZY);
+    // void* libdr4 = dlopen("./plugins/geomprim/v1/artem/libswuix_sdl3.so", RTLD_LAZY);
+    
+    if (!libdr4) {
+        std::cerr << "error: " << dlerror() << std::endl;
+        throw std::runtime_error("Can't open lib");
+    }
+
+    hui::GeomPrimBackend* backend = reinterpret_cast<hui::GeomPrimBackend*(*)()>(dlsym(libdr4, hui::GeomPrimBackendFunctionName))();
+
+    if (!backend) {
+        throw std::runtime_error("Can't get backend");
+    }
+
+    return backend;
+}
+
+static dr4::DR4Backend* OpenDR4Plugin() {
     void* libdr4 = dlopen("./build/source/dr4/libdr4.so", RTLD_LAZY);
     // void* libdr4 = dlopen("./plugins/dr4/v1/artem/libswuix_sdl3.so", RTLD_LAZY);
     
@@ -65,76 +184,7 @@ int main() {
         throw std::runtime_error("Can't get backend");
     }
 
-    dr4::Window* window = backend->CreateWindow();
-
-    if (!window) {
-        delete backend;
-        throw std::runtime_error("Can't get window");
-    }
-
-    ERROR_HANDLE([window](){
-        // window->Open();
-        window->SetSize({optor::PROGRAM_WIDTH, optor::PROGRAM_HEIGHT});
-        window->SetTitle("0xCEBAEBA1DEDA");
-        window->Open();
-    });
-
-    optor::FONT = window->CreateFont();
-
-    if (!optor::FONT) {
-        delete backend;
-        delete window;
-        throw std::runtime_error("Can't get font");
-    }
-
-    ERROR_HANDLE([](){
-        optor::FONT->LoadFromFile(optor::FONT_PATH);
-    });
-
-try 
-{
-
-    optor::WidgetManager manager(window);
-
-    ERROR_HANDLE([backend, &manager](){
-        CreateScene(backend, &manager);
-    });
-
-    auto* topbar = ERROR_HANDLE([&manager](){
-        return manager.GetDesktop()->AddChild(std::make_unique<optor::TopBar>(
-            &manager
-        ));
-    });
-
-    while (ERROR_HANDLE(&dr4::Window::IsOpen, window)) {
-
-        
-        ERROR_HANDLE(&optor::WidgetManager::HandleEvents, &manager);
-
-        if (!ERROR_HANDLE(&dr4::Window::IsOpen, window)) {
-            break;
-        }
-        
-        ERROR_HANDLE(&dr4::Window::Clear, window, optor::color::Poison);
-        
-        ERROR_HANDLE(&optor::WidgetManager::Draw, &manager);
-
-        ERROR_HANDLE(&dr4::Window::Display, window);
-    }
-} 
-catch(...) 
-{
-    std::cerr << "Something went wrong\n";
-    delete backend;
-    delete window;
-
-    throw;
-}
-
-    delete backend;
-    delete window;
-    
-    return EXIT_SUCCESS;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        // ВОВА ГЕЙ + ПИДОР
+    return backend;
 }
 
 void CreateScene(dr4::DR4Backend* backend, optor::WidgetManager* manager) {

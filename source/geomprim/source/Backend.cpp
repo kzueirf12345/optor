@@ -1,9 +1,17 @@
 #include <cassert>
+#include <cstddef>
 
 #include "geomprim/Backend.hpp"
+#include "geomprim/Rect.hpp"
 
 hui::GeomPrim* optor::geomprim::Backend::CreateGeomPrim(size_t geomPrimType, dr4::Window* dr4Window) {
     assert(dr4Window);
+    
+    if (geomPrimType == (size_t)optor::geomprim::ObjType::RECTANGLE) {
+        return new optor::geomprim::Rect(dr4Window);
+    }
+
+    return nullptr;
 }
 
 const std::string &optor::geomprim::Backend::GetName() const {

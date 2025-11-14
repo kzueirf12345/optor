@@ -27,7 +27,7 @@ optor::Widget::Widget(const dr4::Vec2f& size, optor::WidgetsState* state)
     rect_->SetSize(size);
     rect_->SetFillColor(optor::color::WindowBackground);
     rect_->SetBorderColor(optor::color::WindowBorder);
-    rect_->SetBorderThickness(2);
+    rect_->SetBorderThickness(-2);
 }
 
 void optor::Widget::Draw(dr4::Texture& srcTexture) {

@@ -2,6 +2,7 @@
 #include <cassert>
 
 #include "dr4/event.hpp"
+#include "dr4/keycodes.hpp"
 #include "dr4/math/vec2.hpp"
 #include "dr4/texture.hpp"
 #include "dr4/window.hpp"
@@ -12,8 +13,9 @@
 #include "widgets/WidgetChildable.hpp"
 #include "widgets/Widget.hpp"
 #include "widgets/WidgetChildable.hpp"
+#include "widgets/WidgetPiska.hpp"
 
-optor::WidgetManager::WidgetManager(dr4::Window* window)
+optor::WidgetManager::WidgetManager(dr4::Window* window, hui::GeomPrimBackend* geomPrimBackend)
     :   window_{window},
         texture_{window_->CreateTexture()},
         desktop_{},
@@ -39,6 +41,7 @@ optor::WidgetManager::WidgetManager(dr4::Window* window)
     state_.selectedWidget = nullptr;
     state_.prevMouseCoord = {0, 0};
     state_.selectedObj = nullptr;
+    state_.geomPrimBackend = geomPrimBackend;
 }
 
 void optor::WidgetManager::Draw() {
@@ -52,12 +55,22 @@ void optor::WidgetManager::Draw() {
         });
     }
 
+    auto* piska = dynamic_cast<optor::WidgetPiska*>(desktop_->GetChild(desktop_->GetChildrenCount() - 1));
+    const bool piskaIsValid = piska && !piska->GetMustRemoved();
+
+    if (piskaIsValid) {
+        piska->Draw(*texture_);
+    }
+
     ERROR_HANDLE([this](){
         window_->Draw(*texture_);
     });
 }
 
 void optor::WidgetManager::HandleEvents() {
+
+    auto* piska = dynamic_cast<optor::WidgetPiska*>(desktop_->GetChild(desktop_->GetChildrenCount() - 1));
+    const bool isSkip = piska && !piska->GetMustRemoved();
     
     std::optional<dr4::Event> event = {};
 
@@ -68,6 +81,10 @@ void optor::WidgetManager::HandleEvents() {
                 return;
 
             case dr4::Event::Type::MOUSE_MOVE: {
+                if (isSkip) {
+                    ERROR_HANDLE(&optor::Widget::OnMouseMove, piska, event.value());
+                    break;
+                }
                 bool childRes = false;
                 for (auto& modalWidget : state_.modalWidgets) {
                     if (ERROR_HANDLE(&optor::Widget::OnMouseMove, modalWidget, event.value())) {
@@ -84,6 +101,10 @@ void optor::WidgetManager::HandleEvents() {
             }
 
             case dr4::Event::Type::MOUSE_DOWN: {
+                if (isSkip) {
+                    ERROR_HANDLE(&optor::Widget::OnMousePress, piska, event.value());
+                    break;
+                }
                 bool childRes = false;
                 for (auto& modalWidget : state_.modalWidgets) {
                     if (ERROR_HANDLE(&optor::Widget::OnMousePress, modalWidget, event.value())) {
@@ -98,6 +119,10 @@ void optor::WidgetManager::HandleEvents() {
             } 
 
             case dr4::Event::Type::MOUSE_UP: {
+                if (isSkip) {
+                    ERROR_HANDLE(&optor::Widget::OnMouseRelease, piska, event.value());
+                    break;
+                }
                 bool childRes = false;
                 for (auto& modalWidget : state_.modalWidgets) {
                     if (ERROR_HANDLE(&optor::Widget::OnMouseRelease, modalWidget, event.value())) {
@@ -112,6 +137,18 @@ void optor::WidgetManager::HandleEvents() {
             }
 
             case dr4::Event::Type::KEY_DOWN: {
+                if (isSkip) {
+                    ERROR_HANDLE(&optor::Widget::OnKeyboardPress, piska, event.value());
+                    break;
+                }
+                if (event->key.sym == dr4::KEYCODE_TILDE) {
+                    ERROR_HANDLE(
+                        &optor::WidgetChildable::AddChild, 
+                        desktop_, 
+                        std::make_unique<optor::WidgetPiska>(&state_)
+                    );
+                }
+
                 bool childRes = false;
                 for (auto& modalWidget : state_.modalWidgets) {
                     if (ERROR_HANDLE(&optor::Widget::OnKeyboardPress, modalWidget, event.value())) {
@@ -126,6 +163,10 @@ void optor::WidgetManager::HandleEvents() {
             }
 
             case dr4::Event::Type::KEY_UP: {
+                if (isSkip) {
+                    ERROR_HANDLE(&optor::Widget::OnKeyboardRelease, piska, event.value());
+                    break;
+                }
                 bool childRes = false;
                 for (auto& modalWidget : state_.modalWidgets) {
                     if (ERROR_HANDLE(&optor::Widget::OnKeyboardRelease, modalWidget, event.value())) {
@@ -144,11 +185,16 @@ void optor::WidgetManager::HandleEvents() {
         }
     }
 
-    for (auto& modalWidget : state_.modalWidgets) {
-        ERROR_HANDLE(&optor::Widget::OnIdle, modalWidget);
+    if (!isSkip) {
+        for (auto& modalWidget : state_.modalWidgets) {
+            ERROR_HANDLE(&optor::Widget::OnIdle, modalWidget);
+        }
+    
+        ERROR_HANDLE(&optor::WidgetChildable::OnIdle, desktop_);
+    } else {
+        ERROR_HANDLE(&optor::Widget::OnIdle, piska);
     }
 
-    ERROR_HANDLE(&optor::WidgetChildable::OnIdle, desktop_);
 }
 
 optor::WidgetChildable* optor::WidgetManager::SetDesktop(std::unique_ptr<optor::WidgetChildable> desktop)  {
