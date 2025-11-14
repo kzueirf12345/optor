@@ -1,26 +1,31 @@
 #include <cmath>
 
-#include "geomprim/Rect.hpp"
+#include "geomprim/Circle.hpp"
 #include "dr4/math/rect.hpp"
 #include "dr4/math/vec2.hpp"
 #include "dr4/mouse_buttons.hpp"
 #include "geomprim/Backend.hpp"
 
-optor::geomprim::Rect::Rect(dr4::Window* dr4Window)
-    :   rect_{dr4Window->CreateRectangle()},
-        isResized_(false),
+
+optor::geomprim::Circle::Circle(dr4::Window* dr4Window)
+    :   circle_{dr4Window->CreateCircle()},
         isDragged_(false),
-        activeSide_(optor::geomprim::Side::UNKNOWN)
+        isResized_(false),
+        activeSide_(optor::geomprim::Side::UNKNOWN),
+        rect_{}
 {
-    rect_->SetSize({100, 100});
-    rect_->SetBorderThickness(-10);
-    rect_->SetBorderColor(optor::geomprim::BorderColor);
-    rect_->SetFillColor(optor::geomprim::TransparentColor);
+    circle_->SetRadius(50.0f);
+    circle_->SetBorderThickness(-10.0f);
+    circle_->SetBorderColor(optor::geomprim::BorderColor);
+    circle_->SetFillColor(optor::geomprim::TransparentColor);
+
+    rect_.size = {2.f * 50.f, 2.f * 50.f};
 }
 
-bool optor::geomprim::Rect::OnMouseMove(const dr4::Event& event)    {
+bool optor::geomprim::Circle::OnMouseMove(const dr4::Event& event) {
     if (isDragged_) {
-        rect_->SetPos(rect_->GetPos() + event.mouseMove.rel);
+        rect_.pos += event.mouseMove.rel;
+        circle_->SetPos(rect_.pos);
         return true;
     }
 
@@ -28,11 +33,11 @@ bool optor::geomprim::Rect::OnMouseMove(const dr4::Event& event)    {
         Resize(event.mouseMove.rel);
         return true;
     }
-    
+
     return false;
 }
 
-bool optor::geomprim::Rect::OnMouseDown(const dr4::Event& event)    {
+bool optor::geomprim::Circle::OnMouseDown(const dr4::Event& event)    {
 
     if (event.mouseButton.button == dr4::MouseButtonType::LEFT) {
         if (OnOutline(event.mouseButton.pos)) {
@@ -50,7 +55,7 @@ bool optor::geomprim::Rect::OnMouseDown(const dr4::Event& event)    {
     return false;
 }
 
-bool optor::geomprim::Rect::OnMouseRelease(const dr4::Event& event) {
+bool optor::geomprim::Circle::OnMouseRelease(const dr4::Event& event) {
 
     if (event.mouseButton.button == dr4::MouseButtonType::LEFT) {
         if (isResized_) {
@@ -68,37 +73,36 @@ bool optor::geomprim::Rect::OnMouseRelease(const dr4::Event& event) {
 }
 
 
-void optor::geomprim::Rect::DrawOn(dr4::Texture& texture) const {
-    rect_->DrawOn(texture);
+void optor::geomprim::Circle::DrawOn(dr4::Texture& texture) const {
+    circle_->DrawOn(texture);
 }
 
 
-void optor::geomprim::Rect::SetPos(dr4::Vec2f pos) {
-    rect_->SetPos(pos);
+void optor::geomprim::Circle::SetPos(dr4::Vec2f pos) {
+    circle_->SetPos(pos);
+    rect_.pos = pos;
 }
 
 
-dr4::Vec2f optor::geomprim::Rect::GetPos() const {
-    return rect_->GetPos();
+dr4::Vec2f optor::geomprim::Circle::GetPos() const {
+    return rect_.pos;
 }
 
-bool optor::geomprim::Rect::OnMe(dr4::Vec2f relCoord) const {
-    const dr4::Vec2f pos = rect_->GetPos();
+bool optor::geomprim::Circle::OnMe(dr4::Vec2f relCoord) const {
 
-    const dr4::Vec2f size = rect_->GetSize();
-
-    return dr4::Rect2f(pos, size).Contains(relCoord);
+    return rect_.Contains(relCoord);
 }
-bool optor::geomprim::Rect::OnBorder(dr4::Vec2f relCoord) const {
-    const dr4::Vec2f thicknessVec = {rect_->GetBorderThickness(), rect_->GetBorderThickness()};
-    const dr4::Vec2f posIn = rect_->GetPos() + thicknessVec;
-    const dr4::Vec2f sizeIn = rect_->GetSize() - 2 * thicknessVec;
+bool optor::geomprim::Circle::OnBorder(dr4::Vec2f relCoord) const {
+    const dr4::Vec2f thicknessVec = {circle_->GetBorderThickness(), circle_->GetBorderThickness()};
+    const dr4::Vec2f posIn = rect_.pos + thicknessVec;
+    const dr4::Vec2f sizeIn = rect_.size - 2 * thicknessVec;
 
     return OnMe(relCoord) && !dr4::Rect2f(posIn, sizeIn).Contains(relCoord);
 }
-bool optor::geomprim::Rect::OnOutline(dr4::Vec2f relCoord) const {
-    const dr4::Vec2f pos = rect_->GetPos();
-    const dr4::Vec2f size = rect_->GetSize();
+
+bool optor::geomprim::Circle::OnOutline(dr4::Vec2f relCoord) const {
+    const dr4::Vec2f pos = rect_.pos;
+    const dr4::Vec2f size = rect_.size;
 
     const dr4::Vec2f posOut = pos - OutlineThicknessVec;
     const dr4::Vec2f sizeOut = size + 2 * OutlineThicknessVec;
@@ -110,9 +114,9 @@ bool optor::geomprim::Rect::OnOutline(dr4::Vec2f relCoord) const {
        && !dr4::Rect2f(posIn,  sizeIn) .Contains(relCoord);
 }
 
-optor::geomprim::Side optor::geomprim::Rect::ClosestSide(dr4::Vec2f relCoord) const {
-    const dr4::Vec2f pos  = rect_->GetPos();
-    const dr4::Vec2f size = rect_->GetSize();
+optor::geomprim::Side optor::geomprim::Circle::ClosestSide(dr4::Vec2f relCoord) const {
+    const dr4::Vec2f pos  = rect_.pos;
+    const dr4::Vec2f size = rect_.size;
 
     const float left   = pos.x;
     const float right  = pos.x + size.x;
@@ -146,42 +150,42 @@ optor::geomprim::Side optor::geomprim::Rect::ClosestSide(dr4::Vec2f relCoord) co
     return minSide;
 }
 
-void optor::geomprim::Rect::Resize(dr4::Vec2f offset) {
-    dr4::Vec2f pos  = rect_->GetPos();
-    dr4::Vec2f size = rect_->GetSize();
+void optor::geomprim::Circle::Resize(dr4::Vec2f offset) {
+    dr4::Vec2f pos  = rect_.pos;
+    float sideSize = rect_.size.x;
 
     switch (activeSide_) {
 
         case Side::LEFT: {
-            float newWidth = size.x - offset.x;
+            float newWidth = sideSize - offset.x;
             if (newWidth > 0.0f) {
-                size.x = newWidth;
-                pos.x += offset.x;
+                sideSize = newWidth;
+                pos += offset;
             }
             break;
         }
 
         case Side::RIGHT: {
-            float newWidth = size.x + offset.x;
+            float newWidth = sideSize + offset.x;
             if (newWidth > 0.0f) {
-                size.x = newWidth;
+                sideSize = newWidth;
             }
             break;
         }
 
         case Side::TOP: {
-            float newHeight = size.y - offset.y;
+            float newHeight = sideSize - offset.y;
             if (newHeight > 0.0f) {
-                size.y = newHeight;
-                pos.y += offset.y;
+                sideSize = newHeight;
+                pos += offset;
             }
             break;
         }
 
         case Side::BOTTOM: {
-            float newHeight = size.y + offset.y;
+            float newHeight = sideSize + offset.y;
             if (newHeight > 0.0f) {
-                size.y = newHeight;
+                sideSize = newHeight;
             }
             break;
         }
@@ -191,6 +195,9 @@ void optor::geomprim::Rect::Resize(dr4::Vec2f offset) {
             return;
     }
 
-    rect_->SetPos(pos);
-    rect_->SetSize(size);
+    rect_.pos = pos;
+    rect_.size = {sideSize, sideSize};
+
+    circle_->SetRadius(sideSize / 2.f);
+    circle_->SetPos(pos);
 }

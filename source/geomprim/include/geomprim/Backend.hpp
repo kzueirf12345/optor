@@ -11,7 +11,8 @@ namespace geomprim
 {
 
 enum class ObjType: size_t {
-    RECTANGLE = 1
+    RECTANGLE = 1,
+    CIRCLE = 2,
 };
 
 inline static const ::dr4::Color FillColor(0x20, 0x21, 0x2d, 0xff);
@@ -22,6 +23,14 @@ inline static constexpr float OutlineThickness = 5;
 inline static const dr4::Vec2f OutlineThicknessVec = {
     optor::geomprim::OutlineThickness,
     optor::geomprim::OutlineThickness
+};
+
+enum Side {
+    UNKNOWN = -1,
+    TOP,
+    BOTTOM,
+    LEFT,
+    RIGHT,
 };
 
 class Backend final: public hui::GeomPrimBackend

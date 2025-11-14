@@ -2,6 +2,7 @@
 add_library(geomprim SHARED
     source/Backend.cpp
     source/Rect.cpp
+    source/Circle.cpp
 )
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")

@@ -1,8 +1,9 @@
-#ifndef OPTOR_SOURCE_GEOMPRIM_INCLUDE_GEOMPRIM_RECT_HPP
-#define OPTOR_SOURCE_GEOMPRIM_INCLUDE_GEOMPRIM_RECT_HPP
+#ifndef OPTOR_SOURCE_GEOMPRIM_INCLUDE_GEOMPRIM_CIRCLE_HPP
+#define OPTOR_SOURCE_GEOMPRIM_INCLUDE_GEOMPRIM_CIRCLE_HPP
 
 #include <memory>
 
+#include "dr4/math/rect.hpp"
 #include "dr4/math/vec2.hpp"
 #include "dr4/texture.hpp"
 #include "dr4/window.hpp"
@@ -11,35 +12,35 @@
 
 #include "geomprim/Backend.hpp"
 
-namespace optor 
+namespace optor
 {
-namespace geomprim 
+namespace geomprim
 {
 
-class Rect final: public hui::GeomPrim {
+class Circle final: public hui::GeomPrim {
 
 public:
 
-    Rect(dr4::Window* dr4Window);
+    Circle(dr4::Window* dr4Window);
 
     bool OnMouseMove(const dr4::Event& event)    override;
     bool OnMouseDown(const dr4::Event& event)    override;
     bool OnMouseRelease(const dr4::Event& event) override;
 
-    virtual void DrawOn(dr4::Texture& texture) const override;
+    void DrawOn(dr4::Texture& texture) const override;
 
-    virtual void SetPos(dr4::Vec2f pos) override;
-
-    virtual dr4::Vec2f GetPos() const override;
+    void SetPos(dr4::Vec2f pos) override;
+    dr4::Vec2f GetPos() const override;
 
 private:
 
-    std::unique_ptr<dr4::Rectangle> rect_;
-
-    bool isResized_;
-    Side activeSide_;
+    std::unique_ptr<dr4::Circle> circle_;
+    dr4::Rect2f rect_;
 
     bool isDragged_;
+
+    Side activeSide_;
+    bool isResized_;
 
 private:
 
@@ -49,11 +50,9 @@ private:
     Side ClosestSide(dr4::Vec2f relCoord) const;
 
     void Resize(dr4::Vec2f offset);
-
-    
 };
 
 }
 }
 
-#endif /*OPTOR_SOURCE_GEOMPRIM_INCLUDE_GEOMPRIM_RECT_HPP*/
+#endif /* OPTOR_SOURCE_GEOMPRIM_INCLUDE_GEOMPRIM_CIRCLE_HPP */
