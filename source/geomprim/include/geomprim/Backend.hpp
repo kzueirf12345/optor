@@ -13,6 +13,7 @@ namespace geomprim
 enum class ObjType: size_t {
     RECTANGLE = 1,
     CIRCLE = 2,
+    ARROW = 3,
 };
 
 inline static const ::dr4::Color FillColor(0x20, 0x21, 0x2d, 0xff);

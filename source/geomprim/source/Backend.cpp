@@ -2,6 +2,7 @@
 #include <cstddef>
 
 #include "geomprim/Backend.hpp"
+#include "geomprim/Arrow.hpp"
 #include "geomprim/Circle.hpp"
 #include "geomprim/Rect.hpp"
 
@@ -14,6 +15,10 @@ hui::GeomPrim* optor::geomprim::Backend::CreateGeomPrim(size_t geomPrimType, dr4
 
     if (geomPrimType == (size_t)optor::geomprim::ObjType::CIRCLE) {
         return new optor::geomprim::Circle(dr4Window);
+    }
+
+    if (geomPrimType == (size_t)optor::geomprim::ObjType::ARROW) {
+        return new optor::geomprim::Arrow(dr4Window);
     }
 
     return nullptr;

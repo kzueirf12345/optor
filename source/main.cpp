@@ -171,7 +171,7 @@ static hui::GeomPrimBackend* OpenGeomPrimPlugin() {
 
 static dr4::DR4Backend* OpenDR4Plugin() {
     void* libdr4 = dlopen("./build/source/dr4/libdr4.so", RTLD_LAZY);
-    // void* libdr4 = dlopen("./plugins/dr4/v1/artem/libswuix_sdl3.so", RTLD_LAZY);
+    // void* libdr4 = dlopen("./plugins/dr4/v1/libSeva.so", RTLD_LAZY);
     
     if (!libdr4) {
         std::cerr << "error: " << dlerror() << std::endl;
