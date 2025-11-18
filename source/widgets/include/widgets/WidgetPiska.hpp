@@ -1,36 +1,55 @@
 #ifndef OPTOR_SOURCE_WIDGETS_INCLUDE_WIDGETS_WIDGET_PISKA_HPP
 #define OPTOR_SOURCE_WIDGETS_INCLUDE_WIDGETS_WIDGET_PISKA_HPP
 
-#include "dr4/texture.hpp"
-#include "hui/geomprim.hpp"
-#include "widgets/Widget.hpp"
+#include <cstddef>
 #include <memory>
+#include <unordered_map>
+
+#include "dr4/texture.hpp"
+
+#include "pp/canvas.hpp"
+
+#include "pp/shape.hpp"
+#include "pp/tool.hpp"
+#include "widgets/Widget.hpp"
 
 namespace optor 
 {
 
-class WidgetPiska : public Widget {
-    public:
-        WidgetPiska(optor::WidgetsState* state);
+class WidgetPiska final: public Widget, public pp::Canvas {
 
-        virtual void SetPosition(const dr4::Vec2f& position) override;
+public:
 
-        virtual void Draw       (dr4::Texture& srcTexture) override;
+    WidgetPiska(optor::WidgetsState* state);
 
-        virtual bool OnMouseMove      (const dr4::Event& event) override;
-        virtual bool OnMousePress     (const dr4::Event& event) override;
-        virtual bool OnMouseRelease   (const dr4::Event& event) override;
-        virtual bool OnKeyboardPress  (const dr4::Event& event) override;
-        virtual bool OnKeyboardRelease(const dr4::Event& event) override;
-        virtual void OnIdle           () override;
+    virtual void SetPosition(const dr4::Vec2f& position) override;
 
-        [[nodiscard]] virtual std::string GetTypeName() const override {return "WidgetPiska"; };
+    virtual void Draw       (dr4::Texture& srcTexture) override;
 
-    protected:
+    virtual bool OnMouseMove      (const dr4::Event& event) override;
+    virtual bool OnMousePress     (const dr4::Event& event) override;
+    virtual bool OnMouseRelease   (const dr4::Event& event) override;
+    virtual bool OnKeyboardPress  (const dr4::Event& event) override;
+    virtual bool OnKeyboardRelease(const dr4::Event& event) override;
+    virtual void OnIdle           () override;
 
-        std::unique_ptr<dr4::Texture> texture_;
+    [[nodiscard]] virtual std::string GetTypeName() const override {return "WidgetPiska"; };
 
-        std::vector<std::unique_ptr<hui::GeomPrim>> prims_;
+    virtual pp::ControlsTheme GetControlsTheme() const override;
+    virtual pp::State* GetState() override;
+    virtual size_t AddShape(pp::Shape *shape) override;
+    virtual void DelShape(size_t ind) override;
+    virtual dr4::Window *GetWindow() override;
+
+protected:
+
+    std::unique_ptr<dr4::Texture> texture_;
+
+    std::vector<std::unique_ptr<pp::Tool>> tools_;
+    std::unordered_map<size_t, std::unique_ptr<pp::Shape>> shapes_;
+
+    pp::State piskaState_;
+    pp::ControlsTheme piskaTheme_;
 
 };
 

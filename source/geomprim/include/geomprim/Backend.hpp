@@ -34,7 +34,7 @@ enum Side {
     RIGHT,
 };
 
-class Backend final: public hui::GeomPrimBackend
+class Backend final: public pp::PPToolPlugin
 { 
 
 public:
@@ -57,7 +57,7 @@ private:
     
 };
 
-extern "C" hui::GeomPrimBackend* GEOM_PRIM_BACKEND_FUNCTION();
+extern "C" pp::PPToolPlugin* GEOM_PRIM_BACKEND_FUNCTION();
 
 }
 }

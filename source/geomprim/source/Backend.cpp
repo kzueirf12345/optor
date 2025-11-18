@@ -42,7 +42,7 @@ bool optor::geomprim::Backend::IsCompatibleWith(const Plugin& other) const {
     return true;
 }
 
-hui::GeomPrimBackend *optor::geomprim::CreateGeomPrimBackend()
+pp::PPToolPlugin *optor::geomprim::CreateGeomPrimBackend()
 {
     return new optor::geomprim::Backend();
 }

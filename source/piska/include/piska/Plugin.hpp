@@ -1,15 +1,15 @@
-#ifndef OPTOR_SOURCE_DR4_INCLUDE_DR4_BACKEND_HPP
-#define OPTOR_SOURCE_DR4_INCLUDE_DR4_BACKEND_HPP
+#ifndef OPTOR_SOURCE_PISKA_INCLUDE_PISKA_BACKEND_HPP
+#define OPTOR_SOURCE_PISKA_INCLUDE_PISKA_BACKEND_HPP
 
-#include "cum/ifc/dr4.hpp"
+#include "cum/ifc/pp.hpp"
+#include <memory>
 
-namespace optor
+namespace optor 
 {
-namespace dr4 
+namespace pp 
 {
 
-class Backend final: public ::cum::DR4BackendPlugin
-{ 
+class PPToolPlugin final: public ::cum::PPToolPlugin {
 
 public:
 
@@ -25,14 +25,14 @@ public:
 
     virtual void AfterLoad() override;
 
-    virtual ::dr4::Window *CreateWindow() override;
+    virtual std::vector<std::unique_ptr<::pp::Tool>> CreateTools(::pp::Canvas *cvs) override;
 
-protected:
 private:
-    
+
 };
 
 }
+
 }
 
-#endif /*OPTOR_SOURCE_DR4_INCLUDE_DR4_BACKEND_HPP*/
+#endif /*OPTOR_SOURCE_PISKA_INCLUDE_PISKA_BACKEND_HPP*/

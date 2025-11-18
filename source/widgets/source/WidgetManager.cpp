@@ -15,7 +15,7 @@
 #include "widgets/WidgetChildable.hpp"
 #include "widgets/WidgetPiska.hpp"
 
-optor::WidgetManager::WidgetManager(dr4::Window* window, hui::GeomPrimBackend* geomPrimBackend)
+optor::WidgetManager::WidgetManager(dr4::Window* window, cum::PPToolPlugin* geomPrimBackend)
     :   window_{window},
         texture_{window_->CreateTexture()},
         desktop_{},
@@ -41,7 +41,7 @@ optor::WidgetManager::WidgetManager(dr4::Window* window, hui::GeomPrimBackend* g
     state_.selectedWidget = nullptr;
     state_.prevMouseCoord = {0, 0};
     state_.selectedObj = nullptr;
-    state_.geomPrimBackend = geomPrimBackend;
+    state_.piskaPlugin = geomPrimBackend;
 }
 
 void optor::WidgetManager::Draw() {
