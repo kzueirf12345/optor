@@ -1,5 +1,4 @@
 #include <cmath>
-#include <iostream>
 
 #include "geomprim/Arrow.hpp"
 #include "dr4/math/rect.hpp"
