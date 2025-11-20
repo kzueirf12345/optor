@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include "piska/RectTool.hpp"
+#include "dr4/math/vec2.hpp"
 #include "piska/Rect.hpp"
 
 optor::pp::RectTool::RectTool(::pp::Canvas* cvs)
@@ -11,7 +12,8 @@ optor::pp::RectTool::RectTool(::pp::Canvas* cvs)
         isDrawing_(false),
         rect_{nullptr},
         state_{cvs->GetState()},
-        rectInd_(std::numeric_limits<size_t>::max())
+        rectInd_(std::numeric_limits<size_t>::max()),
+        startPos_{}
 {}
 
 std::string_view optor::pp::RectTool::Icon() const {
@@ -56,6 +58,7 @@ bool optor::pp::RectTool::OnMouseDown(const dr4::Event::MouseButton &evt) {
         rect_ = new optor::pp::Rect(cvs_->GetWindow(), cvs_->GetControlsTheme(), cvs_->GetState());
         rectInd_ = cvs_->AddShape(rect_);
         rect_->SetPos(evt.pos);
+        startPos_ = evt.pos;
         return true;
     } else {
         isDrawing_ = false;
@@ -77,7 +80,13 @@ bool optor::pp::RectTool::OnMouseMove(const dr4::Event::MouseMove &evt) {
 
     assert(rect_);
 
-    rect_->SetSize(evt.pos - rect_->GetPos());
+    const float left = std::min(startPos_.x, evt.pos.x);
+    const float right = std::max(startPos_.x, evt.pos.x);
+    const float top = std::min(startPos_.y, evt.pos.y);
+    const float bottom = std::max(startPos_.y, evt.pos.y);
+    
+    rect_->SetPos({left, top});
+    rect_->SetSize({right - left, bottom - top});
 
     return true;
 }

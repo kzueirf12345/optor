@@ -1,6 +1,7 @@
 #ifndef OPTOR_SOURCE_PISKA_INCLUDE_PISKA_RECT_TOOL_HPP
 #define OPTOR_SOURCE_PISKA_INCLUDE_PISKA_RECT_TOOL_HPP
 
+#include "dr4/math/vec2.hpp"
 #include "piska/Rect.hpp"
 #include "pp/canvas.hpp"
 #include "pp/tool.hpp"
@@ -38,6 +39,8 @@ private:
     size_t rectInd_;
 
     ::pp::State* const state_;
+
+    ::dr4::Vec2f startPos_;
 
 };
 
