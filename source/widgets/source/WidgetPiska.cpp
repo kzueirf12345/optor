@@ -160,15 +160,14 @@ bool optor::WidgetPiska::OnKeyboardPress(const dr4::Event& event) {
         return true;
     }
 
-    // if (event.key.sym == dr4::KeyCode::KEYCODE_C) {
-    //     prims_.push_back(std::unique_ptr<hui::GeomPrim>(state_->piskaPlugin->CreateGeomPrim(2, state_->window)));
-    //     return true;
-    // }
-
-    // if (event.key.sym == dr4::KeyCode::KEYCODE_A) {
-    //     prims_.push_back(std::unique_ptr<hui::GeomPrim>(state_->piskaPlugin->CreateGeomPrim(3, state_->window)));
-    //     return true;
-    // }
+    if (event.key.sym == dr4::KeyCode::KEYCODE_A) {
+        if (piskaState_.selectedTool == tools_[2].get()) {
+            piskaState_.selectedTool = nullptr;
+        } else {
+            piskaState_.selectedTool = tools_[2].get();
+        }
+        return true;
+    }
 
     return true;
 }

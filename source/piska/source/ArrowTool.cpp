@@ -1,0 +1,83 @@
+#include <cassert>
+#include <cmath>
+#include <limits>
+
+#include "piska/ArrowTool.hpp"
+#include "dr4/math/vec2.hpp"
+#include "piska/Arrow.hpp"
+
+optor::pp::ArrowTool::ArrowTool(::pp::Canvas* cvs)
+    :   cvs_{cvs},
+        isDrawing_(false),
+        arrow_{nullptr},
+        state_{cvs->GetState()},
+        arrowInd_(std::numeric_limits<size_t>::max()),
+        startPos_{}
+{}
+
+std::string_view optor::pp::ArrowTool::Icon() const {
+    return "ArrowToolIcon";
+}
+
+std::string_view optor::pp::ArrowTool::Name() const {
+    return "ArrowTool";
+}
+
+bool optor::pp::ArrowTool::IsCurrentlyDrawing() const {
+    return isDrawing_;
+}
+
+void optor::pp::ArrowTool::OnStart() {
+    if (state_->selectedTool) {
+        state_->selectedTool->OnEnd();
+    }
+    state_->selectedTool = this;
+}
+
+void optor::pp::ArrowTool::OnBreak() {
+    if (isDrawing_) {
+        assert(arrow_);
+        cvs_->DelShape(arrowInd_);
+    }
+}
+
+void optor::pp::ArrowTool::OnEnd() {
+    if (isDrawing_) {
+        isDrawing_ = false;
+        arrow_->OnSelect();
+    }
+}
+
+bool optor::pp::ArrowTool::OnMouseDown(const dr4::Event::MouseButton &evt) {
+    if (!isDrawing_) {
+        isDrawing_ = true;
+
+        arrow_ = new optor::pp::Arrow(cvs_->GetWindow(), cvs_->GetControlsTheme(), cvs_->GetState());
+        arrowInd_ = cvs_->AddShape(arrow_);
+        arrow_->SetPos(evt.pos);
+        startPos_ = evt.pos;
+        return true;
+    } else {
+        isDrawing_ = false;
+        arrow_->OnSelect();
+        return true;
+    }
+
+    return false;
+}
+
+bool optor::pp::ArrowTool::OnMouseUp(const dr4::Event::MouseButton &evt) {
+    return false;
+}
+
+bool optor::pp::ArrowTool::OnMouseMove(const dr4::Event::MouseMove &evt) {
+    if (!isDrawing_) {
+        return false;
+    }
+
+    assert(arrow_);
+
+    arrow_->SetEnd(evt.pos);
+
+    return true;
+}

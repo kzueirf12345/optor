@@ -1,7 +1,6 @@
 #include <cassert>
 #include <cmath>
 #include <limits>
-#include <iostream>
 
 #include "piska/CircleTool.hpp"
 #include "dr4/math/vec2.hpp"

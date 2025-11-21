@@ -1,7 +1,9 @@
 #include <memory>
 
 #include "cum/manager.hpp"
+
 #include "piska/Plugin.hpp"
+#include "piska/ArrowTool.hpp"
 #include "piska/CircleTool.hpp"
 #include "piska/RectTool.hpp"
 
@@ -33,6 +35,7 @@ std::vector<std::unique_ptr<::pp::Tool>> optor::pp::PPToolPlugin::CreateTools(::
     std::vector<std::unique_ptr<::pp::Tool>> vec;
     vec.emplace_back(std::make_unique<optor::pp::RectTool>(cvs));
     vec.emplace_back(std::make_unique<optor::pp::CircleTool>(cvs));
+    vec.emplace_back(std::make_unique<optor::pp::ArrowTool>(cvs));
     return vec;
 }
 

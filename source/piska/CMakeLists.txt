@@ -7,6 +7,9 @@ add_library(piska SHARED
 
     source/CircleTool.cpp
     source/Circle.cpp
+
+    source/ArrowTool.cpp
+    source/Arrow.cpp
 )
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")

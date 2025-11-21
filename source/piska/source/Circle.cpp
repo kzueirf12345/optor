@@ -19,7 +19,7 @@ optor::pp::Circle::Circle(dr4::Window* dr4Window, const ::pp::ControlsTheme& the
     circle_->SetBorderColor(theme.shapeColor);
     circle_->SetFillColor({0, 0, 0, 0});
 
-    selectRect_->SetBorderThickness(-OutlineThickness);
+    selectRect_->SetBorderThickness(OutlineThickness);
     selectRect_->SetBorderColor(theme.lineColor);
     selectRect_->SetFillColor({0, 0, 0, 0});
 
@@ -115,11 +115,11 @@ bool optor::pp::Circle::OnMe(dr4::Vec2f relCoord) const {
 }
 
 bool optor::pp::Circle::OnOutline(dr4::Vec2f relCoord) const {
-    const dr4::Vec2f posOut = selectRect_->GetPos();
-    const dr4::Vec2f sizeOut = selectRect_->GetSize();
+    const dr4::Vec2f posIn = selectRect_->GetPos();
+    const dr4::Vec2f sizeIn = selectRect_->GetSize();
 
-    const dr4::Vec2f posIn = posOut + OutlineThicknessVec;
-    const dr4::Vec2f sizeIn = sizeOut - 2 * OutlineThicknessVec;
+    const dr4::Vec2f posOut = posIn - dr4::Vec2f(selectRect_->GetBorderThickness(), selectRect_->GetBorderThickness());
+    const dr4::Vec2f sizeOut = sizeIn + 2 * dr4::Vec2f(selectRect_->GetBorderThickness(), selectRect_->GetBorderThickness());
     
     return dr4::Rect2f(posOut, sizeOut).Contains(relCoord) 
        && !dr4::Rect2f(posIn,  sizeIn) .Contains(relCoord);
