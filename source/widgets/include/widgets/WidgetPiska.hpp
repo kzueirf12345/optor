@@ -11,12 +11,12 @@
 
 #include "pp/shape.hpp"
 #include "pp/tool.hpp"
-#include "widgets/Widget.hpp"
+#include "widgets/WidgetChildable.hpp"
 
 namespace optor 
 {
 
-class WidgetPiska final: public Widget, public pp::Canvas {
+class WidgetPiska final: public WidgetChildable, public pp::Canvas {
 
 public:
 
@@ -42,8 +42,6 @@ public:
     virtual dr4::Window *GetWindow() override;
 
 protected:
-
-    std::unique_ptr<dr4::Texture> texture_;
 
     std::vector<std::unique_ptr<pp::Tool>> tools_;
     std::unordered_map<size_t, std::unique_ptr<pp::Shape>> shapes_;

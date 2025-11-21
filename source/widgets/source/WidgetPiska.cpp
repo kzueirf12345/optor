@@ -5,12 +5,13 @@
 #include "dr4/math/vec2.hpp"
 #include "global/Global.hpp"
 #include "pp/canvas.hpp"
-#include "widgets/Widget.hpp"
+#include "widgets/PiskaToolButton.hpp"
+#include "widgets/WidgetChildable.hpp"
+#include "widgets/WidgetScrolledList.hpp"
 #include <memory>
 
 optor::WidgetPiska::WidgetPiska(optor::WidgetsState* state)
-    :   optor::Widget(state->window->GetSize() - 2 * dr4::Vec2f{10, 10}, state),
-        texture_{state->window->CreateTexture()},
+    :   optor::WidgetChildable(state->window->GetSize() - 2 * dr4::Vec2f{10, 10}, state),
         tools_(state->piskaPlugin->CreateTools(this)),
         shapes_{},
         piskaState_(nullptr, nullptr),
@@ -23,10 +24,6 @@ optor::WidgetPiska::WidgetPiska(optor::WidgetsState* state)
         }
 {
     ERROR_HANDLE([this](){
-        texture_->SetSize(state_->window->GetSize());
-    });
-
-    ERROR_HANDLE([this](){
         texture_->Clear({optor::color::Transparent});
     });
 
@@ -37,10 +34,33 @@ optor::WidgetPiska::WidgetPiska(optor::WidgetsState* state)
     rect_->SetFillColor(optor::color::Transparent);
     rect_->SetBorderColor(optor::color::Red);
     rect_->SetBorderThickness(10);
+
+    const float listMargin = 100;
+    const float listWidth = 200;
+
+    auto* list = dynamic_cast<optor::WidgetScrolledList*>(AddChild(std::make_unique<optor::WidgetScrolledList>(
+        dr4::Vec2f{listWidth + INIT_SCROLLBAR_WIDTH, state->window->GetSize().y - 2 *listMargin},
+        state_
+    )));
+
+    list->SetPosition({0, listMargin});
+
+    float offset = 0;
+
+    for (auto& tool : tools_) {
+        auto* button = list->AddChild(std::make_unique<optor::PiskaToolButton>(
+            dr4::Vec2f(200, 100),
+            state_,
+            tool.get(),
+            &piskaState_
+        ));
+        // button->SetPosition({offset, 0});
+        // offset += 200;
+    }
 }
 
 void optor::WidgetPiska::SetPosition(const dr4::Vec2f& position) {
-    optor::Widget::SetPosition(position);
+    optor::WidgetChildable::SetPosition(position);
     texture_->SetPos(position);
 }
 
@@ -57,6 +77,12 @@ void optor::WidgetPiska::Draw(dr4::Texture& srcTexture) {
     });
     rect_->SetPos(pos);
 
+    for (const auto& child : children_) {
+        ERROR_HANDLE([this, &child](){
+            child->Draw(*texture_);
+        });
+    }
+
     for (const auto& shape : shapes_) {
         ERROR_HANDLE([this, &shape](){
             shape.second->DrawOn(*texture_);
@@ -67,8 +93,6 @@ void optor::WidgetPiska::Draw(dr4::Texture& srcTexture) {
         srcTexture.Draw(*texture_);
     });
 }
-
-//TODO implement
 
 bool optor::WidgetPiska::OnMouseMove(const dr4::Event& event) {
     if (isHide_) { return false; }
@@ -88,11 +112,21 @@ bool optor::WidgetPiska::OnMouseMove(const dr4::Event& event) {
         }
     }
 
+    optor::WidgetChildable::OnMouseMove(event);
+
     return true;
 }
 
 bool optor::WidgetPiska::OnMousePress(const dr4::Event& event) {
     if (isHide_) { return false; }
+
+    for (auto childIt = children_.rbegin(); childIt != children_.rend(); ++childIt) {
+        if (!(*childIt)->GetMustRemoved() && ERROR_HANDLE([childIt, &event](){
+                return (*childIt)->OnMousePress(event);
+        })) {
+            return true;
+        }
+    }
 
     dr4::Event childEvent(event);
     childEvent.mouseButton.pos -= AbsCoord() + texture_->GetZero();
@@ -131,41 +165,22 @@ bool optor::WidgetPiska::OnMouseRelease(const dr4::Event& event) {
         }
     }
 
+    if (optor::WidgetChildable::OnMouseRelease(event)) {
+        return true;
+    }
+
     return true;
 }
 
 bool optor::WidgetPiska::OnKeyboardPress(const dr4::Event& event) {
     if (isHide_) { return false; }
 
+    if (optor::WidgetChildable::OnKeyboardPress(event)) {
+        return true;
+    }
+
     if (event.key.sym == dr4::KeyCode::KEYCODE_ESCAPE) {
         SetMustRemoved(true);
-        return true;
-    }
-
-    if (event.key.sym == dr4::KeyCode::KEYCODE_R) {
-        if (piskaState_.selectedTool == tools_[0].get()) {
-            piskaState_.selectedTool = nullptr;
-        } else {
-            piskaState_.selectedTool = tools_[0].get();
-        }
-        return true;
-    }
-
-    if (event.key.sym == dr4::KeyCode::KEYCODE_C) {
-        if (piskaState_.selectedTool == tools_[1].get()) {
-            piskaState_.selectedTool = nullptr;
-        } else {
-            piskaState_.selectedTool = tools_[1].get();
-        }
-        return true;
-    }
-
-    if (event.key.sym == dr4::KeyCode::KEYCODE_A) {
-        if (piskaState_.selectedTool == tools_[2].get()) {
-            piskaState_.selectedTool = nullptr;
-        } else {
-            piskaState_.selectedTool = tools_[2].get();
-        }
         return true;
     }
 
@@ -175,12 +190,15 @@ bool optor::WidgetPiska::OnKeyboardPress(const dr4::Event& event) {
 bool optor::WidgetPiska::OnKeyboardRelease(const dr4::Event& event) {
     if (isHide_) { return false; } 
 
+    optor::WidgetChildable::OnKeyboardRelease(event);
+
     return true;
 }
 
 void optor::WidgetPiska::OnIdle() {
     if (isHide_) { return; }
 
+    optor::WidgetChildable::OnIdle();
 }
 
 
@@ -198,7 +216,6 @@ size_t optor::WidgetPiska::AddShape(pp::Shape *shape) {
 
     shapes_[shapeInd].reset(shape);
 
-    // shapes_[shapeInd] = std::unique_ptr<pp::Shape>(shape);
     return shapeInd;
 }
 

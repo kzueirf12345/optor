@@ -5,6 +5,7 @@
 #include "piska/ArrowTool.hpp"
 #include "dr4/math/vec2.hpp"
 #include "piska/Arrow.hpp"
+#include "piska/Global.hpp"
 
 optor::pp::ArrowTool::ArrowTool(::pp::Canvas* cvs)
     :   cvs_{cvs},
@@ -37,6 +38,7 @@ void optor::pp::ArrowTool::OnStart() {
 void optor::pp::ArrowTool::OnBreak() {
     if (isDrawing_) {
         assert(arrow_);
+        isDrawing_ = false;
         cvs_->DelShape(arrowInd_);
     }
 }
@@ -49,6 +51,10 @@ void optor::pp::ArrowTool::OnEnd() {
 }
 
 bool optor::pp::ArrowTool::OnMouseDown(const dr4::Event::MouseButton &evt) {
+    if (evt.button != CREATE_BUTTON) {
+        return false;
+    }
+
     if (!isDrawing_) {
         isDrawing_ = true;
 

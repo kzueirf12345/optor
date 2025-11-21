@@ -38,6 +38,7 @@ void optor::pp::RectTool::OnStart() {
 void optor::pp::RectTool::OnBreak() {
     if (isDrawing_) {
         assert(rect_);
+        isDrawing_ = false;
         cvs_->DelShape(rectInd_);
     }
 }
@@ -51,6 +52,10 @@ void optor::pp::RectTool::OnEnd() {
 
 
 bool optor::pp::RectTool::OnMouseDown(const dr4::Event::MouseButton &evt) {
+    if (evt.button != CREATE_BUTTON) {
+        return false;
+    }
+
     if (!isDrawing_) {
         isDrawing_ = true;
 

@@ -37,6 +37,7 @@ void optor::pp::CircleTool::OnStart() {
 void optor::pp::CircleTool::OnBreak() {
     if (isDrawing_) {
         assert(circle_);
+        isDrawing_ = false;
         cvs_->DelShape(circleInd_);
     }
 }
@@ -49,6 +50,10 @@ void optor::pp::CircleTool::OnEnd() {
 }
 
 bool optor::pp::CircleTool::OnMouseDown(const dr4::Event::MouseButton &evt) {
+    if (evt.button != CREATE_BUTTON) {
+        return false;
+    }
+    
     if (!isDrawing_) {
         isDrawing_ = true;
 
