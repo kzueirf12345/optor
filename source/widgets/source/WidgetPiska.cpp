@@ -45,7 +45,6 @@ optor::WidgetPiska::WidgetPiska(optor::WidgetsState* state)
 
     list->SetPosition({0, listMargin});
 
-    float offset = 0;
 
     for (auto& tool : tools_) {
         auto* button = list->AddChild(std::make_unique<optor::PiskaToolButton>(
@@ -54,8 +53,6 @@ optor::WidgetPiska::WidgetPiska(optor::WidgetsState* state)
             tool.get(),
             &piskaState_
         ));
-        // button->SetPosition({offset, 0});
-        // offset += 200;
     }
 }
 
