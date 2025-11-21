@@ -44,6 +44,8 @@
 // TODO add optic obj
 // TODO remove optic obj
 // TODO change optic obj features
+// TODO deselect all pp::shape (click to empty)
+// TODO smart update scene (when some change) 
 
 
 ::dr4::Font* optor::FONT = nullptr;

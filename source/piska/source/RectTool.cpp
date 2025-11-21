@@ -80,13 +80,7 @@ bool optor::pp::RectTool::OnMouseMove(const dr4::Event::MouseMove &evt) {
 
     assert(rect_);
 
-    const float left = std::min(startPos_.x, evt.pos.x);
-    const float right = std::max(startPos_.x, evt.pos.x);
-    const float top = std::min(startPos_.y, evt.pos.y);
-    const float bottom = std::max(startPos_.y, evt.pos.y);
-    
-    rect_->SetPos({left, top});
-    rect_->SetSize({right - left, bottom - top});
+    rect_->SetSize(evt.pos - rect_->GetPos());
 
     return true;
 }

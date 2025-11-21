@@ -1,7 +1,8 @@
-#ifndef OPTOR_SOURCE_PISKA_INCLUDE_PISKA_RECT_HPP
-#define OPTOR_SOURCE_PISKA_INCLUDE_PISKA_RECT_HPP
+#ifndef OPTOR_SOURCE_PISKA_INCLUDE_PISKA_CIRCLE_HPP
+#define OPTOR_SOURCE_PISKA_INCLUDE_PISKA_CIRCLE_HPP
 
 #include <memory>
+#include <cmath>
 
 #include "dr4/math/vec2.hpp"
 #include "dr4/texture.hpp"
@@ -17,11 +18,12 @@ namespace optor
 namespace pp 
 {
 
-class Rect final: public ::pp::Shape {
+
+class Circle final: public ::pp::Shape {
 
 public:
 
-    Rect(dr4::Window* dr4Window, const ::pp::ControlsTheme& theme, ::pp::State* state);
+    Circle(dr4::Window* dr4Window, const ::pp::ControlsTheme& theme, ::pp::State* state);
 
     virtual bool OnMouseDown(const dr4::Event::MouseButton &evt) override;
     virtual bool OnMouseUp(const dr4::Event::MouseButton &evt) override;
@@ -33,14 +35,13 @@ public:
     virtual void DrawOn(::dr4::Texture& texture) const override;
 
     virtual void SetPos(::dr4::Vec2f pos) override;
-
     virtual ::dr4::Vec2f GetPos() const override;
 
-    void SetSize(dr4::Vec2f size);
+    void SetRadius(float radius);
 
 private:
 
-    std::unique_ptr<dr4::Rectangle> rect_;
+    std::unique_ptr<dr4::Circle> circle_;
     std::unique_ptr<dr4::Rectangle> selectRect_;
 
     ::pp::State* const state_;
@@ -60,10 +61,12 @@ private:
 
     void ResizeBySide(dr4::Vec2f offset);
 
+    float DistanceFromCenter2(dr4::Vec2f relCoord) const;
+
 };
 
 }
 
 }
 
-#endif /*OPTOR_SOURCE_PISKA_INCLUDE_PISKA_RECT_HPP*/
+#endif /*OPTOR_SOURCE_PISKA_INCLUDE_PISKA_CIRCLE_HPP*/

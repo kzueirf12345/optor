@@ -66,7 +66,7 @@ bool optor::pp::Rect::OnMouseMove(const dr4::Event::MouseMove &evt) {
     }
 
     if (isResized_) {
-        ResizeBySize(evt.rel);
+        ResizeBySide(evt.rel);
         return true;
     }
 
@@ -106,7 +106,7 @@ void optor::pp::Rect::SetPos(::dr4::Vec2f pos) {
 }
 
 void optor::pp::Rect::SetSize(dr4::Vec2f size) {
-    rect_->SetSize({std::fabs(size.x), std::fabs(size.y)});
+    rect_->SetSize(size);
 
     UpdateSelectRect();
 }
@@ -170,7 +170,7 @@ optor::pp::Side optor::pp::Rect::ClosestSide(dr4::Vec2f relCoord) const {
     return minSide;
 }
 
-void optor::pp::Rect::ResizeBySize(dr4::Vec2f offset) {
+void optor::pp::Rect::ResizeBySide(dr4::Vec2f offset) {
     dr4::Vec2f pos  = rect_->GetPos();
     dr4::Vec2f size = rect_->GetSize();
 

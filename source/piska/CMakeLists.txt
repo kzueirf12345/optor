@@ -1,8 +1,12 @@
 
 add_library(piska SHARED
     source/Plugin.cpp
+
     source/RectTool.cpp
     source/Rect.cpp
+
+    source/CircleTool.cpp
+    source/Circle.cpp
 )
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")

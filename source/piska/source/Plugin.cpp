@@ -2,6 +2,7 @@
 
 #include "cum/manager.hpp"
 #include "piska/Plugin.hpp"
+#include "piska/CircleTool.hpp"
 #include "piska/RectTool.hpp"
 
 std::string_view optor::pp::PPToolPlugin::GetIdentifier() const {
@@ -31,6 +32,7 @@ void optor::pp::PPToolPlugin::AfterLoad() {
 std::vector<std::unique_ptr<::pp::Tool>> optor::pp::PPToolPlugin::CreateTools(::pp::Canvas *cvs) {
     std::vector<std::unique_ptr<::pp::Tool>> vec;
     vec.emplace_back(std::make_unique<optor::pp::RectTool>(cvs));
+    vec.emplace_back(std::make_unique<optor::pp::CircleTool>(cvs));
     return vec;
 }
 
