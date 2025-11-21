@@ -53,6 +53,7 @@ void optor::WidgetButtonMoveOpticObj::OnIdle() {
 
     if (isPressed_) {
         ERROR_HANDLE(&optor::OpticObj::Move, state_->selectedObj, offset);
+        state_->needUpdateScene = true;
     }
 
     ERROR_HANDLE([this](){

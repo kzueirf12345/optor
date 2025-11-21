@@ -9,6 +9,7 @@
 #include "optics/Camera.hpp"
 #include "optics/OpticObj.hpp"
 #include "optics/Scene.hpp"
+#include "optics/Vector.hpp"
 #include "widgets/Widget.hpp"
 #include "global/Global.hpp"
 #include "common/ErrorHandler.hpp"
@@ -17,7 +18,8 @@ optor::SceneWidget::SceneWidget(const dr4::Vec2f& size,
                                 optor::WidgetsState* state)
     :   optor::Widget{size, state},
         texture_{state->window->CreateTexture()},
-        scene_{state->window, size}
+        scene_{state->window, size},
+        needUpdateScene_(false)
 {
     ERROR_HANDLE([this, size](){
         texture_->SetSize(size);
@@ -59,6 +61,7 @@ bool optor::SceneWidget::OnMouseMove(const dr4::Event& event) {
 
     if (state_->selectedWidget == this) {
         ERROR_HANDLE(&optor::SceneWidget::RotateCamera, this, mouseOffset);
+        state_->needUpdateScene = true;
         return true;
     }
 
@@ -81,6 +84,7 @@ bool optor::SceneWidget::OnMousePress(const dr4::Event& event) {
         auto* selectedObj = scene_.GetObjAtPixel({pixel.x, pixel.y});
         if (selectedObj) {
             state_->selectedObj = selectedObj;
+            state_->needUpdateScene = true;
         }
     }
 
@@ -94,31 +98,37 @@ bool optor::SceneWidget::OnKeyboardPress(const dr4::Event& event) {
         switch (event.key.sym) {
             case dr4::KeyCode::KEYCODE_W: {
                 ERROR_HANDLE(&optor::Scene::SetMoveDir, scene_, optor::MoveDirection::FORWARD);
+                needUpdateScene_ = true;
                 return true;
             }
 
             case dr4::KeyCode::KEYCODE_S: {
                 ERROR_HANDLE(&optor::Scene::SetMoveDir, scene_, optor::MoveDirection::BACKWARD);
+                needUpdateScene_ = true;
                 return true;
             }
 
             case dr4::KeyCode::KEYCODE_A: {
                 ERROR_HANDLE(&optor::Scene::SetMoveDir, scene_, optor::MoveDirection::LEFT);
+                needUpdateScene_ = true;
                 return true;
             }
 
             case dr4::KeyCode::KEYCODE_D: {
                 ERROR_HANDLE(&optor::Scene::SetMoveDir, scene_, optor::MoveDirection::RIGHT);
+                needUpdateScene_ = true;
                 return true;
             }
 
             case dr4::KeyCode::KEYCODE_SPACE: {
                 ERROR_HANDLE(&optor::Scene::SetMoveDir, scene_, optor::MoveDirection::UP);
+                needUpdateScene_ = true;
                 return true;
             }
 
             case dr4::KeyCode::KEYCODE_LCONTROL: {
                 ERROR_HANDLE(&optor::Scene::SetMoveDir, scene_, optor::MoveDirection::DOWN);
+                needUpdateScene_ = true;
                 return true;
             }
 
@@ -150,6 +160,7 @@ bool optor::SceneWidget::OnKeyboardRelease(const dr4::Event& event) {
          || event.key.sym == dr4::KeyCode::KEYCODE_LCONTROL
         ) {
             ERROR_HANDLE(&optor::Scene::SetMoveDir, scene_, optor::MoveDirection::UNKNOWN);
+            needUpdateScene_ = false;
             return true;
         }
     }
@@ -178,6 +189,7 @@ void optor::SceneWidget::RotateCamera(const dr4::Vec2f& mouseOffset) {
 
     if (speed) {
         ERROR_HANDLE(&optor::Camera::Rotate, scene_.GetCamera(), dir, speed);
+        state_->needUpdateScene = true;
     }
     
     if (mouseOffset.y < 0) {
@@ -190,6 +202,7 @@ void optor::SceneWidget::RotateCamera(const dr4::Vec2f& mouseOffset) {
 
     if (speed) {
         ERROR_HANDLE(&optor::Camera::Rotate, scene_.GetCamera(), dir, speed);
+        state_->needUpdateScene = true;
     }
 }
 
@@ -197,6 +210,8 @@ void optor::SceneWidget::OnIdle() {
     if (isHide_) { return ; }
 
     static optor::OpticObj* prevSelected = nullptr;
+    static optor::OpticObj* aabb = nullptr;
+    static optor::Vector3d  prevCoord = {};
     
     ERROR_HANDLE([this](){
         optor::Widget::OnIdle();
@@ -205,15 +220,28 @@ void optor::SceneWidget::OnIdle() {
     if (state_->selectedObj != prevSelected) {
         if (prevSelected) {
             scene_.PopObj();
+            aabb = nullptr;
+            state_->needUpdateScene = true;
         }
         if (state_->selectedObj)
         {
-            scene_.AddObj(std::make_unique<optor::AABB>(state_->selectedObj->GetAABB(), optor::materials::SELECTOR));
+            aabb = scene_.AddObj(std::make_unique<optor::AABB>(state_->selectedObj->GetAABB(), optor::materials::SELECTOR));
+            prevCoord = state_->selectedObj->GetCoord();
+            state_->needUpdateScene = true;
         }
         prevSelected = state_->selectedObj;
     }
 
-    ERROR_HANDLE(&optor::Scene::Update, scene_); // TODO smart update
+    if (state_->selectedObj && prevCoord != state_->selectedObj->GetCoord()) {
+        aabb->Move(state_->selectedObj->GetCoord() - prevCoord);
+        prevCoord = state_->selectedObj->GetCoord();
+        state_->needUpdateScene = true;
+    }
+
+    if (state_->needUpdateScene || needUpdateScene_) {
+        ERROR_HANDLE(&optor::Scene::Update, scene_);
+        state_->needUpdateScene = false;
+    }
 
 }
 

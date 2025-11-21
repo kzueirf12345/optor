@@ -28,6 +28,8 @@ struct WidgetsState {
     optor::OpticObj* selectedObj;
 
     std::deque<std::unique_ptr<optor::Widget>> modalWidgets;
+
+    bool needUpdateScene;
 };
 
 }

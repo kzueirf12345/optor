@@ -42,6 +42,7 @@ optor::WidgetManager::WidgetManager(dr4::Window* window, cum::PPToolPlugin* geom
     state_.prevMouseCoord = {0, 0};
     state_.selectedObj = nullptr;
     state_.piskaPlugin = geomPrimBackend;
+    state_.needUpdateScene = true;
 }
 
 void optor::WidgetManager::Draw() {

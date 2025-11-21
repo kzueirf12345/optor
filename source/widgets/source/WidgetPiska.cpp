@@ -11,7 +11,7 @@
 #include <memory>
 
 optor::WidgetPiska::WidgetPiska(optor::WidgetsState* state)
-    :   optor::WidgetChildable(state->window->GetSize() - 2 * dr4::Vec2f{10, 10}, state),
+    :   optor::WidgetChildable(state->window->GetSize() - 4 * dr4::Vec2f{10, 10}, state),
         tools_(state->piskaPlugin->CreateTools(this)),
         shapes_{},
         piskaState_(nullptr, nullptr),
