@@ -11,13 +11,13 @@
 #include <memory>
 
 optor::WidgetPiska::WidgetPiska(optor::WidgetsState* state)
-    :   optor::WidgetChildable(state->window->GetSize() - 4 * dr4::Vec2f{10, 10}, state),
+    :   optor::WidgetChildable(state->window->GetSize(), state),
         tools_(state->piskaPlugin->CreateTools(this)),
         shapes_{},
         piskaState_(nullptr, nullptr),
         piskaTheme_{
             .shapeColor = optor::color::Red,
-            .lineColor = optor::color::Blue,
+            .lineColor = optor::color::Poison,
             .textColor = optor::color::TextPrimary,
             .baseFontSize = 20,
             .handleColor = optor::color::Cyan
@@ -31,6 +31,7 @@ optor::WidgetPiska::WidgetPiska(optor::WidgetsState* state)
         texture_->SetZero({10, 10});
     });
 
+    rect_->SetSize(state_->window->GetSize() - dr4::Vec2f(20, 20));
     rect_->SetFillColor(optor::color::Transparent);
     rect_->SetBorderColor(optor::color::Red);
     rect_->SetBorderThickness(10);
@@ -39,7 +40,7 @@ optor::WidgetPiska::WidgetPiska(optor::WidgetsState* state)
     const float listWidth = 200;
 
     auto* list = dynamic_cast<optor::WidgetScrolledList*>(AddChild(std::make_unique<optor::WidgetScrolledList>(
-        dr4::Vec2f{listWidth + INIT_SCROLLBAR_WIDTH, state->window->GetSize().y - 2 *listMargin},
+        dr4::Vec2f{listWidth + INIT_SCROLLBAR_WIDTH, state_->window->GetSize().y - 2 *listMargin},
         state_
     )));
 
