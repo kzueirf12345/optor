@@ -1,12 +1,7 @@
 #include "dr4Plugin/Backend.hpp"
 #include "dr4Plugin/Window.hpp"
 #include <dlfcn.h>
-
-const std::string &optor::dr4::Backend::Name() const 
-{
-    static std::string name = "SOSAT_PENISES";
-    return name;
-}
+#include <string_view>
 
 ::dr4::Window *optor::dr4::Backend::CreateWindow() 
 {

@@ -3,14 +3,16 @@
 #include <linux/limits.h>
 #include <memory>
 #include <stdexcept>
-#include <iostream>
 #include <cassert>
 #include <string>
 
+#include "cum/ifc/dr4.hpp"
+#include "cum/manager.hpp"
 #include "dr4/math/color.hpp"
 #include "dr4/math/vec2.hpp"
+#include "dr4/texture.hpp"
 #include "global/Global.hpp"
-#include "misc/dr4_ifc.hpp"
+#include "cum/ifc/pp.hpp"
 #include "dr4/window.hpp"
 
 #include "common/ErrorHandler.hpp"
@@ -32,30 +34,23 @@
 #include "optics/Triangle.hpp"
 #include "optics/Sphere.hpp"
 
-// FIXME handle textentered in Window 
+// FIXME handle TextEntered
 // FIXME update sfml 
-// FIXME install sdl3 //YES
-// FIXME scroll bar elements pos
-// FIXME border
 // TODO add optic obj
 // TODO remove optic obj
 // TODO change optic obj features
+// TODO update optic obj features
+// TODO deselect all pp::shape (click to empty)
 
 
 ::dr4::Font* optor::FONT = nullptr;
 
-static void CreateScene(dr4::DR4Backend* backend, optor::WidgetManager* manager);
-static void CreateCameraButtons(dr4::DR4Backend* backend, optor::WidgetManager* manager, optor::SceneWidget* sceneWidget);
+
+static void CreateScene(cum::DR4BackendPlugin* backend, optor::WidgetManager* manager);
+static void CreateCameraButtons(cum::DR4BackendPlugin* backend, optor::WidgetManager* manager, optor::SceneWidget* sceneWidget);
 static void CreateObjsList(optor::WidgetManager* manager, optor::SceneWidget* sceneWidget);
 
 int main() {
-    void* libdr4 = dlopen("./build/source/dr4/libdr4.so", RTLD_LAZY);
-    // void* libdr4 = dlopen("./plugins/dr4/v1/libSeva.so", RTLD_LAZY);
-    
-    if (!libdr4) {
-        std::cerr << "error: " << dlerror() << std::endl;
-        throw std::runtime_error("Can't open lib");
-    }
 
     cum::Manager pluginsManager = {};
 
@@ -65,19 +60,18 @@ int main() {
 
     dr4Backend->AfterLoad();
 
-    if (!backend) {
-        throw std::runtime_error("Can't get backend");
-    }
+// ==========DR4===========
+    
 
-    dr4::Window* window = backend->CreateWindow();
+    std::unique_ptr<dr4::Window> window(dr4Backend->CreateWindow());
 
     if (!window) {
-        delete backend;
+        delete dr4Backend;
         throw std::runtime_error("Can't get window");
     }
 
-    ERROR_HANDLE([window](){
-        // window->Open();
+    ERROR_HANDLE([&window](){
+        window->Open();
         window->SetSize({optor::PROGRAM_WIDTH, optor::PROGRAM_HEIGHT});
         window->SetTitle("0xCEBAEBA1DEDA");
         window->Open();
@@ -86,8 +80,6 @@ int main() {
     optor::FONT = window->CreateFont();
 
     if (!optor::FONT) {
-        delete backend;
-        delete window;
         throw std::runtime_error("Can't get font");
     }
 
@@ -95,13 +87,21 @@ int main() {
         optor::FONT->LoadFromFile(optor::FONT_PATH);
     });
 
-try 
-{
+//==========DR4=================
+//==========GeomPrim=================
 
-    optor::WidgetManager manager(window);
+    auto* geomPrimBackend = dynamic_cast<cum::PPToolPlugin*>(ERROR_HANDLE([&pluginsManager](){
+        return pluginsManager.LoadFromFile("./build/source/piska/libpiska.so");
+    }));
 
-    ERROR_HANDLE([backend, &manager](){
-        CreateScene(backend, &manager);
+    geomPrimBackend->AfterLoad();
+
+//==========GeomPrim=================
+
+    optor::WidgetManager manager(window.get());
+
+    ERROR_HANDLE([dr4Backend, &manager](){
+        CreateScene(dr4Backend, &manager);
     });
 
     auto* topbar = ERROR_HANDLE([&manager](){
@@ -110,9 +110,9 @@ try
         ));
     });
 
+
     while (ERROR_HANDLE(&dr4::Window::IsOpen, window)) {
 
-        
         ERROR_HANDLE(&optor::WidgetManager::HandleEvents, &manager);
 
         if (!ERROR_HANDLE(&dr4::Window::IsOpen, window)) {
@@ -120,28 +120,17 @@ try
         }
         
         ERROR_HANDLE(&dr4::Window::Clear, window, optor::color::Poison);
-        
+
         ERROR_HANDLE(&optor::WidgetManager::Draw, &manager);
 
         ERROR_HANDLE(&dr4::Window::Display, window);
     }
-} 
-catch(...) 
-{
-    std::cerr << "Something went wrong\n";
-    delete backend;
-    delete window;
-
-    throw;
-}
-
-    delete backend;
-    delete window;
     
     return EXIT_SUCCESS;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        // ВОВА ГЕЙ + ПИДОР
 }
 
-void CreateScene(dr4::DR4Backend* backend, optor::WidgetManager* manager) {
+
+void CreateScene(cum::DR4BackendPlugin* backend, optor::WidgetManager* manager) {
     assert(manager);
     assert(backend);
 
@@ -249,7 +238,7 @@ void CreateScene(dr4::DR4Backend* backend, optor::WidgetManager* manager) {
     ERROR_HANDLE(&CreateObjsList, manager, sceneWidget);
 }
 
-static void CreateCameraButtons(dr4::DR4Backend* backend, optor::WidgetManager* manager, optor::SceneWidget* sceneWidget) {
+static void CreateCameraButtons(cum::DR4BackendPlugin* backend, optor::WidgetManager* manager, optor::SceneWidget* sceneWidget) {
     assert(manager);
     assert(sceneWidget);
     assert(backend);
