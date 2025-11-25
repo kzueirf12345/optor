@@ -1,8 +1,5 @@
 
-add_library(dr4 SHARED
-
-    source/math/rect.cpp
-    source/math/vec2.cpp
+add_library(dr4Plugin SHARED
 
     source/Backend.cpp
     source/Circle.cpp
@@ -31,17 +28,19 @@ else()
     add_compile_options(-O2)
 endif()
 
-set_target_properties(dr4 PROPERTIES FOLDER "source")
+set_target_properties(dr4Plugin PROPERTIES FOLDER "source")
 
-target_include_directories(dr4
+target_include_directories(dr4Plugin
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> # Для сборки проекта
         $<INSTALL_INTERFACE:include>                           # Для будущей установки
 )
 
-target_link_libraries(dr4
+target_link_libraries(dr4Plugin
     PRIVATE 
         sfml-graphics
         common
-        libs
+        cum
+        dr4
+        pp
 )

@@ -4,7 +4,8 @@
 #include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 
-#include "dr4/Rectangle.hpp"
+#include "dr4Plugin/Rectangle.hpp"
+#include "dr4/math/rect.hpp"
 #include "dr4/math/vec2.hpp"
 #include "dr4/texture.hpp"
 
@@ -44,6 +45,10 @@ public:
     virtual void SetZero(::dr4::Vec2f pos) override;
     virtual ::dr4::Vec2f GetZero() const override;
 
+    virtual void SetClipRect(::dr4::Rect2f rect) override;
+    virtual void RemoveClipRect() override;
+    virtual ::dr4::Rect2f GetClipRect() const override;
+
     virtual void Clear(::dr4::Color color) override;
 
     virtual void DrawOn(::dr4::Texture& texture) const override;
@@ -57,6 +62,9 @@ private:
     sf::RenderTexture renderTexture_;
     ::dr4::Vec2f zero_;
     ::dr4::Vec2f pos_;
+
+    ::dr4::Rect2f clipRect_;
+    bool isClipped_;
 
     sf::Sprite sprite_;
 

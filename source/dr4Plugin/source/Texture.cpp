@@ -8,7 +8,7 @@
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Image.hpp>
 
-#include "dr4/Texture.hpp"
+#include "dr4Plugin/Texture.hpp"
 
 #include "common/ErrorHandler.hpp"
 
@@ -70,6 +70,23 @@ void optor::dr4::Texture::SetZero(::dr4::Vec2f pos) {
     return zero_;
 }
 
+void optor::dr4::Texture::SetClipRect(::dr4::Rect2f rect) {
+    isClipped_ = true;
+    clipRect_ = rect;
+}
+
+void optor::dr4::Texture::RemoveClipRect() {
+    isClipped_ = false;
+}
+
+::dr4::Rect2f optor::dr4::Texture::GetClipRect() const {
+    if (!isClipped_) {
+        return {};
+    }
+
+    return clipRect_;
+}
+
 void optor::dr4::Texture::DrawOn(::dr4::Texture& texture) const {
     optor::dr4::Texture& myTexture = dynamic_cast<optor::dr4::Texture&>(texture);
 
@@ -99,6 +116,14 @@ void optor::dr4::Texture::Redraw() {
     });
 
     sprite_ = ERROR_HANDLE([this](){
-        return sf::Sprite(renderTexture_.getTexture());
+        if (isClipped_) {
+            return sf::Sprite(
+                renderTexture_.getTexture(), 
+                sf::IntRect(clipRect_.pos.x, clipRect_.pos.y, clipRect_.size.x, clipRect_.size.y)
+            );
+        } else {
+            return sf::Sprite(renderTexture_.getTexture());
+        }
+            
     });
 }

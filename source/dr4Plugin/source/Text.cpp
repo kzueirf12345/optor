@@ -3,9 +3,9 @@
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/System/Vector2.hpp>
 
-#include "dr4/Text.hpp"
-#include "dr4/Font.hpp"
-#include "dr4/Texture.hpp"
+#include "dr4Plugin/Text.hpp"
+#include "dr4Plugin/Font.hpp"
+#include "dr4Plugin/Texture.hpp"
 
 #include "common/ErrorHandler.hpp"
 #include "dr4/texture.hpp"
@@ -100,9 +100,9 @@ float optor::dr4::Text::GetFontSize() const {
     return valign_;
 }
 
-const ::dr4::Font   &optor::dr4::Text::GetFont() const {
+const ::dr4::Font   *optor::dr4::Text::GetFont() const {
     const static optor::dr4::Font font(*text_.getFont());
-    return font;
+    return &font;
 }
 
 void optor::dr4::Text::DrawOn(::dr4::Texture& texture) const {

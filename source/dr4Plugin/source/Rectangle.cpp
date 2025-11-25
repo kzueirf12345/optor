@@ -1,8 +1,8 @@
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/Color.hpp>
 
-#include "dr4/Rectangle.hpp"
-#include "dr4/Texture.hpp"
+#include "dr4Plugin/Rectangle.hpp"
+#include "dr4Plugin/Texture.hpp"
 #include "common/ErrorHandler.hpp"
 #include "dr4/math/color.hpp"
 #include "dr4/math/vec2.hpp"

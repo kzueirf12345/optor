@@ -21,13 +21,13 @@ public:
     Circle();
     
     virtual void SetCenter(::dr4::Vec2f center) override;
-    virtual void SetRadius(float radius) override;
+    virtual void SetRadius(::dr4::Vec2f radius) override;
     virtual void SetFillColor(::dr4::Color color) override;
     virtual void SetBorderColor(::dr4::Color color) override;
     virtual void SetBorderThickness(float thickness) override;
 
     virtual ::dr4::Vec2f GetCenter() const override;
-    virtual float GetRadius() const override;
+    virtual ::dr4::Vec2f GetRadius() const override;
     virtual ::dr4::Color GetFillColor() const override;
     virtual ::dr4::Color GetBorderColor() const override;
     virtual float GetBorderThickness() const override;

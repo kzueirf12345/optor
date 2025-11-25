@@ -49,10 +49,12 @@ target_link_libraries(widgets
         # SDL3_ttf
         # SDL3
         common
-        libs
+        cum
         dr4
+        pp
         global
         optics
+        dr4Plugin
 )
 
 # add_subdirectory(external/SDL_ttf)

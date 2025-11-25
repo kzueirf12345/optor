@@ -28,11 +28,12 @@ else()
 endif()
 
 add_subdirectory(source/common)
-add_subdirectory(source/dr4)
+add_subdirectory(source/dr4Plugin)
 add_subdirectory(source/widgets)
 add_subdirectory(source/global)
 add_subdirectory(source/optics)
-add_subdirectory(source/libs)
+add_subdirectory(source/piska)
+add_subdirectory(source/mipt-ded-zemax)
 
 find_package(X11                            REQUIRED)
 find_package(SFML 2.5.1 COMPONENTS graphics REQUIRED)
@@ -45,8 +46,10 @@ add_executable(${CMAKE_PROJECT_NAME}
 target_link_libraries(${CMAKE_PROJECT_NAME} 
     PRIVATE
         common
-        widgets
+        cum
+        dr4
+        pp
         global
+        widgets
         optics
-        libs
 )

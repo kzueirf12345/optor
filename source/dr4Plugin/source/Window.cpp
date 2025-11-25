@@ -1,5 +1,6 @@
 #include <chrono>
 #include <optional>
+#include <thread>
 
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Graphics/Texture.hpp>
@@ -10,12 +11,12 @@
 #include <SFML/Window/VideoMode.hpp>
 #include "SFML/Window/Mouse.hpp"
 
-#include "dr4/Window.hpp"
-#include "dr4/Font.hpp"
-#include "dr4/Image.hpp"
-#include "dr4/Texture.hpp"
-#include "dr4/Line.hpp"
-#include "dr4/Circle.hpp"
+#include "dr4Plugin/Window.hpp"
+#include "dr4Plugin/Font.hpp"
+#include "dr4Plugin/Image.hpp"
+#include "dr4Plugin/Texture.hpp"
+#include "dr4Plugin/Line.hpp"
+#include "dr4Plugin/Circle.hpp"
 
 #include "dr4/event.hpp"
 #include "dr4/keycodes.hpp"
@@ -119,6 +120,10 @@ double optor::dr4::Window::GetTime() {
     ).count();
 }
 
+void optor::dr4::Window::Sleep(double time) {
+    std::this_thread::sleep_for(std::chrono::microseconds(static_cast<int64_t>(time * 1000000)));
+}
+
 ::dr4::Texture  *optor::dr4::Window::CreateTexture()    {
     return new optor::dr4::Texture();
 }
@@ -213,9 +218,9 @@ std::optional<::dr4::Event> optor::dr4::Window::PollEvent()
             };
 
             if (eventSF.mouseWheelScroll.wheel == sf::Mouse::Wheel::HorizontalWheel) {
-                event.mouseWheel.deltaX = eventSF.mouseWheel.delta;
+                event.mouseWheel.delta = {static_cast<float>(eventSF.mouseWheel.delta), 0};
             } else {
-                event.mouseWheel.deltaY = eventSF.mouseWheel.delta;
+                event.mouseWheel.delta = {0, static_cast<float>(eventSF.mouseWheel.delta)};
             }
 
             break;
@@ -236,7 +241,7 @@ std::optional<::dr4::Event> optor::dr4::Window::PollEvent()
         }
 
         // case sf::Event::EventType::TextEntered: {
-        //     // static char textEnteredStr[5] = {}; // REVIEW
+        //     // static char textEnteredStr[5] = {};
         //     // EncodeUTF8(eventSF.text.unicode, textEnteredStr);
         //     // event.text.unicode = textEnteredStr;
         // }

@@ -13,6 +13,9 @@ class Backend : public ::dr4::DR4Backend
 public:
     virtual const std::string &Name() const override;
     virtual ::dr4::Window *CreateWindow() override;
+
+    ~Backend();
+
 protected:
 private:
 };

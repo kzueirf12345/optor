@@ -33,6 +33,7 @@ public:
     virtual void Display() override;
 
     virtual double GetTime() override;
+    virtual void Sleep(double time) override;
 
     virtual ::dr4::Texture   *CreateTexture()   override;
     virtual ::dr4::Image     *CreateImage()     override;

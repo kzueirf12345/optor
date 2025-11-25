@@ -1,6 +1,6 @@
 #include <stdexcept>
 
-#include "dr4/Font.hpp"
+#include "dr4Plugin/Font.hpp"
 
 #include "common/ErrorHandler.hpp"
 

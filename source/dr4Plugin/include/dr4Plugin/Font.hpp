@@ -3,8 +3,8 @@
 
 #include <SFML/Graphics/Font.hpp>
 
-#include "dr4/Text.hpp"
-#include "dr4/Texture.hpp"
+#include "dr4Plugin/Text.hpp"
+#include "dr4Plugin/Texture.hpp"
 
 namespace optor
 {

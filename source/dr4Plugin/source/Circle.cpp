@@ -1,9 +1,10 @@
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/ConvexShape.hpp>
+#include <SFML/System/Vector2.hpp>
 
-#include "dr4/Circle.hpp"
-#include "dr4/Texture.hpp"
+#include "dr4Plugin/Circle.hpp"
+#include "dr4Plugin/Texture.hpp"
 #include "common/ErrorHandler.hpp"
 #include "dr4/math/vec2.hpp"
 
@@ -17,9 +18,10 @@ void optor::dr4::Circle::SetCenter(::dr4::Vec2f center) {
     });
 }
 
-void optor::dr4::Circle::SetRadius(float radius) {
+void optor::dr4::Circle::SetRadius(::dr4::Vec2f radius) {
     ERROR_HANDLE([this, radius](){
-        circle_.setRadius(radius);
+        circle_.setRadius(radius.x);
+        circle_.setScale(1, radius.y / radius.x);
     });
 }
 
@@ -47,9 +49,11 @@ void optor::dr4::Circle::SetBorderThickness(float thickness) {
     });
 }
 
-float optor::dr4::Circle::GetRadius() const {
+::dr4::Vec2f optor::dr4::Circle::GetRadius() const {
     return ERROR_HANDLE([this](){
-        return circle_.getRadius();
+        const float radius = circle_.getRadius();
+        const sf::Vector2f scale = circle_.getScale();
+        return ::dr4::Vec2f(radius * scale.x, radius * scale.y);
     });
 }
 

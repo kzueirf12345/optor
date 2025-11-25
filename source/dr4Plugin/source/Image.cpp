@@ -2,8 +2,8 @@
 
 #include <SFML/Graphics/RenderTexture.hpp>
 
-#include "dr4/Image.hpp"
-#include "dr4/Texture.hpp"
+#include "dr4Plugin/Image.hpp"
+#include "dr4Plugin/Texture.hpp"
 #include "common/ErrorHandler.hpp"
 
 

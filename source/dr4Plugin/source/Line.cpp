@@ -4,8 +4,8 @@
 #include <SFML/Graphics/PrimitiveType.hpp>
 #include <SFML/Graphics/VertexArray.hpp>
 
-#include "dr4/Line.hpp"
-#include "dr4/Texture.hpp"
+#include "dr4Plugin/Line.hpp"
+#include "dr4Plugin/Texture.hpp"
 
 #include "common/ErrorHandler.hpp"
 

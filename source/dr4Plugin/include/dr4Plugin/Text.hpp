@@ -29,7 +29,7 @@ public:
     virtual ::dr4::Color         GetColor() const override;
     virtual float                GetFontSize() const override;
     virtual ::dr4::Text::VAlign  GetVAlign() const override;
-    virtual const ::dr4::Font   &GetFont() const override;
+    virtual const ::dr4::Font   *GetFont() const override;
 
     virtual void DrawOn(::dr4::Texture& texture) const override;
 

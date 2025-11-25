@@ -40,6 +40,8 @@ target_include_directories(optics
 target_link_libraries(optics
     PRIVATE 
         common
-        libs
+        cum
+        dr4
+        pp
         global
 )

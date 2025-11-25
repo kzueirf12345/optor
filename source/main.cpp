@@ -32,9 +32,7 @@
 #include "optics/Triangle.hpp"
 #include "optics/Sphere.hpp"
 
-// FIXME move selected obj
-// FIXME update OpticObj info
-// FIXME update ldd
+// FIXME handle textentered in Window 
 // FIXME update sfml 
 // FIXME install sdl3 //YES
 // FIXME scroll bar elements pos
@@ -59,7 +57,13 @@ int main() {
         throw std::runtime_error("Can't open lib");
     }
 
-    dr4::DR4Backend* backend = reinterpret_cast<dr4::DR4Backend*(*)()>(dlsym(libdr4, dr4::DR4BackendFunctionName))();
+    cum::Manager pluginsManager = {};
+
+    auto* dr4Backend = dynamic_cast<cum::DR4BackendPlugin*>(ERROR_HANDLE([&pluginsManager](){
+        return pluginsManager.LoadFromFile("./build/source/dr4Plugin/libdr4Plugin.so");
+    }));
+
+    dr4Backend->AfterLoad();
 
     if (!backend) {
         throw std::runtime_error("Can't get backend");
