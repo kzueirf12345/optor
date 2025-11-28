@@ -18,7 +18,7 @@ class Widget;
 
 struct WidgetsState {
     dr4::Window* window;
-    cum::PPToolPlugin* piskaPlugin;
+    std::vector<cum::PPToolPlugin*> piskaPlugins;
 
     const optor::Widget* hoveredWidget;
     const optor::Widget* draggedWidget;

@@ -34,7 +34,8 @@
 #include "optics/Triangle.hpp"
 #include "optics/Sphere.hpp"
 
-// FIXME handle TextEntered
+// FIXME refactor clipRect and draw texture
+// FIXME handle TextEntered (text - when StartTextInput, key - not start)
 // FIXME update sfml 
 // TODO add optic obj
 // TODO remove optic obj
@@ -90,15 +91,26 @@ int main() {
 //==========DR4=================
 //==========GeomPrim=================
 
-    auto* geomPrimBackend = dynamic_cast<cum::PPToolPlugin*>(ERROR_HANDLE([&pluginsManager](){
-        return pluginsManager.LoadFromFile("./build/source/piska/libpiska.so");
-    }));
+    std::vector<cum::PPToolPlugin*> ppPlugins = {};
 
-    geomPrimBackend->AfterLoad();
+    // auto* geomPrimBackend = dynamic_cast<cum::PPToolPlugin*>(ERROR_HANDLE([&pluginsManager](){
+    //     return pluginsManager.LoadFromFile("./build/source/piska/libpiska.so");
+    // }));
+    ppPlugins.push_back(dynamic_cast<cum::PPToolPlugin*>(ERROR_HANDLE([&pluginsManager](){
+        return pluginsManager.LoadFromFile("./plugins/pp/libDenchik.so");
+    })));
+    ppPlugins.push_back(dynamic_cast<cum::PPToolPlugin*>(ERROR_HANDLE([&pluginsManager](){
+        return pluginsManager.LoadFromFile("./plugins/pp/libArtemLine.so");
+    })));
+    ppPlugins.push_back(dynamic_cast<cum::PPToolPlugin*>(ERROR_HANDLE([&pluginsManager](){
+        return pluginsManager.LoadFromFile("./build/source/piska/libpiska.so");
+    })));
+
+    ppPlugins.back()->AfterLoad();
 
 //==========GeomPrim=================
 
-    optor::WidgetManager manager(window.get(), geomPrimBackend);
+    optor::WidgetManager manager(window.get(), ppPlugins);
 
     ERROR_HANDLE([dr4Backend, &manager](){
         CreateScene(dr4Backend, &manager);

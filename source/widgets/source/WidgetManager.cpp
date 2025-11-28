@@ -15,7 +15,7 @@
 #include "widgets/WidgetChildable.hpp"
 #include "widgets/WidgetPiska.hpp"
 
-optor::WidgetManager::WidgetManager(dr4::Window* window, cum::PPToolPlugin* piskaPlugin)
+optor::WidgetManager::WidgetManager(dr4::Window* window, std::vector<cum::PPToolPlugin*> piskaPlugins)
     :   window_{window},
         texture_{window_->CreateTexture()},
         desktop_{},
@@ -42,7 +42,7 @@ optor::WidgetManager::WidgetManager(dr4::Window* window, cum::PPToolPlugin* pisk
     state_.prevMouseCoord = {0, 0};
     state_.selectedObj = nullptr;
     state_.needUpdateScene = true;
-    state_.piskaPlugin = piskaPlugin;
+    state_.piskaPlugins = std::move(piskaPlugins);
 }
 
 void optor::WidgetManager::Draw() {

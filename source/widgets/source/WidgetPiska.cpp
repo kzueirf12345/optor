@@ -14,7 +14,7 @@
 
 optor::WidgetPiska::WidgetPiska(optor::WidgetsState* state)
     :   optor::WidgetChildable(state->window->GetSize(), state),
-        tools_(state->piskaPlugin->CreateTools(this)),
+        tools_(),
         shapes_{},
         piskaTheme_{
             .shapeColor = optor::color::Red,
@@ -40,6 +40,14 @@ optor::WidgetPiska::WidgetPiska(optor::WidgetsState* state)
     rect_->SetFillColor(optor::color::Transparent);
     rect_->SetBorderColor(optor::color::Red);
     rect_->SetBorderThickness(10);
+
+    for (auto* plugin : state->piskaPlugins)
+    {
+        for (auto& tool : plugin->CreateTools(this)) 
+        {
+            tools_.push_back(std::move(tool));
+        }
+    }
 
     const float listMargin = 100;
     const float listWidth = 200;
