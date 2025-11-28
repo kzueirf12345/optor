@@ -16,7 +16,9 @@ optor::dr4::Texture::Texture()
     :   renderTexture_{},
         pos_{},
         zero_{},
-        sprite_()
+        sprite_(),
+        isClipped_(false),
+        clipRect_()
 {
 }
 

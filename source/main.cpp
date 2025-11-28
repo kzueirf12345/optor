@@ -98,7 +98,7 @@ int main() {
 
 //==========GeomPrim=================
 
-    optor::WidgetManager manager(window.get());
+    optor::WidgetManager manager(window.get(), geomPrimBackend);
 
     ERROR_HANDLE([dr4Backend, &manager](){
         CreateScene(dr4Backend, &manager);
@@ -362,8 +362,6 @@ static void CreateObjsList(optor::WidgetManager* manager, optor::SceneWidget* sc
         auto* obj = objs[ind].get();
 
         const std::string name = obj->GetTypeName();
-
-        // const dr4::Vec2f size = dr4::Text{.text = "A", .fontSize = 40, .font = optor::FONT}.GetBounds().size;
 
         auto nameWidget = std::make_unique<optor::OpticObjShort>(
             manager,

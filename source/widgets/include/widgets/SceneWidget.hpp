@@ -36,6 +36,8 @@ class SceneWidget: public optor::Widget {
         optor::Scene scene_;
         std::unique_ptr<dr4::Texture> texture_;
 
+        bool needUpdateScene_;
+
         void RotateCamera(const dr4::Vec2f& mouseOffset);
 
     private:

@@ -3,6 +3,7 @@
 #include "dr4/event.hpp"
 #include "dr4/keycodes.hpp"
 #include "dr4/math/vec2.hpp"
+#include "dr4/mouse_buttons.hpp"
 #include "global/Global.hpp"
 #include "pp/canvas.hpp"
 #include "widgets/PiskaToolButton.hpp"
@@ -20,7 +21,9 @@ optor::WidgetPiska::WidgetPiska(optor::WidgetsState* state)
             .lineColor = optor::color::Poison,
             .textColor = optor::color::TextPrimary,
             .baseFontSize = 20,
-            .handleColor = optor::color::Cyan
+            .handleColor = optor::color::Cyan,
+            .handleHoverColor = optor::color::Cyan, 
+            .handleActiveColor = optor::color::Cyan
         },
         selectedTool_{nullptr},
         selectedShape_{nullptr}
@@ -142,6 +145,10 @@ bool optor::WidgetPiska::OnMousePress(const dr4::Event& event) {
         if (shape.second->OnMouseDown(childEvent.mouseButton)) {
             return true;
         }
+    }
+
+    if (event.mouseButton.button == dr4::MouseButtonType::LEFT) {
+        SetSelectedShape(nullptr);
     }
 
     return true;

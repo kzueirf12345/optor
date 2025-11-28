@@ -11,7 +11,7 @@
 
 
 optor::dr4::Line::Line() 
-    :   vertices_(sf::Quads, 4),
+    :   vertices_(sf::Triangles, 6),
         start_{},
         end_{},
         pos_{},
@@ -36,7 +36,7 @@ void optor::dr4::Line::SetEnd(::dr4::Vec2f end) {
 
 void optor::dr4::Line::SetColor(::dr4::Color color) {
     const sf::Color sfColor(color.r, color.g, color.b, color.a);
-    for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < 6; ++i) {
         vertices_[i].color = sfColor;
     }
 }
@@ -103,21 +103,17 @@ void optor::dr4::Line::UpdateOffset() {
 
 void optor::dr4::Line::UpdateVertices() {
     ERROR_HANDLE([this](){
-        vertices_[0].position = sf::Vector2f(
-            start_.x, 
-            start_.y
-        );
-        vertices_[1].position = sf::Vector2f(
-            end_.x, 
-            end_.y
-        );
-        vertices_[2].position = sf::Vector2f(
-            end_.x, 
-            end_.y
-        );
-        vertices_[3].position = sf::Vector2f(
-            start_.x, 
-            start_.y
-        );
+        ::dr4::Vec2f topLeft = {start_.x - offset_.x, start_.y - offset_.y};
+        ::dr4::Vec2f topRight = {end_.x - offset_.x, end_.y - offset_.y};
+        ::dr4::Vec2f bottomRight = {end_.x + offset_.x, end_.y + offset_.y};
+        ::dr4::Vec2f bottomLeft = {start_.x + offset_.x, start_.y + offset_.y};
+        
+        vertices_[0].position = sf::Vector2f(topLeft.x, topLeft.y);
+        vertices_[1].position = sf::Vector2f(topRight.x, topRight.y);
+        vertices_[2].position = sf::Vector2f(bottomLeft.x, bottomLeft.y);
+        
+        vertices_[3].position = sf::Vector2f(topRight.x, topRight.y);
+        vertices_[4].position = sf::Vector2f(bottomRight.x, bottomRight.y);
+        vertices_[5].position = sf::Vector2f(bottomLeft.x, bottomLeft.y);
     });
 }

@@ -40,6 +40,7 @@ void optor::WidgetButtonCamera::OnIdle() {
 
     if (isPressed_) {
         ERROR_HANDLE(&optor::Camera::Move, camera_, dir_, CAMERA_MOVE_SPEED);
+        state_->needUpdateScene = true;
     }
 
     ERROR_HANDLE([this](){

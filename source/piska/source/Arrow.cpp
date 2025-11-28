@@ -1,5 +1,6 @@
 #include <cmath>
 #include <cassert>
+#include <iostream>
 
 #include "piska/Arrow.hpp"
 #include "dr4/math/vec2.hpp"
@@ -18,7 +19,8 @@ optor::pp::Arrow::Arrow(dr4::Window* dr4Window, const ::pp::ControlsTheme& theme
         cvs_{cvs},
         isResized_(false),
         isStartPointDragged_(false),
-        isEndPointDragged_(false)
+        isEndPointDragged_(false),
+        activeSide_{optor::pp::Side::UNKNOWN}
 {
     line_->SetStart({0, 0});
     line_->SetEnd({1, 1});

@@ -6,6 +6,7 @@
 #include "widgets/ScrollBar.hpp"
 #include "widgets/WidgetChildable.hpp"
 #include <memory>
+#include <vector>
 
 namespace optor 
 {
@@ -33,6 +34,8 @@ class WidgetScrolledList : public WidgetChildable {
         std::unique_ptr<optor::ScrollBar> scrollbar_;
 
         float baseOffset_;
+
+        std::vector<dr4::Vec2f> startPoses_;
 
         float GetListSize() const;
 

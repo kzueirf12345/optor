@@ -8,7 +8,9 @@ optor::pp::Rect::Rect(dr4::Window* dr4Window, const ::pp::ControlsTheme& theme, 
     :   rect_{dr4Window->CreateRectangle()},
         isDragged_(false),
         cvs_{cvs},
-        selectRect_(dr4Window->CreateRectangle())
+        selectRect_(dr4Window->CreateRectangle()),
+        isResized_(false),
+        activeSide_{optor::pp::Side::UNKNOWN}
 {
     rect_->SetSize({1, 1});
     rect_->SetBorderThickness(-10);
@@ -75,6 +77,10 @@ bool optor::pp::Rect::OnMouseMove(const dr4::Event::MouseMove &evt) {
 
 
 void optor::pp::Rect::OnSelect() {
+    if (cvs_->GetSelectedShape() != nullptr) {
+        cvs_->GetSelectedShape()->OnDeselect();
+    }
+    cvs_->SetSelectedShape(this);
 }
 
 void optor::pp::Rect::OnDeselect() {

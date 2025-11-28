@@ -5,6 +5,7 @@
 #include <deque>
 #include <memory>
 
+#include "cum/ifc/pp.hpp"
 #include "dr4/math/vec2.hpp"
 
 #include "dr4/window.hpp"
@@ -17,6 +18,7 @@ class Widget;
 
 struct WidgetsState {
     dr4::Window* window;
+    cum::PPToolPlugin* piskaPlugin;
 
     const optor::Widget* hoveredWidget;
     const optor::Widget* draggedWidget;
@@ -26,6 +28,8 @@ struct WidgetsState {
     optor::OpticObj* selectedObj;
 
     std::deque<std::unique_ptr<optor::Widget>> modalWidgets;
+
+    bool needUpdateScene;
 };
 
 }

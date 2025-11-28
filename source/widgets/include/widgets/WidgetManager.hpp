@@ -15,7 +15,7 @@ class WidgetChildable;
     
 class WidgetManager {
     public:
-        WidgetManager(dr4::Window* window);
+        WidgetManager(dr4::Window* window, cum::PPToolPlugin* piskaPlugin);
 
         WidgetManager           (const WidgetManager&) = delete;
         WidgetManager& operator=(const WidgetManager&) = delete;

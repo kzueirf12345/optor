@@ -19,7 +19,8 @@ optor::WidgetScrolledList::WidgetScrolledList(const dr4::Vec2f& size, optor::Wid
             state, 
             [this](float percentage){ return this->Scroll(percentage); },
             false
-        )}
+        )},
+        startPoses_()
 {
     ERROR_HANDLE([this](){
         scrollbar_->SetPosition({rect_->GetSize().x - INIT_SCROLLBAR_WIDTH, 0});
@@ -47,8 +48,9 @@ void optor::WidgetScrolledList::Draw(dr4::Texture& srcTexture) {
     });
     rect_->SetPos(pos);
 
-    for (const auto& child : children_) {
-        pos = child->GetPosition();
+    for (size_t childInd = 0; childInd < children_.size(); ++childInd) {
+        const auto& child = children_[childInd];
+        pos = startPoses_[childInd];
 
         ERROR_HANDLE([this, &child, &pos](){
             child->SetPosition(pos + dr4::Vec2f{0, baseOffset_});
@@ -56,10 +58,6 @@ void optor::WidgetScrolledList::Draw(dr4::Texture& srcTexture) {
 
         ERROR_HANDLE([this, &child](){
             child->Draw(*texture_);
-        });
-
-        ERROR_HANDLE([&child, &pos](){
-            child->SetPosition(pos);
         });
     }
 
@@ -87,6 +85,7 @@ optor::Widget* optor::WidgetScrolledList::AddChild(std::unique_ptr<Widget> child
         }
     );
     childPtr->SetOutlineThickness(0);
+    startPoses_.push_back(childPtr->GetPosition());
 
     return childPtr;
 }

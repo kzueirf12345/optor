@@ -13,6 +13,7 @@ optor::pp::Circle::Circle(dr4::Window* dr4Window, const ::pp::ControlsTheme& the
         isDragged_(false),
         cvs_{cvs},
         isResized_(false),
+        activeSide_{optor::pp::Side::UNKNOWN},
         selectRect_(dr4Window->CreateRectangle())
 {
     circle_->SetRadius(1);
@@ -77,6 +78,10 @@ bool optor::pp::Circle::OnMouseMove(const dr4::Event::MouseMove &evt) {
 }
 
 void optor::pp::Circle::OnSelect() {
+    if (cvs_->GetSelectedShape() != nullptr) {
+        cvs_->GetSelectedShape()->OnDeselect();
+    }
+    cvs_->SetSelectedShape(this);
 }
 
 void optor::pp::Circle::OnDeselect() {
