@@ -35,13 +35,11 @@
 #include "optics/Sphere.hpp"
 
 // FIXME refactor clipRect and draw texture
-// FIXME handle TextEntered (text - when StartTextInput, key - not start)
 // FIXME update sfml 
 // TODO add optic obj
 // TODO remove optic obj
 // TODO change optic obj features
 // TODO update optic obj features
-// TODO deselect all pp::shape (click to empty)
 
 
 ::dr4::Font* optor::FONT = nullptr;
@@ -93,9 +91,6 @@ int main() {
 
     std::vector<cum::PPToolPlugin*> ppPlugins = {};
 
-    // auto* geomPrimBackend = dynamic_cast<cum::PPToolPlugin*>(ERROR_HANDLE([&pluginsManager](){
-    //     return pluginsManager.LoadFromFile("./build/source/piska/libpiska.so");
-    // }));
     ppPlugins.push_back(dynamic_cast<cum::PPToolPlugin*>(ERROR_HANDLE([&pluginsManager](){
         return pluginsManager.LoadFromFile("./plugins/pp/libDenchik.so");
     })));
@@ -233,19 +228,6 @@ void CreateScene(cum::DR4BackendPlugin* backend, optor::WidgetManager* manager) 
             optor::materials::MIRROR
         ));
     }));
-
-    // auto* checkBox = dynamic_cast<optor::WidgetCheckbox*>(ERROR_HANDLE(
-    //     &optor::WidgetChildable::AddChild,
-    //     manager->GetDesktop(),
-    //     std::make_unique<optor::WidgetCheckbox>(
-    //         window, 
-    //         dr4::Vec2f(100, 100),
-    //         manager->GetState(),
-    //         [sceneWidgetWithHeader](bool isPresssed) { sceneWidgetWithHeader->SetIsHide(!isPresssed); }
-    //     )
-    // ));
-
-    // checkBox->SetPosition({500, 500});
 
     ERROR_HANDLE(&CreateObjsList, manager, sceneWidget);
 }

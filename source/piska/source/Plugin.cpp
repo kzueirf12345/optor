@@ -4,6 +4,10 @@
 #include "piska/ArrowTool.hpp"
 #include "piska/CircleTool.hpp"
 #include "piska/RectTool.hpp"
+#include "piska/TextTool.hpp"
+
+optor::pp::PPToolPlugin::PPToolPlugin()  
+{}
 
 std::string_view optor::pp::PPToolPlugin::GetIdentifier() const {
     return "PPToolPlugin";
@@ -34,6 +38,7 @@ std::vector<std::unique_ptr<::pp::Tool>> optor::pp::PPToolPlugin::CreateTools(::
     vec.emplace_back(std::make_unique<optor::pp::RectTool>(cvs));
     vec.emplace_back(std::make_unique<optor::pp::CircleTool>(cvs));
     vec.emplace_back(std::make_unique<optor::pp::ArrowTool>(cvs));
+    vec.emplace_back(std::make_unique<optor::pp::TextTool>(cvs));
     return vec;
 }
 

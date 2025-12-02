@@ -127,6 +127,22 @@ bool optor::WidgetChildable::OnKeyboardRelease(const dr4::Event& event) {
     });
 }
 
+bool optor::WidgetChildable::OnTextInput(const dr4::Event& event) {
+    if (isHide_) { return false; }
+
+    for (auto childIt = children_.rbegin(); childIt != children_.rend(); ++childIt) {
+        if (!(*childIt)->GetMustRemoved() && ERROR_HANDLE([childIt, &event](){
+                return (*childIt)->OnTextInput(event);
+        })) {
+            return true;
+        }
+    }
+
+    return ERROR_HANDLE([this, &event](){
+        return optor::Widget::OnTextInput(event);
+    });
+}
+
 void optor::WidgetChildable::OnIdle() {
     if (isHide_) { return; }
 

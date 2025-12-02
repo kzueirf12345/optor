@@ -224,6 +224,12 @@ bool optor::Widget::OnKeyboardRelease(const dr4::Event& event) {
     return false;
 }
 
+bool optor::Widget::OnTextInput(const dr4::Event& event) {
+    if (isHide_) { return false; }
+
+    return false;
+}
+
 void optor::Widget::OnIdle() {
 
 }

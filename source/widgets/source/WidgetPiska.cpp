@@ -50,7 +50,7 @@ optor::WidgetPiska::WidgetPiska(optor::WidgetsState* state)
     }
 
     const float listMargin = 100;
-    const float listWidth = 200;
+    const float listWidth = 300;
 
     auto* list = dynamic_cast<optor::WidgetScrolledList*>(AddChild(std::make_unique<optor::WidgetScrolledList>(
         dr4::Vec2f{listWidth + INIT_SCROLLBAR_WIDTH, state_->window->GetSize().y - 2 *listMargin},
@@ -62,7 +62,7 @@ optor::WidgetPiska::WidgetPiska(optor::WidgetsState* state)
 
     for (auto& tool : tools_) {
         auto* button = list->AddChild(std::make_unique<optor::PiskaToolButton>(
-            dr4::Vec2f(200, 100),
+            dr4::Vec2f(listWidth, 200),
             state_,
             tool.get(),
             &selectedTool_
@@ -190,8 +190,18 @@ bool optor::WidgetPiska::OnMouseRelease(const dr4::Event& event) {
 bool optor::WidgetPiska::OnKeyboardPress(const dr4::Event& event) {
     if (isHide_) { return false; }
 
-    if (optor::WidgetChildable::OnKeyboardPress(event)) {
-        return true;
+    dr4::Event childEvent(event);
+
+    if (selectedTool_) {
+        if (selectedTool_->OnKeyDown(childEvent.key)) {
+            return true;
+        }
+    }
+
+    for (auto& shape : shapes_) {
+        if (shape.second->OnKeyDown(childEvent.key)) {
+            return true;
+        }
     }
 
     if (event.key.sym == dr4::KeyCode::KEYCODE_ESCAPE) {
@@ -199,13 +209,51 @@ bool optor::WidgetPiska::OnKeyboardPress(const dr4::Event& event) {
         return true;
     }
 
+    optor::WidgetChildable::OnKeyboardPress(event);
+
     return true;
 }
 
 bool optor::WidgetPiska::OnKeyboardRelease(const dr4::Event& event) {
     if (isHide_) { return false; } 
 
+    dr4::Event childEvent(event);
+
+    if (selectedTool_) {
+        if (selectedTool_->OnKeyUp(childEvent.key)) {
+            return true;
+        }
+    }
+
+    for (auto& shape : shapes_) {
+        if (shape.second->OnKeyUp(childEvent.key)) {
+            return true;
+        }
+    }
+
     optor::WidgetChildable::OnKeyboardRelease(event);
+
+    return true;
+}
+
+bool optor::WidgetPiska::OnTextInput(const dr4::Event& event) {
+    if (isHide_) { return false; } 
+
+    dr4::Event childEvent(event);
+
+    if (selectedTool_) {
+        if (selectedTool_->OnText(childEvent.text)) {
+            return true;
+        }
+    }
+
+    for (auto& shape : shapes_) {
+        if (shape.second->OnText(childEvent.text)) {
+            return true;
+        }
+    }
+
+    optor::WidgetChildable::OnTextInput(event);
 
     return true;
 }

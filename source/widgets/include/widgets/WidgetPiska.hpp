@@ -30,6 +30,7 @@ public:
     virtual bool OnMouseRelease   (const dr4::Event& event) override;
     virtual bool OnKeyboardPress  (const dr4::Event& event) override;
     virtual bool OnKeyboardRelease(const dr4::Event& event) override;
+    virtual bool OnTextInput      (const dr4::Event& event) override;
     virtual void OnIdle           () override;
 
     [[nodiscard]] virtual std::string GetTypeName() const override {return "WidgetPiska"; };

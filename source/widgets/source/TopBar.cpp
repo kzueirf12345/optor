@@ -152,7 +152,7 @@ static void HandleChild(optor::Widget* child, optor::WidgetList* list, optor::Wi
 
     textName->SetText(name.value());
     textName->SetFont(optor::FONT);
-    textName->SetFontSize(40);
+    // textName->SetFontSize(40);
 
     dr4::Vec2f size = textName->GetBounds();
 

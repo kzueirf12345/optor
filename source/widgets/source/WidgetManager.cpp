@@ -181,6 +181,24 @@ void optor::WidgetManager::HandleEvents() {
                 break;
             }
 
+            case dr4::Event::Type::TEXT_EVENT: {
+                if (isSkip) {
+                    ERROR_HANDLE(&optor::Widget::OnTextInput, piska, event.value());
+                    break;
+                }
+                bool childRes = false;
+                for (auto& modalWidget : state_.modalWidgets) {
+                    if (ERROR_HANDLE(&optor::Widget::OnTextInput, modalWidget, event.value())) {
+                        childRes = true;
+                        break;
+                    }
+                }
+                if (childRes) break;
+
+                ERROR_HANDLE(&optor::WidgetChildable::OnTextInput, desktop_, event.value());
+                break;
+            }
+
             default:
                 break;
         }

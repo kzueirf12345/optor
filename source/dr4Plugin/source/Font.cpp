@@ -6,7 +6,13 @@
 
 optor::dr4::Font::Font()
     :   font_{}
-{}
+{
+    try {
+        LoadFromFile("/usr/share/fonts/TTF/CaskaydiaCoveNerdFontMono-Regular.ttf");
+    } catch(const std::runtime_error& e) {
+
+    }
+}
 
 void optor::dr4::Font::LoadFromFile(const std::string& path)
 {

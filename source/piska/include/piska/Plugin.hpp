@@ -13,6 +13,8 @@ class PPToolPlugin final: public ::cum::PPToolPlugin {
 
 public:
 
+    PPToolPlugin();
+
     virtual std::string_view GetIdentifier() const override;
 
     virtual std::string_view GetName() const override;

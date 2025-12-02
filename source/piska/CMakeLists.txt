@@ -10,6 +10,9 @@ add_library(piska SHARED
 
     source/ArrowTool.cpp
     source/Arrow.cpp
+
+    source/Text.cpp
+    source/TextTool.cpp
 )
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")

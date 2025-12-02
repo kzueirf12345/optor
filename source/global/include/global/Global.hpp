@@ -99,7 +99,7 @@ static constexpr inline double CAMERA_ROTATE_SPEED = 0.1;
 static constexpr inline double GLOBAL_AMBIENT_COEF = 0.4;
 
 
-static const inline std::string FONT_PATH = "./assets/TokyoNight.ttf";
+static const inline std::string FONT_PATH = "/usr/share/fonts/TTF/CaskaydiaCoveNerdFontMono-Regular.ttf";
 
 extern ::dr4::Font* FONT;
 

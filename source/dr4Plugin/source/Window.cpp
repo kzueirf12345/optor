@@ -29,13 +29,14 @@ static dr4::MouseButtonType MouseCodeSF2DR4(sf::Mouse::Button code) noexcept;
 static dr4::KeyCode           KeyCodeSF2DR4(sf::Keyboard::Key code) noexcept;
 static dr4::KeyMode           KeyModeSF2DR4(sf::Event::KeyEvent event) noexcept;
 
-static size_t EncodeUTF8(uint32_t cp, char out[5]);
+size_t EncodeUTF8(uint32_t cp, char out[5]);
 
 optor::dr4::Window::Window()
     :   window_{},
         size_{2400, 1100},
         title_{"0xCEBAEBALDEDA"},
-        ctorTime_(std::chrono::high_resolution_clock::now())
+        ctorTime_(std::chrono::high_resolution_clock::now()),
+        utf8_buffer_()
 {}
 
 void optor::dr4::Window::SetTitle(const std::string &title) 
@@ -240,11 +241,15 @@ std::optional<::dr4::Event> optor::dr4::Window::PollEvent()
             break;
         }
 
-        // case sf::Event::EventType::TextEntered: {
-        //     // static char textEnteredStr[5] = {};
-        //     // EncodeUTF8(eventSF.text.unicode, textEnteredStr);
-        //     // event.text.unicode = textEnteredStr;
-        // }
+        case sf::Event::EventType::TextEntered: {
+            event.type = ::dr4::Event::Type::TEXT_EVENT;
+            if (EncodeUTF8(eventSF.text.unicode, utf8_buffer_) == 0) {
+                event.type = ::dr4::Event::Type::UNKNOWN;
+                break;
+            }
+            event.text.unicode = utf8_buffer_;
+            break;
+        }
 
         case sf::Event::EventType::Closed: {
             event.type = ::dr4::Event::Type::QUIT;

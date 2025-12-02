@@ -28,6 +28,7 @@ class Widget {
         virtual bool OnMouseRelease   (const dr4::Event& event);
         virtual bool OnKeyboardPress  (const dr4::Event& event);
         virtual bool OnKeyboardRelease(const dr4::Event& event);
+        virtual bool OnTextInput      (const dr4::Event& event);
         virtual void OnIdle           ();
 
         void SetBackgroundColor (const dr4::Color& color);

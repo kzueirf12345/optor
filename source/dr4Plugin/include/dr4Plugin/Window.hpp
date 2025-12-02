@@ -55,6 +55,8 @@ private:
     sf::Vector2u size_;
 
     std::chrono::time_point<std::chrono::high_resolution_clock> ctorTime_;
+
+    char utf8_buffer_[5];
 };
 
 }
