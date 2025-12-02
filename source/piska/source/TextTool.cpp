@@ -57,7 +57,7 @@ bool optor::pp::TextTool::OnMouseDown(const dr4::Event::MouseButton &evt) {
     if (!isDrawing_) {
         isDrawing_ = true;
 
-        text_ = new optor::pp::Text(cvs_->GetWindow(), cvs_->GetControlsTheme(), cvs_);
+        text_ = new optor::pp::Text(cvs_);
         cvs_->AddShape(text_);
         text_->SetPos(evt.pos);
         text_->SetIsCreating(true);
@@ -93,7 +93,7 @@ bool optor::pp::TextTool::OnKeyDown(const dr4::Event::KeyEvent &evt) {
 
     keyHandled_ = true;
 
-    if (evt.sym == dr4::KEYCODE_ENTER && evt.mods != dr4::KEYMOD_SHIFT) {
+    if (evt.sym == dr4::KEYCODE_ENTER && evt.mods == dr4::KEYMOD_SHIFT) {
         isDrawing_ = false;
         text_->SetIsCreating(false);
         text_->OnSelect();

@@ -2,7 +2,6 @@
 #include <cassert>
 #include <cstdio>
 #include <memory>
-#include <iostream>
 
 #include "piska/Text.hpp"
 #include "dr4/math/rect.hpp"
@@ -10,11 +9,12 @@
 #include "dr4/texture.hpp"
 #include "piska/Global.hpp"
 
-optor::pp::Text::Text(dr4::Window* dr4Window, const ::pp::ControlsTheme& theme, ::pp::Canvas* cvs) 
-    :   text_{dr4Window->CreateText()},
+optor::pp::Text::Text(::pp::Canvas* cvs) 
+    :   text_{cvs->GetWindow()->CreateText()},
+        tempText_(cvs->GetWindow()->CreateText()),
         isDragged_(false),
         cvs_{cvs},
-        selectRect_(dr4Window->CreateRectangle()),
+        selectRect_(cvs->GetWindow()->CreateRectangle()),
         isResized_(false),
         activeSide_{optor::pp::Side::UNKNOWN},
         textStr_("Text:)"),
@@ -26,17 +26,20 @@ optor::pp::Text::Text(dr4::Window* dr4Window, const ::pp::ControlsTheme& theme, 
         caretPos_(textStr_.size())
 {
     text_->SetText(textStr_);
-    text_->SetColor(theme.textColor);
-    text_->SetFontSize(theme.baseFontSize);
-    text_->SetFont(dr4Window->CreateFont());
+    text_->SetColor(cvs->GetControlsTheme().textColor);
+    text_->SetFontSize(cvs->GetControlsTheme().baseFontSize);
+    text_->SetFont(cvs->GetWindow()->CreateFont());
 
-    caret_->SetColor(theme.textColor);
+    tempText_->SetFontSize(text_->GetFontSize());
+    tempText_->SetFont(text_->GetFont());
+
+    caret_->SetColor(cvs->GetControlsTheme().textColor);
     caret_->SetThickness(OutlineThickness);
     caret_->SetStart({0, 0});
     caret_->SetEnd({0, 0.7f * text_->GetBounds().y});
 
     selectRect_->SetBorderThickness(OutlineThickness);
-    selectRect_->SetBorderColor(theme.lineColor);
+    selectRect_->SetBorderColor(cvs->GetControlsTheme().lineColor);
     selectRect_->SetFillColor({0, 0, 0, 0});
 
     UpdateCaret();
@@ -313,9 +316,6 @@ void optor::pp::Text::UpdateSelectRect()
 }
 
 void optor::pp::Text::UpdateCaret() {
-    const std::unique_ptr<dr4::Text> tempText(cvs_->GetWindow()->CreateText());
-    tempText->SetText(textStr_.substr(0, caretPos_));
-    tempText->SetFontSize(text_->GetFontSize());
-    tempText->SetFont(text_->GetFont());
-    caret_->SetPos(text_->GetPos() + dr4::Vec2f{tempText->GetBounds().x + OutlineThickness, 0});
+    tempText_->SetText(textStr_.substr(0, caretPos_));
+    caret_->SetPos(text_->GetPos() + dr4::Vec2f{tempText_->GetBounds().x + OutlineThickness, 0});
 }

@@ -1,20 +1,18 @@
 #include <cmath>
 #include <cassert>
-#include <iostream>
-
 #include "piska/Arrow.hpp"
 #include "dr4/math/vec2.hpp"
 #include "dr4/math/rect.hpp"
 
 #include "piska/Global.hpp"
 
-optor::pp::Arrow::Arrow(dr4::Window* dr4Window, const ::pp::ControlsTheme& theme, ::pp::Canvas* cvs) 
-    :   line_{dr4Window->CreateLine()},
-        leftTip_{dr4Window->CreateLine()},
-        rightTip_{dr4Window->CreateLine()},
-        selectRect_{dr4Window->CreateRectangle()},
-        startPoint_{dr4Window->CreateCircle()},
-        endPoint_{dr4Window->CreateCircle()},
+optor::pp::Arrow::Arrow(::pp::Canvas* cvs) 
+    :   line_{cvs->GetWindow()->CreateLine()},
+        leftTip_{cvs->GetWindow()->CreateLine()},
+        rightTip_{cvs->GetWindow()->CreateLine()},
+        selectRect_{cvs->GetWindow()->CreateRectangle()},
+        startPoint_{cvs->GetWindow()->CreateCircle()},
+        endPoint_{cvs->GetWindow()->CreateCircle()},
         isDragged_(false),
         cvs_{cvs},
         isResized_(false),
@@ -24,22 +22,22 @@ optor::pp::Arrow::Arrow(dr4::Window* dr4Window, const ::pp::ControlsTheme& theme
 {
     line_->SetStart({0, 0});
     line_->SetEnd({1, 1});
-    line_->SetColor(theme.shapeColor);
+    line_->SetColor(cvs->GetControlsTheme().shapeColor);
     line_->SetThickness(10);
 
-    leftTip_->SetColor(theme.shapeColor);
-    rightTip_->SetColor(theme.shapeColor);
+    leftTip_->SetColor(cvs->GetControlsTheme().shapeColor);
+    rightTip_->SetColor(cvs->GetControlsTheme().shapeColor);
     leftTip_->SetThickness(10);
     rightTip_->SetThickness(10);
 
     selectRect_->SetBorderThickness(OutlineThickness);
-    selectRect_->SetBorderColor(theme.lineColor);
+    selectRect_->SetBorderColor(cvs->GetControlsTheme().lineColor);
     selectRect_->SetFillColor({0, 0, 0, 0});
 
     startPoint_->SetRadius(8.0f);
     endPoint_->SetRadius(8.0f);
-    startPoint_->SetFillColor(theme.handleColor);
-    endPoint_->SetFillColor(theme.handleColor);
+    startPoint_->SetFillColor(cvs->GetControlsTheme().handleColor);
+    endPoint_->SetFillColor(cvs->GetControlsTheme().handleColor);
     startPoint_->SetBorderThickness(2.0f);
     endPoint_->SetBorderThickness(2.0f);
     startPoint_->SetBorderColor({255, 255, 255, 255});

@@ -4,21 +4,21 @@
 #include "piska/Rect.hpp"
 #include "dr4/math/rect.hpp"
 
-optor::pp::Rect::Rect(dr4::Window* dr4Window, const ::pp::ControlsTheme& theme, ::pp::Canvas* cvs) 
-    :   rect_{dr4Window->CreateRectangle()},
+optor::pp::Rect::Rect(::pp::Canvas* cvs) 
+    :   rect_{cvs->GetWindow()->CreateRectangle()},
         isDragged_(false),
         cvs_{cvs},
-        selectRect_(dr4Window->CreateRectangle()),
+        selectRect_(cvs->GetWindow()->CreateRectangle()),
         isResized_(false),
         activeSide_{optor::pp::Side::UNKNOWN}
 {
     rect_->SetSize({1, 1});
     rect_->SetBorderThickness(-10);
-    rect_->SetBorderColor(theme.shapeColor);
+    rect_->SetBorderColor(cvs->GetControlsTheme().shapeColor);
     rect_->SetFillColor({0, 0, 0, 0});
 
     selectRect_->SetBorderThickness(OutlineThickness);
-    selectRect_->SetBorderColor(theme.lineColor);
+    selectRect_->SetBorderColor(cvs->GetControlsTheme().lineColor);
     selectRect_->SetFillColor({0, 0, 0, 0});
 
     UpdateSelectRect();

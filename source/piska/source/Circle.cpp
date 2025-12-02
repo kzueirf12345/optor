@@ -8,21 +8,21 @@
 #include "piska/Global.hpp"
 #include "pp/canvas.hpp"
 
-optor::pp::Circle::Circle(dr4::Window* dr4Window, const ::pp::ControlsTheme& theme, ::pp::Canvas* cvs) 
-    :   circle_{dr4Window->CreateCircle()},
+optor::pp::Circle::Circle(::pp::Canvas* cvs) 
+    :   circle_{cvs->GetWindow()->CreateCircle()},
         isDragged_(false),
         cvs_{cvs},
         isResized_(false),
         activeSide_{optor::pp::Side::UNKNOWN},
-        selectRect_(dr4Window->CreateRectangle())
+        selectRect_(cvs->GetWindow()->CreateRectangle())
 {
     circle_->SetRadius(1);
     circle_->SetBorderThickness(-10);
-    circle_->SetBorderColor(theme.shapeColor);
+    circle_->SetBorderColor(cvs->GetControlsTheme().shapeColor);
     circle_->SetFillColor({0, 0, 0, 0});
 
     selectRect_->SetBorderThickness(OutlineThickness);
-    selectRect_->SetBorderColor(theme.lineColor);
+    selectRect_->SetBorderColor(cvs->GetControlsTheme().lineColor);
     selectRect_->SetFillColor({0, 0, 0, 0});
 
     UpdateSelectRect();

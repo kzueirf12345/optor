@@ -6,7 +6,6 @@
 
 #include "dr4/math/vec2.hpp"
 #include "dr4/texture.hpp"
-#include "dr4/window.hpp"
 
 #include "pp/canvas.hpp"
 #include "pp/shape.hpp"
@@ -22,7 +21,7 @@ class Arrow final: public ::pp::Shape {
 
 public:
 
-    Arrow(dr4::Window* dr4Window, const ::pp::ControlsTheme& theme, ::pp::Canvas* cvs);
+    Arrow(::pp::Canvas* cvs);
 
     virtual bool OnMouseDown(const dr4::Event::MouseButton &evt) override;
     virtual bool OnMouseUp(const dr4::Event::MouseButton &evt) override;

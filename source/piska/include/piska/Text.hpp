@@ -5,7 +5,6 @@
 
 #include "dr4/math/vec2.hpp"
 #include "dr4/texture.hpp"
-#include "dr4/window.hpp"
 
 #include "pp/canvas.hpp"
 #include "pp/shape.hpp"
@@ -21,7 +20,7 @@ class Text final: public ::pp::Shape {
 
 public:
 
-    Text(dr4::Window* dr4Window, const ::pp::ControlsTheme& theme, ::pp::Canvas* cvs);
+    Text(::pp::Canvas* cvs);
 
     virtual bool OnMouseDown(const dr4::Event::MouseButton &evt) override;
     virtual bool OnMouseUp(const dr4::Event::MouseButton &evt) override;
@@ -51,6 +50,7 @@ private:
 
     std::unique_ptr<dr4::Text> text_;
     std::string textStr_;
+    std::unique_ptr<dr4::Text> tempText_;
     std::unique_ptr<dr4::Rectangle> selectRect_;
 
     ::pp::Canvas* const cvs_;

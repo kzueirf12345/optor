@@ -51,7 +51,7 @@ bool optor::pp::ArrowTool::OnMouseDown(const dr4::Event::MouseButton &evt) {
     if (!isDrawing_) {
         isDrawing_ = true;
 
-        arrow_ = new optor::pp::Arrow(cvs_->GetWindow(), cvs_->GetControlsTheme(), cvs_);
+        arrow_ = new optor::pp::Arrow(cvs_);
         cvs_->AddShape(arrow_);
         arrow_->SetPos(evt.pos);
         startPos_ = evt.pos;

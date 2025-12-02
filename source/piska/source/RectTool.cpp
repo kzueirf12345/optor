@@ -52,7 +52,7 @@ bool optor::pp::RectTool::OnMouseDown(const dr4::Event::MouseButton &evt) {
     if (!isDrawing_) {
         isDrawing_ = true;
 
-        rect_ = new optor::pp::Rect(cvs_->GetWindow(), cvs_->GetControlsTheme(), cvs_);
+        rect_ = new optor::pp::Rect(cvs_);
         cvs_->AddShape(rect_);
         rect_->SetPos(evt.pos);
         startPos_ = evt.pos;

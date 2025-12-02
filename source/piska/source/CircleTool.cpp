@@ -50,7 +50,7 @@ bool optor::pp::CircleTool::OnMouseDown(const dr4::Event::MouseButton &evt) {
     if (!isDrawing_) {
         isDrawing_ = true;
 
-        circle_ = new optor::pp::Circle(cvs_->GetWindow(), cvs_->GetControlsTheme(), cvs_);
+        circle_ = new optor::pp::Circle(cvs_);
         cvs_->AddShape(circle_);
         circle_->SetPos(evt.pos);
         startPos_ = evt.pos;
