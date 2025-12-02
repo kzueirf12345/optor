@@ -36,10 +36,16 @@ public:
 
     virtual ::dr4::Vec2f GetPos() const override;
 
-    void PopBackText();
-    void PushBackText(const std::string& addedText);
+    void EraseLeftText();
+    void EraseRightText();
+    void InsertText(const std::string& addedText);
+
+    size_t GetCaretPos() const;
+    void SetCaretPos(size_t pos);
 
     void SetIsCreating(bool isCreating);
+
+    const dr4::Text* GetText() const;
 
 private:
 
@@ -59,6 +65,7 @@ private:
     double caretBlinkPeriod_;
     mutable double caretPrevBlinkTime_;
     mutable bool caretIsHide_;
+    size_t caretPos_;
 
 private:
 

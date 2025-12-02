@@ -1,6 +1,7 @@
 #include <cmath>
 #include <cassert>
 #include <cstdio>
+#include <memory>
 #include <iostream>
 
 #include "piska/Text.hpp"
@@ -19,9 +20,10 @@ optor::pp::Text::Text(dr4::Window* dr4Window, const ::pp::ControlsTheme& theme, 
         textStr_("Text:)"),
         isCreating_(false),
         caret_{cvs->GetWindow()->CreateLine()},
-        caretBlinkPeriod_(0.2),
+        caretBlinkPeriod_(0.5),
         caretPrevBlinkTime_(cvs->GetWindow()->GetTime()),
-        caretIsHide_(false)
+        caretIsHide_(false),
+        caretPos_(textStr_.size())
 {
     text_->SetText(textStr_);
     text_->SetColor(theme.textColor);
@@ -134,26 +136,55 @@ void optor::pp::Text::SetPos(::dr4::Vec2f pos) {
     return text_->GetPos();
 }
 
-void optor::pp::Text::PopBackText() {
-    if (!textStr_.empty())
-    {
-        textStr_.pop_back();
-        text_->SetText(textStr_);
-
-        UpdateCaret();
-        UpdateSelectRect();
+void optor::pp::Text::EraseLeftText() {
+    if (caretPos_ == 0) {
+        return;
     }
-}
 
-void optor::pp::Text::PushBackText(const std::string& addedText) {
-    textStr_ += addedText;
+    textStr_.erase(caretPos_ - 1, 1);
     text_->SetText(textStr_);
+    --caretPos_;
+
     UpdateCaret();
     UpdateSelectRect();
 }
 
+void optor::pp::Text::EraseRightText() {
+    if (caretPos_ == textStr_.size()) {
+        return;
+    }
+
+    textStr_.erase(caretPos_, 1);
+    text_->SetText(textStr_);
+
+    UpdateCaret();
+    UpdateSelectRect();
+}
+
+void optor::pp::Text::InsertText(const std::string& addedText) {
+    textStr_.insert(caretPos_, addedText);
+    text_->SetText(textStr_);
+    caretPos_ += addedText.size();
+
+    UpdateCaret();
+    UpdateSelectRect();
+}
+
+size_t optor::pp::Text::GetCaretPos() const {
+    return caretPos_;
+}
+
+void optor::pp::Text::SetCaretPos(size_t pos) {
+    caretPos_ = std::min(pos, textStr_.size());
+    UpdateCaret();
+}
+
 void optor::pp::Text::SetIsCreating(bool isCreating) {
     isCreating_ = isCreating;
+}
+
+const dr4::Text* optor::pp::Text::GetText() const {
+    return text_.get();
 }
 
 
@@ -275,10 +306,16 @@ void optor::pp::Text::ResizeBySide(dr4::Vec2f offset) {
 void optor::pp::Text::UpdateSelectRect()
 {
     selectRect_->SetPos(text_->GetPos() - OutlineThicknessVec);
-    selectRect_->SetSize(text_->GetBounds() + OutlineThicknessVec);
+    selectRect_->SetSize({
+        text_->GetBounds().x + OutlineThickness + caret_->GetThickness(),
+        std::max(text_->GetBounds().y, caret_->GetEnd().y + OutlineThickness) + OutlineThickness
+    });
 }
 
 void optor::pp::Text::UpdateCaret() {
-    std::cerr << text_->GetBounds().x << std::endl;
-    caret_->SetPos(text_->GetPos() + dr4::Vec2f{text_->GetBounds().x + OutlineThickness, 0});
+    const std::unique_ptr<dr4::Text> tempText(cvs_->GetWindow()->CreateText());
+    tempText->SetText(textStr_.substr(0, caretPos_));
+    tempText->SetFontSize(text_->GetFontSize());
+    tempText->SetFont(text_->GetFont());
+    caret_->SetPos(text_->GetPos() + dr4::Vec2f{tempText->GetBounds().x + OutlineThickness, 0});
 }

@@ -116,9 +116,9 @@ void optor::dr4::Window::Display()
 }
 
 double optor::dr4::Window::GetTime() {
-    return std::chrono::duration_cast<std::chrono::seconds>(
+    return std::chrono::duration_cast<std::chrono::microseconds>(
         std::chrono::high_resolution_clock::now() - ctorTime_
-    ).count();
+    ).count() / 1000000.f;
 }
 
 void optor::dr4::Window::Sleep(double time) {

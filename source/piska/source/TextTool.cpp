@@ -1,6 +1,5 @@
 #include <cassert>
 #include <cmath>
-#include <iostream>
 
 #include "piska/TextTool.hpp"
 #include "dr4/keycodes.hpp"
@@ -62,6 +61,7 @@ bool optor::pp::TextTool::OnMouseDown(const dr4::Event::MouseButton &evt) {
         cvs_->AddShape(text_);
         text_->SetPos(evt.pos);
         text_->SetIsCreating(true);
+        text_->OnSelect();
         return true;
     } else {
         // TODO caretka
@@ -91,19 +91,39 @@ bool optor::pp::TextTool::OnKeyDown(const dr4::Event::KeyEvent &evt) {
         return false;
     }
 
+    keyHandled_ = true;
+
     if (evt.sym == dr4::KEYCODE_ENTER && evt.mods != dr4::KEYMOD_SHIFT) {
         isDrawing_ = false;
         text_->SetIsCreating(false);
         text_->OnSelect();
-        keyHandled_ = true;
         return true;
     }
 
     if (evt.sym == dr4::KEYCODE_BACKSPACE) {
-        keyHandled_ = true;
-        text_->PopBackText();
+        text_->EraseLeftText();
         return true;
     }
+
+
+    if (evt.sym == dr4::KEYCODE_DELETE) {
+        text_->EraseRightText();
+        return true;
+    }
+
+    const size_t curCaretPos = text_->GetCaretPos();
+
+    if (evt.sym == dr4::KEYCODE_LEFT) {
+        text_->SetCaretPos(curCaretPos ? curCaretPos - 1 : 0);
+        return true;
+    }
+
+    if (evt.sym == dr4::KEYCODE_RIGHT) {
+        text_->SetCaretPos(curCaretPos + 1);
+        return true;
+    }
+
+    keyHandled_ = false;
 
     return false;
 }
@@ -113,7 +133,7 @@ bool optor::pp::TextTool::OnText(const dr4::Event::TextEvent &evt) {
     }
 
     if (!keyHandled_) {
-        text_->PushBackText(evt.unicode);
+        text_->InsertText(evt.unicode);
         return true;
     } else {
         keyHandled_ = false;
