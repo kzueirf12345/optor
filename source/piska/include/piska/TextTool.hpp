@@ -16,7 +16,7 @@ class TextTool final: public ::pp::Tool {
 
 public:
 
-    TextTool(::pp::Canvas* cvs);
+    TextTool(dr4::Font* font, ::pp::Canvas* cvs);
 
     virtual std::string_view Icon() const override;
     virtual std::string_view Name() const override;
@@ -41,6 +41,14 @@ private:
     optor::pp::Text* text_;
 
     bool keyHandled_;
+
+    dr4::Font* font_;
+
+    mutable std::unique_ptr<dr4::Text> tempText_;
+
+private:
+
+    size_t FindLetterPos(float mousePosX) const;
 
 };
 

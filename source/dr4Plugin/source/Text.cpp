@@ -17,6 +17,7 @@ optor::dr4::Text::Text()
 {}
 
 void optor::dr4::Text::SetText(const std::string &text) {
+    str_ = text;
     ERROR_HANDLE([this, &text](){
         text_.setString(text);
     });
@@ -79,8 +80,7 @@ void optor::dr4::Text::SetFont(const ::dr4::Font *font) {
 }
 
 const std::string &optor::dr4::Text::GetText() const {
-    const static std::string& str = text_.getString();
-    return str;
+    return str_;
 }
 
 ::dr4::Color optor::dr4::Text::GetColor() const {

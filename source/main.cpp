@@ -97,9 +97,12 @@ int main() {
     ppPlugins.push_back(dynamic_cast<cum::PPToolPlugin*>(ERROR_HANDLE([&pluginsManager](){
         return pluginsManager.LoadFromFile("./plugins/pp/libArtemLine.so");
     })));
+    // ppPlugins.push_back(dynamic_cast<cum::PPToolPlugin*>(ERROR_HANDLE([&pluginsManager](){
+    //     return pluginsManager.LoadFromFile("./plugins/pp/libSeva.so");
+    // })));
     ppPlugins.push_back(dynamic_cast<cum::PPToolPlugin*>(ERROR_HANDLE([&pluginsManager](){
         return pluginsManager.LoadFromFile("./build/source/piska/libpiska.so");
-    })));
+    })));    
 
     ppPlugins.back()->AfterLoad();
 

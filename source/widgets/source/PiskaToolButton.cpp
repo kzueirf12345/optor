@@ -38,8 +38,14 @@ bool optor::PiskaToolButton::OnMousePress  (const ::dr4::Event& event) {
 
     if (state_->hoveredWidget == this && event.mouseButton.button == pressButton_) {
         if (!isPressed_) {
+            if (*selectedTool_) {
+                (*selectedTool_)->OnEnd();
+            }
             *selectedTool_ = tool_;
         } else {
+            if (*selectedTool_) {
+                (*selectedTool_)->OnEnd();
+            }
             *selectedTool_ = nullptr;
         }
         return true;

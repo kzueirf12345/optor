@@ -14,7 +14,7 @@ optor::dr4::Circle::Circle()
     
 void optor::dr4::Circle::SetCenter(::dr4::Vec2f center) {
     ERROR_HANDLE([this, &center](){
-        SetPos(center - ::dr4::Vec2f(circle_.getRadius(), circle_.getRadius()));
+        SetPos(center - ::dr4::Vec2f(circle_.getRadius() * circle_.getScale().x, circle_.getRadius() * circle_.getScale().y));
     });
 }
 
@@ -45,7 +45,7 @@ void optor::dr4::Circle::SetBorderThickness(float thickness) {
 
 ::dr4::Vec2f optor::dr4::Circle::GetCenter() const {
     return ERROR_HANDLE([this](){
-        return GetPos() + ::dr4::Vec2f{circle_.getRadius(), circle_.getRadius()};
+        return GetPos() + ::dr4::Vec2f{circle_.getRadius() * circle_.getScale().x, circle_.getRadius() * circle_.getScale().y};
     });
 }
 

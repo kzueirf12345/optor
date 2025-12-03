@@ -16,11 +16,17 @@ namespace optor
 namespace pp 
 {
 
+class TextTool;
+
 class Text final: public ::pp::Shape {
 
 public:
 
-    Text(::pp::Canvas* cvs);
+    friend optor::pp::TextTool;
+
+public:
+
+    Text(dr4::Font* font, ::pp::Canvas* cvs);
 
     virtual bool OnMouseDown(const dr4::Event::MouseButton &evt) override;
     virtual bool OnMouseUp(const dr4::Event::MouseButton &evt) override;
@@ -37,12 +43,22 @@ public:
 
     void EraseLeftText();
     void EraseRightText();
+    void EraseSelectedText();
     void InsertText(const std::string& addedText);
 
     size_t GetCaretPos() const;
     void SetCaretPos(size_t pos);
 
     void SetIsCreating(bool isCreating);
+
+    void SetInSelectMode(bool inSelectMode);
+    void SetIsSelectedSmth(bool isSelectedSmth);
+    void SetSelectPos(size_t selectPos);
+
+    bool   GetInSelectMode();
+    bool   GetIsSelectedSmth();
+    size_t GetSelectPos();
+
 
     const dr4::Text* GetText() const;
 
@@ -67,6 +83,11 @@ private:
     mutable bool caretIsHide_;
     size_t caretPos_;
 
+    bool inSelectMode_;
+    size_t selectPos_;
+    bool isSelectedSmth_;
+    std::unique_ptr<dr4::Rectangle> selectedTextRect_;
+
 private:
 
     bool OnMe(dr4::Vec2f relCoord) const;
@@ -75,6 +96,7 @@ private:
 
     void UpdateSelectRect();
     void UpdateCaret();
+    void UpdateSelectedTextRect();
 
     void ResizeBySide(dr4::Vec2f offset);
 

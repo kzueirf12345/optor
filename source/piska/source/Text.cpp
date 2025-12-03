@@ -2,14 +2,16 @@
 #include <cassert>
 #include <cstdio>
 #include <memory>
+#include <iostream>
 
 #include "piska/Text.hpp"
+#include "dr4/math/color.hpp"
 #include "dr4/math/rect.hpp"
 #include "dr4/math/vec2.hpp"
 #include "dr4/texture.hpp"
 #include "piska/Global.hpp"
 
-optor::pp::Text::Text(::pp::Canvas* cvs) 
+optor::pp::Text::Text(dr4::Font* font, ::pp::Canvas* cvs) 
     :   text_{cvs->GetWindow()->CreateText()},
         tempText_(cvs->GetWindow()->CreateText()),
         isDragged_(false),
@@ -23,27 +25,33 @@ optor::pp::Text::Text(::pp::Canvas* cvs)
         caretBlinkPeriod_(0.5),
         caretPrevBlinkTime_(cvs->GetWindow()->GetTime()),
         caretIsHide_(false),
-        caretPos_(textStr_.size())
+        caretPos_(textStr_.size()),
+        inSelectMode_(false),
+        isSelectedSmth_(false),
+        selectPos_(0),
+        selectedTextRect_(cvs->GetWindow()->CreateRectangle())
 {
     text_->SetText(textStr_);
     text_->SetColor(cvs->GetControlsTheme().textColor);
     text_->SetFontSize(cvs->GetControlsTheme().baseFontSize);
-    text_->SetFont(cvs->GetWindow()->CreateFont());
+    text_->SetFont(font);
 
-    tempText_->SetFontSize(text_->GetFontSize());
-    tempText_->SetFont(text_->GetFont());
+    tempText_->SetFont(font);
 
     caret_->SetColor(cvs->GetControlsTheme().textColor);
     caret_->SetThickness(OutlineThickness);
     caret_->SetStart({0, 0});
     caret_->SetEnd({0, 0.7f * text_->GetBounds().y});
 
+    const dr4::Color lineColor = cvs->GetControlsTheme().lineColor;
+    selectedTextRect_->SetFillColor({lineColor.r, lineColor.g, lineColor.b, 100});
+    selectedTextRect_->SetSize({1, 1});
+
     selectRect_->SetBorderThickness(OutlineThickness);
     selectRect_->SetBorderColor(cvs->GetControlsTheme().lineColor);
     selectRect_->SetFillColor({0, 0, 0, 0});
 
     UpdateCaret();
-    UpdateSelectRect();
 }
 
 bool optor::pp::Text::OnMouseDown(const dr4::Event::MouseButton &evt) {
@@ -110,9 +118,15 @@ void optor::pp::Text::OnDeselect() {
 
 
 void optor::pp::Text::DrawOn(::dr4::Texture& texture) const {
+
     text_->DrawOn(texture);
 
-    if (cvs_->GetSelectedShape() == this) {
+    if ((inSelectMode_ || isSelectedSmth_) && selectPos_ != caretPos_) {
+        // std::cerr << "In mode " << inSelectMode_ << " is selected " << isSelectedSmth_ << std::endl; 
+        selectedTextRect_->DrawOn(texture);
+    }
+
+    if (cvs_->GetSelectedShape() == this || isCreating_) {
         selectRect_->DrawOn(texture);
     }
 
@@ -132,6 +146,9 @@ void optor::pp::Text::SetPos(::dr4::Vec2f pos) {
     text_->SetPos(pos);
     UpdateCaret();
     UpdateSelectRect();
+    if (isSelectedSmth_ || inSelectMode_) {
+        UpdateSelectedTextRect();
+    }
 }
 
 
@@ -150,6 +167,9 @@ void optor::pp::Text::EraseLeftText() {
 
     UpdateCaret();
     UpdateSelectRect();
+    if (isSelectedSmth_ || inSelectMode_) {
+        UpdateSelectedTextRect();
+    }
 }
 
 void optor::pp::Text::EraseRightText() {
@@ -162,15 +182,42 @@ void optor::pp::Text::EraseRightText() {
 
     UpdateCaret();
     UpdateSelectRect();
+    if (isSelectedSmth_ || inSelectMode_) {
+        UpdateSelectedTextRect();
+    }
+}
+
+void optor::pp::Text::EraseSelectedText() {
+    if (caretPos_ == selectPos_) {
+        return;
+    }
+
+    std::cerr << "Caret pos " << caretPos_ << "select pos " << selectPos_ << std::endl;
+
+    const float minPos = std::min(caretPos_, selectPos_);
+    const float maxPos = std::max(caretPos_, selectPos_);
+    textStr_.erase(minPos, maxPos - minPos);
+    text_->SetText(textStr_);
+    SetCaretPos(minPos);
+
+    UpdateCaret();
+    UpdateSelectRect();
+    SetIsSelectedSmth(false);
+    SetInSelectMode(false);
 }
 
 void optor::pp::Text::InsertText(const std::string& addedText) {
+
     textStr_.insert(caretPos_, addedText);
+    
     text_->SetText(textStr_);
     caretPos_ += addedText.size();
 
     UpdateCaret();
     UpdateSelectRect();
+    if (isSelectedSmth_ || inSelectMode_) {
+        UpdateSelectedTextRect();
+    }
 }
 
 size_t optor::pp::Text::GetCaretPos() const {
@@ -180,10 +227,41 @@ size_t optor::pp::Text::GetCaretPos() const {
 void optor::pp::Text::SetCaretPos(size_t pos) {
     caretPos_ = std::min(pos, textStr_.size());
     UpdateCaret();
+    if (isSelectedSmth_ || inSelectMode_) {
+        UpdateSelectedTextRect();
+    }
 }
 
 void optor::pp::Text::SetIsCreating(bool isCreating) {
     isCreating_ = isCreating;
+    if (!isCreating_) {
+        isSelectedSmth_ = false;
+        inSelectMode_ = false;
+    }
+}
+
+void optor::pp::Text::SetInSelectMode(bool inSelectMode) {
+    inSelectMode_ = inSelectMode;
+}
+void optor::pp::Text::SetIsSelectedSmth(bool isSelectedSmth) {
+    isSelectedSmth_ = isSelectedSmth;
+}
+void optor::pp::Text::SetSelectPos(size_t selectPos) {
+    selectPos_ = selectPos;
+    if (isSelectedSmth_ || inSelectMode_) {
+        UpdateSelectedTextRect();
+    }
+}
+
+bool optor::pp::Text::GetInSelectMode() {
+    return inSelectMode_;
+}
+bool optor::pp::Text::GetIsSelectedSmth() {
+    return isSelectedSmth_;
+}
+size_t optor::pp::Text::GetSelectPos() {
+    // std::cerr << "Get Selected pos " << selectPos_ << std::endl;
+    return selectPos_;
 }
 
 const dr4::Text* optor::pp::Text::GetText() const {
@@ -303,6 +381,9 @@ void optor::pp::Text::ResizeBySide(dr4::Vec2f offset) {
     
     UpdateCaret();
     UpdateSelectRect();
+    if (isSelectedSmth_ || inSelectMode_) {
+        UpdateSelectedTextRect();
+    }
 }
 
 
@@ -316,6 +397,33 @@ void optor::pp::Text::UpdateSelectRect()
 }
 
 void optor::pp::Text::UpdateCaret() {
+    tempText_->SetFontSize(text_->GetFontSize());
     tempText_->SetText(textStr_.substr(0, caretPos_));
     caret_->SetPos(text_->GetPos() + dr4::Vec2f{tempText_->GetBounds().x + OutlineThickness, 0});
+}
+
+void optor::pp::Text::UpdateSelectedTextRect() {
+    if (caretPos_ == selectPos_) {
+        return;
+    }
+
+    tempText_->SetFontSize(text_->GetFontSize());
+
+    tempText_->SetText(textStr_.substr(0, caretPos_));
+    float firstOffset = tempText_->GetBounds().x;
+
+    tempText_->SetText(textStr_.substr(0, selectPos_));
+    float secondOffset = tempText_->GetBounds().x;
+
+    if (firstOffset > secondOffset) {
+        std::swap(firstOffset, secondOffset);
+    }
+
+    const dr4::Vec2f textPos = text_->GetPos();
+
+    selectedTextRect_->SetPos(textPos + dr4::Vec2f(firstOffset, 0));
+    selectedTextRect_->SetSize({
+        secondOffset - firstOffset, 
+        std::max(text_->GetBounds().y, caret_->GetEnd().y + OutlineThickness) + OutlineThickness
+    });
 }

@@ -62,7 +62,7 @@ optor::WidgetPiska::WidgetPiska(optor::WidgetsState* state)
 
     for (auto& tool : tools_) {
         auto* button = list->AddChild(std::make_unique<optor::PiskaToolButton>(
-            dr4::Vec2f(listWidth, 200),
+            dr4::Vec2f(listWidth, 100),
             state_,
             tool.get(),
             &selectedTool_

@@ -42,6 +42,8 @@ private:
 
     ::dr4::Vec2f offset_;
     ::dr4::Text::VAlign valign_;
+
+    std::string str_;
 };
 
 }
