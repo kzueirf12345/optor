@@ -17,8 +17,9 @@ optor::WidgetPiska::WidgetPiska(optor::WidgetsState* state)
         tools_(),
         shapes_{},
         piskaTheme_{
-            .shapeColor = optor::color::Red,
-            .lineColor = optor::color::Poison,
+            .shapeFillColor = optor::color::Transparent,
+            .shapeBorderColor = optor::color::Red,
+            .selectColor = optor::color::Poison,
             .textColor = optor::color::TextPrimary,
             .baseFontSize = 20,
             .handleColor = optor::color::Cyan,

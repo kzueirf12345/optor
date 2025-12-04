@@ -18,11 +18,11 @@ optor::pp::Circle::Circle(::pp::Canvas* cvs)
 {
     circle_->SetRadius(1);
     circle_->SetBorderThickness(-10);
-    circle_->SetBorderColor(cvs->GetControlsTheme().shapeColor);
-    circle_->SetFillColor({0, 0, 0, 0});
+    circle_->SetBorderColor(cvs->GetControlsTheme().shapeBorderColor);
+    circle_->SetFillColor(cvs->GetControlsTheme().shapeFillColor);
 
     selectRect_->SetBorderThickness(OutlineThickness);
-    selectRect_->SetBorderColor(cvs->GetControlsTheme().lineColor);
+    selectRect_->SetBorderColor(cvs->GetControlsTheme().selectColor);
     selectRect_->SetFillColor({0, 0, 0, 0});
 
     UpdateSelectRect();

@@ -43,12 +43,12 @@ optor::pp::Text::Text(dr4::Font* font, ::pp::Canvas* cvs)
     caret_->SetStart({0, 0});
     caret_->SetEnd({0, 0.7f * text_->GetBounds().y});
 
-    const dr4::Color lineColor = cvs->GetControlsTheme().lineColor;
-    selectedTextRect_->SetFillColor({lineColor.r, lineColor.g, lineColor.b, 100});
+    const dr4::Color selectColor = cvs->GetControlsTheme().selectColor;
+    selectedTextRect_->SetFillColor({selectColor.r, selectColor.g, selectColor.b, 100});
     selectedTextRect_->SetSize({1, 1});
 
     selectRect_->SetBorderThickness(OutlineThickness);
-    selectRect_->SetBorderColor(cvs->GetControlsTheme().lineColor);
+    selectRect_->SetBorderColor(cvs->GetControlsTheme().selectColor);
     selectRect_->SetFillColor({0, 0, 0, 0});
 
     UpdateCaret();

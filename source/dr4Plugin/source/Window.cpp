@@ -1,3 +1,4 @@
+#include <SFML/System/String.hpp>
 #include <chrono>
 #include <optional>
 #include <thread>
@@ -10,6 +11,7 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/VideoMode.hpp>
 #include "SFML/Window/Mouse.hpp"
+#include <SFML/Window/Clipboard.hpp>
 
 #include "dr4Plugin/Window.hpp"
 #include "dr4Plugin/Font.hpp"
@@ -145,6 +147,22 @@ void optor::dr4::Window::Sleep(double time) {
 }
 ::dr4::Text      *optor::dr4::Window::CreateText()      {
     return new optor::dr4::Text();
+}
+
+void optor::dr4::Window::SetDefaultFont(const ::dr4::Font* font) {
+    font_ = font;
+}
+
+const ::dr4::Font* optor::dr4::Window::GetDefaultFont() {
+    return font_;
+}
+
+void optor::dr4::Window::SetClipboard(const std::string& string) {
+    sf::Clipboard::setString(string);
+}
+
+std::string optor::dr4::Window::GetClipboard() {
+    return sf::Clipboard::getString().toAnsiString(); 
 }
 
 void optor::dr4::Window::StartTextInput() {

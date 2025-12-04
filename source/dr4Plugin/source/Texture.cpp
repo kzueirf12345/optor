@@ -1,4 +1,7 @@
+#include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/RenderTexture.hpp>
+#include <SFML/Graphics/Texture.hpp>
+#include <SFML/System/Clock.hpp>
 #include <cstdlib>
 
 #include <SFML/Graphics/Rect.hpp>
@@ -11,6 +14,8 @@
 #include "dr4Plugin/Texture.hpp"
 
 #include "common/ErrorHandler.hpp"
+#include "dr4/texture.hpp"
+#include "dr4Plugin/Image.hpp"
 
 optor::dr4::Texture::Texture()
     :   renderTexture_{},
@@ -63,6 +68,28 @@ void optor::dr4::Texture::Clear(::dr4::Color color) {
         renderTexture_.clear({color.r, color.g, color.b, color.a});
     });
     Redraw();
+}
+
+::dr4::Image* optor::dr4::Texture::GetImage() const 
+{
+    const sf::Texture textureSF = renderTexture_.getTexture();
+    const sf::Image imageSF = textureSF.copyToImage();
+
+    optor::dr4::Image* image = new Image();
+
+    image->SetPos(pos_);
+
+    const sf::Vector2u sizeSF = imageSF.getSize(); 
+    image->SetSize({static_cast<float>(sizeSF.x), static_cast<float>(sizeSF.y)});
+
+    for (size_t y = 0; y < sizeSF.y; ++y) {
+        for (size_t x = 0; x < sizeSF.x; ++x) {
+            const sf::Color pixel = imageSF.getPixel(x, y);
+            image->SetPixel(x, y, ::dr4::Color(pixel.r, pixel.g, pixel.b, pixel.a));
+        }
+    }
+
+    return image;
 }
 
 void optor::dr4::Texture::SetZero(::dr4::Vec2f pos) {
