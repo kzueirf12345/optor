@@ -73,10 +73,8 @@ bool optor::pp::TextTool::OnMouseDown(const dr4::Event::MouseButton &evt) {
     }
 
     if (isDrawing_ && evt.button == CREATE_BUTTON && text_->OnMe(evt.pos)) {
-        std::cerr << "start\n";
         size_t caretPos = FindLetterPos(evt.pos.x);
 
-        // std::cerr << "caret pos in create " << caretPos << std::endl;
         text_->SetCaretPos(caretPos);
         text_->SetSelectPos(caretPos);
         text_->SetInSelectMode(true);
@@ -93,7 +91,6 @@ bool optor::pp::TextTool::OnMouseUp(const dr4::Event::MouseButton &evt) {
 
     if (text_->GetInSelectMode() && evt.button == CREATE_BUTTON) {
 
-        std::cerr << "end\n";
         text_->SetInSelectMode(false);
         if (text_->GetSelectPos() != text_->GetCaretPos()) {
             text_->SetIsSelectedSmth(true);

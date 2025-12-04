@@ -122,7 +122,6 @@ void optor::pp::Text::DrawOn(::dr4::Texture& texture) const {
     text_->DrawOn(texture);
 
     if ((inSelectMode_ || isSelectedSmth_) && selectPos_ != caretPos_) {
-        // std::cerr << "In mode " << inSelectMode_ << " is selected " << isSelectedSmth_ << std::endl; 
         selectedTextRect_->DrawOn(texture);
     }
 
@@ -192,8 +191,6 @@ void optor::pp::Text::EraseSelectedText() {
         return;
     }
 
-    std::cerr << "Caret pos " << caretPos_ << "select pos " << selectPos_ << std::endl;
-
     const float minPos = std::min(caretPos_, selectPos_);
     const float maxPos = std::max(caretPos_, selectPos_);
     textStr_.erase(minPos, maxPos - minPos);
@@ -260,7 +257,6 @@ bool optor::pp::Text::GetIsSelectedSmth() {
     return isSelectedSmth_;
 }
 size_t optor::pp::Text::GetSelectPos() {
-    // std::cerr << "Get Selected pos " << selectPos_ << std::endl;
     return selectPos_;
 }
 
