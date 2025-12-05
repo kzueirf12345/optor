@@ -62,6 +62,9 @@ private:
     bool HandleA(const dr4::Event::KeyEvent& evt);
     bool HandleC(const dr4::Event::KeyEvent& evt);
     bool HandleV(const dr4::Event::KeyEvent& evt);
+    bool HandleX(const dr4::Event::KeyEvent& evt);
+    bool HandleHome(const dr4::Event::KeyEvent& evt);
+    bool HandleEnd(const dr4::Event::KeyEvent& evt);
 
 };
 

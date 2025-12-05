@@ -178,6 +178,18 @@ bool optor::pp::TextTool::OnKeyDown(const dr4::Event::KeyEvent &evt) {
         return true;
     }
 
+    if (HandleHome(evt)) {
+        return true;
+    }
+
+    if (HandleEnd(evt)) {
+        return true;
+    }
+
+    if (HandleX(evt)) {
+        return true;
+    }
+
     keyHandled_ = false;
     return false;
 }
@@ -374,6 +386,55 @@ bool optor::pp::TextTool::HandleV(const dr4::Event::KeyEvent& evt) {
         return true;
     }
 
+    return false;
+}
+
+bool optor::pp::TextTool::HandleX(const dr4::Event::KeyEvent& evt) {
+    if (evt.sym == dr4::KEYCODE_X && evt.mods & dr4::KEYMOD_CTRL) {
+        if (text_->GetIsSelectedSmth() || text_->GetInSelectMode()) {
+            auto newEvt(evt);
+            newEvt.sym = dr4::KEYCODE_C;
+            HandleC(newEvt);
+            text_->EraseSelectedText();
+            return true;
+        }
+    }
+    return false;
+}
+
+bool optor::pp::TextTool::HandleHome(const dr4::Event::KeyEvent& evt) {
+    if (evt.sym == dr4::KEYCODE_HOME) {
+        if (evt.mods & dr4::KEYMOD_SHIFT) {
+            if (!text_->GetIsSelectedSmth()) {
+                text_->SetIsSelectedSmth(true);
+            }
+            text_->SetSelectPos(text_->GetCaretPos());
+            text_->SetCaretPos(0);
+        } else {
+            text_->SetCaretPos(0);
+            text_->SetIsSelectedSmth(false);
+        }
+        return true;
+    }
+    return false;
+}
+
+bool optor::pp::TextTool::HandleEnd(const dr4::Event::KeyEvent& evt) {
+    if (evt.sym == dr4::KEYCODE_END) {
+        const size_t textLen = text_->GetText()->GetText().size();
+        
+        if (evt.mods & dr4::KEYMOD_SHIFT) {
+            if (!text_->GetIsSelectedSmth()) {
+                text_->SetIsSelectedSmth(true);
+            }
+            text_->SetSelectPos(text_->GetCaretPos());
+            text_->SetCaretPos(textLen);
+        } else {
+            text_->SetCaretPos(textLen);
+            text_->SetIsSelectedSmth(false);
+        }
+        return true;
+    }
     return false;
 }
 
