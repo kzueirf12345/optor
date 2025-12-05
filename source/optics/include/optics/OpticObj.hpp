@@ -36,10 +36,15 @@ class OpticObj {
         virtual std::array<optor::Vector3d, 8> GetAABB() const = 0; 
         virtual optor::Vector3d GetCoord() const = 0;
 
+        bool GetMustRemoved() const;
+        void SetMustRemoved(bool mustRemoved);
+
         [[nodiscard]] virtual std::string GetTypeName() const {return "OpticObject"; };
 
     protected:
         optor::Material material_;
+
+        bool mustRemoved_;
 
     private:
 };

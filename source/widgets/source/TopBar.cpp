@@ -98,7 +98,7 @@ optor::TopBar::TopBar(optor::WidgetManager* manager)
     curAbsPosition = {0, 0};
 
     auto* view = dynamic_cast<optor::TopBarButton*>(AddChild(std::make_unique<optor::TopBarButton>(
-        dr4::Vec2f(std::string("view").size() * 12.f, rect_->GetSize().y),
+        dr4::Vec2f(std::string("view").size() * 20.f, rect_->GetSize().y),
         manager_->GetState(), 
         std::move(CreateViewList(manager_, manager_->GetDesktop())), 
         "view",

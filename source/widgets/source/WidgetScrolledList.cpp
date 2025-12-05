@@ -85,6 +85,7 @@ optor::Widget* optor::WidgetScrolledList::AddChild(std::unique_ptr<Widget> child
         }
     );
     childPtr->SetOutlineThickness(0);
+    childPtr->SetIsDraggable(false);
     startPoses_.push_back(childPtr->GetPosition());
 
     return childPtr;

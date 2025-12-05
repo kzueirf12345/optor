@@ -31,6 +31,7 @@ class Scene {
         optor::OpticObj* AddObj(std::unique_ptr<optor::OpticObj> obj);
 
         void PopObj();
+        bool RemoveObj(optor::OpticObj* obj);
 
         [[nodiscard]] const optor::Camera& GetCamera() const ;
         [[nodiscard]]       optor::Camera& GetCamera();

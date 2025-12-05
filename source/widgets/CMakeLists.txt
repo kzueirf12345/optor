@@ -20,6 +20,8 @@ add_library(widgets STATIC
     source/WidgetButtonMoveOpticObj.cpp
     source/WidgetPiska.cpp
     source/PiskaToolButton.cpp
+    source/DeleteObjButton.cpp
+    # source/CreateObjButton.cpp
 )
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")

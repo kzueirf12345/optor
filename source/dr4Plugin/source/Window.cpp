@@ -1,8 +1,8 @@
-#include <SFML/System/String.hpp>
 #include <chrono>
 #include <optional>
 #include <thread>
 
+#include <SFML/System/String.hpp>
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Sprite.hpp>

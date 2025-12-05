@@ -1,6 +1,7 @@
 #include <cassert>
 #include <limits>
 #include <optional>
+#include <algorithm>
 
 #include "optics/Scene.hpp"
 #include "common/ErrorHandler.hpp"
@@ -28,6 +29,11 @@ void optor::Scene::Update() {
     if (moveDir_ != optor::MoveDirection::UNKNOWN) {
         ERROR_HANDLE(&optor::Camera::Move, camera_, moveDir_, optor::CAMERA_MOVE_SPEED);
     }
+
+    objs_.erase(
+        std::remove_if(objs_.begin(), objs_.end(), [](auto& obj) { return obj->GetMustRemoved(); }),
+        objs_.end()
+    );
 
     for (size_t y = 0; y < size_.y; ++y) {
         for (size_t x = 0; x < size_.x; ++x) {
@@ -193,6 +199,21 @@ optor::OpticObj* optor::Scene::AddObj(std::unique_ptr<optor::OpticObj> obj) {
 
 void optor::Scene::PopObj() {
     objs_.pop_back();
+}
+
+bool optor::Scene::RemoveObj(optor::OpticObj* obj) {
+    if (!obj) {
+        return false;
+    }
+
+    for(auto it = objs_.begin(); it != objs_.end(); ++it) {
+        if (it->get() == obj) {
+            objs_.erase(it);
+            return true;
+        }
+    }
+
+    return false;
 }
 
 const optor::Camera& optor::Scene::GetCamera() const  {

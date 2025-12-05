@@ -67,6 +67,7 @@ optor::WidgetList* optor::OpticObjDesc::AddCoordInfo(optor::WidgetScrolledList* 
         auto* textWidget = dynamic_cast<optor::WidgetText*>(coordList->AddChild(std::make_unique<optor::WidgetText>(
             dr4::Vec2f{list->GetSize().x, strHeight}, state_, str
         )));
+        textWidget->SetIsDraggable(false);
         textWidget->GetText()->SetPos(INIT_WIDGET_BORDER_THICKNESS, textWidget->GetText()->GetPos().y);
     }
 
@@ -108,15 +109,18 @@ optor::WidgetList* optor::OpticObjDesc::AddColorInfo(optor::WidgetScrolledList* 
         auto* colorWidget = dynamic_cast<optor::WidgetChildable*>(colorList->AddChild(std::make_unique<optor::WidgetChildable>(
             dr4::Vec2f{list->GetSize().x, strHeight}, state_
         )));
+        colorWidget->SetIsDraggable(false);
 
         auto* textWidget = dynamic_cast<optor::WidgetText*>(colorWidget->AddChild(std::make_unique<optor::WidgetText>(
-            dr4::Vec2f{colorStr.size() * 12.f, STRING_BLOCK_HEIGHT}, state_, colorStr
+            dr4::Vec2f{colorStr.size() * 20.f, STRING_BLOCK_HEIGHT}, state_, colorStr
         )));
         textWidget->SetOutlineThickness(0);
+        textWidget->SetIsDraggable(false);
 
         auto* colorRect = dynamic_cast<optor::Widget*>(colorWidget->AddChild(std::make_unique<optor::Widget>(
             dr4::Vec2f{strHeight, strHeight}, state_
         )));
+        colorRect->SetIsDraggable(false);
         colorRect->SetBackgroundColor(info.color);
         colorRect->SetPosition({list->GetSize().x - 2 * INIT_SCROLLBAR_WIDTH, 0});
     }
@@ -149,6 +153,7 @@ optor::WidgetList* optor::OpticObjDesc::AddMaterialFeatures(optor::WidgetScrolle
             dr4::Vec2f{list->GetSize().x, strHeight}, state_, str
         )));
         widget->GetText()->SetPos(INIT_WIDGET_BORDER_THICKNESS, widget->GetText()->GetPos().y);
+        widget->SetIsDraggable(false);
     }
 
     return featuresList;
@@ -157,7 +162,7 @@ optor::WidgetList* optor::OpticObjDesc::AddMaterialFeatures(optor::WidgetScrolle
 
 optor::WidgetChildable* optor::OpticObjDesc::AddMoveButtons(optor::WidgetScrolledList* list)
 {
-    const float panelHeight = std::max(list->GetSize().y * 0.25f, 120.0f);
+    const float panelHeight = std::max(list->GetSize().y * 0.25f, 250.0f);
 
     auto movePanel = std::make_unique<optor::WidgetChildable>(
         dr4::Vec2f{list->GetSize().x, panelHeight},
