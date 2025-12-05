@@ -108,7 +108,7 @@ optor::TopBar::TopBar(optor::WidgetManager* manager)
     UpdatePositions(dynamic_cast<optor::WidgetList*>(view->GetWidget()), view->AbsCoord());
 }
 
-static void HandleChild(optor::Widget* child, optor::WidgetList* list, optor::WidgetManager* manager);
+static void HandleChild(optor::Widget* child, optor::WidgetList* list, optor::WidgetManager* manager, float sizeX);
 
 static std::unique_ptr<optor::Widget> CreateViewList(optor::WidgetManager* manager, const optor::WidgetChildable* parent)
 {
@@ -120,17 +120,37 @@ static std::unique_ptr<optor::Widget> CreateViewList(optor::WidgetManager* manag
     );
 
     const size_t childrenCount = parent->GetChildrenCount();
+
+    dr4::Text* textName = manager->GetWindow()->CreateText();
+    textName->SetFont(optor::FONT);
+    textName->SetFontSize(40);
+
+    float maxSizeX = 0;
     for (size_t ind = 0; ind < childrenCount; ++ind) {
 
         auto* child = parent->GetChild(ind);
 
-        ERROR_HANDLE(HandleChild, child, list.get(), manager);
+        std::optional<std::string> name = child->GetName();
+
+        if (!name.has_value()) {
+            name = child->GetTypeName();
+        }
+
+        textName->SetText(name.value());
+        maxSizeX = std::max(textName->GetBounds().x, maxSizeX);
+    }
+
+    for (size_t ind = 0; ind < childrenCount; ++ind) {
+
+        auto* child = parent->GetChild(ind);
+
+        ERROR_HANDLE(HandleChild, child, list.get(), manager, maxSizeX);
     }
 
     return std::move(list);
 }
 
-static void HandleChild(optor::Widget* child, optor::WidgetList* list, optor::WidgetManager* manager)
+static void HandleChild(optor::Widget* child, optor::WidgetList* list, optor::WidgetManager* manager, float sizeX)
 {
     assert(child);
     assert(list);
@@ -154,7 +174,7 @@ static void HandleChild(optor::Widget* child, optor::WidgetList* list, optor::Wi
     textName->SetFont(optor::FONT);
     // textName->SetFontSize(40);
 
-    dr4::Vec2f size = textName->GetBounds();
+    dr4::Vec2f size = {sizeX, optor::STRING_BLOCK_HEIGHT};
 
     delete textName;
 
@@ -224,6 +244,11 @@ void optor::TopBar::UpdatePositions(optor::WidgetList* list, dr4::Vec2f absCoord
         auto* hideButton = dynamic_cast<optor::TopBarButton*>(dynamic_cast<optor::WidgetChildable*>(child)->GetChild(0));
 
         if (hideButton) {
+
+            // std::cerr << list->GetSize().x - hideButton->GetSize().x - 50 << std::endl;
+
+            // hideButton->GetParent()->SetSize({list->GetSize().x - hideButton->GetSize().x , hideButton->GetParent()->GetPosition().y});
+
             switch (hideButton->GetWidgetPos()) {
                 case optor::TopBarButton::WidgetPos::BOTTOM:
                     hideButton->GetWidget()->SetPosition(absCoord + dr4::Vec2f(0, child->GetPosition().y + child->GetSize().y));
