@@ -1,6 +1,7 @@
 #include <cassert>
 #include <cctype>
 #include <cmath>
+#include <cstddef>
 #include <memory>
 #include <string_view>
 #include <iostream>
@@ -18,7 +19,9 @@ optor::pp::TextTool::TextTool(dr4::Font* font, ::pp::Canvas* cvs)
         text_{nullptr},
         keyHandled_(false),
         font_(font),
-        tempText_(cvs_->GetWindow()->CreateText())
+        tempText_(cvs_->GetWindow()->CreateText()),
+        prevClickTime_(0),
+        doubleClickDelay_(0.5)
 {
     tempText_->SetFont(font);
 }
@@ -74,11 +77,31 @@ bool optor::pp::TextTool::OnMouseDown(const dr4::Event::MouseButton &evt) {
     }
 
     if (isDrawing_ && evt.button == CREATE_BUTTON && text_->OnMe(evt.pos)) {
+        const std::string& str = text_->GetText()->GetText();
+        const size_t n = str.size();
         size_t caretPos = FindLetterPos(evt.pos.x);
 
-        text_->SetCaretPos(caretPos);
-        text_->SetSelectPos(caretPos);
-        text_->SetInSelectMode(true);
+        const double nowTime = cvs_->GetWindow()->GetTime();
+
+        if (nowTime - prevClickTime_ < doubleClickDelay_ && caretPos != 0 && !std::isspace(str[caretPos - 1])) {
+            text_->SetIsSelectedSmth(true);
+
+            ssize_t pos = caretPos - 1;
+            for (;pos > -1 && !std::isspace(str[pos]); --pos);
+            text_->SetSelectPos(pos + 1);
+
+            pos = caretPos - 1;
+            for (;pos < n && !std::isspace(str[pos]); ++pos);
+            text_->SetCaretPos(pos);
+        } 
+        else {
+            text_->SetCaretPos(caretPos);
+            text_->SetSelectPos(caretPos);
+            text_->SetInSelectMode(true);
+        }
+
+
+        prevClickTime_ = nowTime;
         return true;
     }
 

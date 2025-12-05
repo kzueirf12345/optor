@@ -47,6 +47,9 @@ private:
 
     mutable std::unique_ptr<dr4::Text> tempText_;
 
+    double prevClickTime_;
+    double doubleClickDelay_;
+
 private:
 
     size_t FindLetterPos(float mousePosX) const;
