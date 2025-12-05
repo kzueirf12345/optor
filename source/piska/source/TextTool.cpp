@@ -147,6 +147,14 @@ bool optor::pp::TextTool::OnKeyDown(const dr4::Event::KeyEvent &evt) {
         return true;
     }
 
+    if (HandleC(evt)) {
+        return true;
+    }
+
+    if (HandleV(evt)) {
+        return true;
+    }
+
     keyHandled_ = false;
     return false;
 }
@@ -311,6 +319,35 @@ bool optor::pp::TextTool::HandleA(const dr4::Event::KeyEvent& evt) {
         text_->SetSelectPos(0);
         text_->SetCaretPos(n);
 
+        return true;
+    }
+
+    return false;
+}
+
+bool optor::pp::TextTool::HandleC(const dr4::Event::KeyEvent& evt) {
+    if (evt.sym == dr4::KEYCODE_C && evt.mods & dr4::KEYMOD_CTRL) {
+        if (text_->GetIsSelectedSmth() || text_->GetInSelectMode()) {
+            const std::string str = text_->GetText()->GetText();
+            const size_t selectPos = text_->GetSelectPos();
+            const size_t caretPos = text_->GetCaretPos();
+
+            const size_t min = std::min(selectPos, caretPos);
+            const size_t max = std::max(selectPos, caretPos);
+
+            cvs_->GetWindow()->SetClipboard(str.substr(min, max - min));
+            return true;
+        }
+    }
+
+    return false;
+}
+bool optor::pp::TextTool::HandleV(const dr4::Event::KeyEvent& evt) {
+    if (evt.sym == dr4::KEYCODE_V && evt.mods & dr4::KEYMOD_CTRL) {
+        if (text_->GetIsSelectedSmth() || text_->GetInSelectMode()) {
+            text_->EraseSelectedText();
+        }
+        text_->InsertText(cvs_->GetWindow()->GetClipboard());
         return true;
     }
 

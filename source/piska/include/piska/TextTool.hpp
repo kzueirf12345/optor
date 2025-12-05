@@ -57,6 +57,8 @@ private:
     bool HandleArrowLeft(const dr4::Event::KeyEvent& evt);
     bool HandleArrowRight(const dr4::Event::KeyEvent& evt);
     bool HandleA(const dr4::Event::KeyEvent& evt);
+    bool HandleC(const dr4::Event::KeyEvent& evt);
+    bool HandleV(const dr4::Event::KeyEvent& evt);
 
 };
 
