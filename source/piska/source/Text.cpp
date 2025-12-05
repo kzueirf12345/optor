@@ -191,8 +191,8 @@ void optor::pp::Text::EraseSelectedText() {
         return;
     }
 
-    const float minPos = std::min(caretPos_, selectPos_);
-    const float maxPos = std::max(caretPos_, selectPos_);
+    const size_t minPos = std::min(caretPos_, selectPos_);
+    const size_t maxPos = std::max(caretPos_, selectPos_);
     textStr_.erase(minPos, maxPos - minPos);
     text_->SetText(textStr_);
     SetCaretPos(minPos);

@@ -1,6 +1,7 @@
 #ifndef OPTOR_SOURCE_PISKA_INCLUDE_PISKA_TEXT_TOOL_HPP
 #define OPTOR_SOURCE_PISKA_INCLUDE_PISKA_TEXT_TOOL_HPP
 
+#include "dr4/event.hpp"
 #include "dr4/texture.hpp"
 #include "piska/Text.hpp"
 #include "pp/canvas.hpp"
@@ -49,6 +50,13 @@ private:
 private:
 
     size_t FindLetterPos(float mousePosX) const;
+
+    bool HandleTextFinish(const dr4::Event::KeyEvent& evt);
+    bool HandleBackspace(const dr4::Event::KeyEvent& evt);
+    bool HandleDelete(const dr4::Event::KeyEvent& evt);
+    bool HandleArrowLeft(const dr4::Event::KeyEvent& evt);
+    bool HandleArrowRight(const dr4::Event::KeyEvent& evt);
+    bool HandleA(const dr4::Event::KeyEvent& evt);
 
 };
 

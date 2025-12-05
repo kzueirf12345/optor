@@ -99,14 +99,14 @@ bool optor::CreateObjButton<ObjType>::OnMousePress(const ::dr4::Event &event) {
         if constexpr (std::is_same_v<ObjType, optor::AABB>) {
             obj = scene_->AddObj(std::make_unique<optor::AABB>(
                 std::array<optor::Vector3d, 8>({
-                    {0, 0, 10},
-                    {5, 0, 10},
-                    {5, 5, 10},
+                    {0, 0, 10},    
+                    {5, 0, 10},   
                     {0, 5, 10},
-                    {0, 0, 15},
-                    {5, 0, 15},
-                    {5, 5, 15},
-                    {0, 5, 15}
+                    {5, 5, 10},  
+                    {0, 0, 15},  
+                    {5, 0, 15},   
+                    {0, 5, 15},    
+                    {5, 5, 15}     
                 }),
                 material
             ));

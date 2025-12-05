@@ -1,4 +1,5 @@
 #include <cassert>
+#include <cctype>
 #include <cmath>
 #include <memory>
 #include <string_view>
@@ -114,6 +115,7 @@ bool optor::pp::TextTool::OnMouseMove(const dr4::Event::MouseMove &evt) {
 }
 
 
+
 bool optor::pp::TextTool::OnKeyDown(const dr4::Event::KeyEvent &evt) {
     if (!isDrawing_) {
         return false;
@@ -121,6 +123,35 @@ bool optor::pp::TextTool::OnKeyDown(const dr4::Event::KeyEvent &evt) {
 
     keyHandled_ = true;
 
+    if (HandleTextFinish(evt)) {
+        return true;
+    }
+
+    if (HandleBackspace(evt)) {
+        return true;
+    }
+
+    if (HandleDelete(evt)) {
+        return true;
+    }
+
+    if (HandleArrowLeft(evt)) {
+        return true;
+    }
+
+    if (HandleArrowRight(evt)) {
+        return true;
+    }
+
+    if (HandleA(evt)) {
+        return true;
+    }
+
+    keyHandled_ = false;
+    return false;
+}
+
+bool optor::pp::TextTool::HandleTextFinish(const dr4::Event::KeyEvent& evt) {
     if (evt.sym == dr4::KEYCODE_ENTER && evt.mods == dr4::KEYMOD_SHIFT) {
         isDrawing_ = false;
         text_->SetIsCreating(false);
@@ -128,33 +159,77 @@ bool optor::pp::TextTool::OnKeyDown(const dr4::Event::KeyEvent &evt) {
         return true;
     }
 
+    return false;
+}
+
+bool optor::pp::TextTool::HandleBackspace(const dr4::Event::KeyEvent& evt) {
     if (evt.sym == dr4::KEYCODE_BACKSPACE) {
         if (text_->GetIsSelectedSmth()) {
             text_->EraseSelectedText();
-        } else {
-            text_->EraseLeftText();
+        } 
+        else {
+            if (evt.mods & dr4::KEYMOD_CTRL) {
+                const std::string& str = text_->GetText()->GetText();
+                std::size_t pos = text_->GetCaretPos();
+
+                while (pos > 0 && std::isspace(static_cast<unsigned char>(str[pos - 1]))) {
+                    text_->EraseLeftText();
+                    --pos;
+                }
+
+                while (pos > 0 && !std::isspace(static_cast<unsigned char>(str[pos - 1]))) {
+                    text_->EraseLeftText();
+                    --pos;
+                }
+            }
+            else {
+                text_->EraseLeftText();
+            }
         }
         return true;
     }
+    return false;
+}
 
-
+bool optor::pp::TextTool::HandleDelete(const dr4::Event::KeyEvent& evt) {
     if (evt.sym == dr4::KEYCODE_DELETE) {
         if (text_->GetIsSelectedSmth()) {
             text_->EraseSelectedText();
         } else {
-            text_->EraseRightText();
+            if (evt.mods & dr4::KEYMOD_CTRL) {
+                const std::string str = text_->GetText()->GetText();
+                std::size_t pos = text_->GetCaretPos();
+                const std::size_t n = str.size();
+
+                while (pos < n && !std::isspace(static_cast<unsigned char>(str[pos]))) {
+                    text_->EraseRightText();
+                    ++pos;
+                }
+
+                while (pos < n && std::isspace(static_cast<unsigned char>(str[pos]))) {
+                    text_->EraseRightText();
+                    ++pos;
+                }
+
+            }
+            else {
+                text_->EraseRightText();
+            }
         }
         return true;
     }
+    return false;
+}
 
+bool optor::pp::TextTool::HandleArrowLeft(const dr4::Event::KeyEvent& evt) {
     const size_t curCaretPos = text_->GetCaretPos();
 
-    if (evt.sym == dr4::KEYCODE_LEFT) {
+   if (evt.sym == dr4::KEYCODE_LEFT) {
         if (curCaretPos == 0) {
             return true;
         }
 
-        if(evt.mods == dr4::KEYMOD_SHIFT) {
+        if (evt.mods & dr4::KEYMOD_SHIFT) {
             if (!text_->GetIsSelectedSmth()) {
                 text_->SetIsSelectedSmth(true);
                 text_->SetSelectPos(curCaretPos);
@@ -162,16 +237,38 @@ bool optor::pp::TextTool::OnKeyDown(const dr4::Event::KeyEvent &evt) {
         } else {
             text_->SetIsSelectedSmth(false);
         }
-        text_->SetCaretPos(curCaretPos ? curCaretPos - 1 : 0);
+
+        if (evt.mods & dr4::KEYMOD_CTRL) {
+            const std::string& str = text_->GetText()->GetText();
+            std::size_t pos = curCaretPos;
+
+            while (pos > 0 && std::isspace(static_cast<unsigned char>(str[pos - 1]))) {
+                --pos;
+            }
+
+            while (pos > 0 && !std::isspace(static_cast<unsigned char>(str[pos - 1]))) {
+                --pos;
+            }
+
+            text_->SetCaretPos(pos);
+        } else {
+            text_->SetCaretPos(curCaretPos - 1);
+        }
+
         return true;
     }
+    return false;
+}
+
+bool optor::pp::TextTool::HandleArrowRight(const dr4::Event::KeyEvent& evt) {
+    const size_t curCaretPos = text_->GetCaretPos();
 
     if (evt.sym == dr4::KEYCODE_RIGHT) {
         if (curCaretPos == text_->GetText()->GetText().size()) {
             return true;
         }
 
-        if(evt.mods == dr4::KEYMOD_SHIFT) {
+        if (evt.mods & dr4::KEYMOD_SHIFT) {
             if (!text_->GetIsSelectedSmth()) {
                 text_->SetIsSelectedSmth(true);
                 text_->SetSelectPos(curCaretPos);
@@ -179,14 +276,48 @@ bool optor::pp::TextTool::OnKeyDown(const dr4::Event::KeyEvent &evt) {
         } else {
             text_->SetIsSelectedSmth(false);
         }
-        text_->SetCaretPos(curCaretPos + 1);
+
+        if (evt.mods & dr4::KEYMOD_CTRL) {
+            const std::string& str = text_->GetText()->GetText();
+            std::size_t pos = curCaretPos;
+            const std::size_t n = str.size();
+
+            while (pos < n && !std::isspace(static_cast<unsigned char>(str[pos]))) {
+                ++pos;
+            }
+
+            while (pos < n && std::isspace(static_cast<unsigned char>(str[pos]))) {
+                ++pos;
+            }
+
+            text_->SetCaretPos(pos);
+        } else {
+            text_->SetCaretPos(curCaretPos + 1);
+        }
+
+        return true;
+    }
+    return false;
+}
+
+bool optor::pp::TextTool::HandleA(const dr4::Event::KeyEvent& evt) {
+    if (evt.sym == dr4::KEYCODE_A && evt.mods & dr4::KEYMOD_CTRL)
+    {
+        if (!text_->GetIsSelectedSmth()) {
+            text_->SetIsSelectedSmth(true);
+        }
+        const std::string& str = text_->GetText()->GetText();
+        const std::size_t n = str.size();
+        text_->SetSelectPos(0);
+        text_->SetCaretPos(n);
+
         return true;
     }
 
-    keyHandled_ = false;
-
     return false;
 }
+
+
 bool optor::pp::TextTool::OnText(const dr4::Event::TextEvent &evt) {
     if (!isDrawing_) {
         return false;

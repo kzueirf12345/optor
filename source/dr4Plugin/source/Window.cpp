@@ -284,20 +284,23 @@ std::optional<::dr4::Event> optor::dr4::Window::PollEvent()
 
 static dr4::KeyMode KeyModeSF2DR4(sf::Event::KeyEvent event) noexcept
 {
-    if (event.alt) {
-        return dr4::KeyMode::KEYMOD_ALT;
-    }
+    uint16_t mode = dr4::KeyMode::KEYMOD_NONE;
 
     if (event.shift) {
-        return dr4::KeyMode::KEYMOD_SHIFT;
+        mode |= dr4::KeyMode::KEYMOD_SHIFT;
     }
 
     if (event.control) {
-        return dr4::KeyMode::KEYMOD_CTRL;
+        mode |= dr4::KeyMode::KEYMOD_CTRL;
     }
 
-    return dr4::KeyMode::KEYMOD_NONE;
-}   
+    if (event.alt) {
+        mode |= dr4::KeyMode::KEYMOD_ALT;
+    }
+
+    return static_cast<dr4::KeyMode>(mode);
+}
+
 
 #define CASE_RET_TYPE_(guiType, huiType) \
         case guiType: return huiType
