@@ -30,6 +30,8 @@ public:
 
     dr4::Color GetColor() const;
 
+    [[nodiscard]] virtual std::string GetTypeName() const override {return "ColorPicker"; };
+
 private:
     std::unique_ptr<dr4::Texture> texture_;
 

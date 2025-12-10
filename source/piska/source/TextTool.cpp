@@ -4,7 +4,6 @@
 #include <cstddef>
 #include <memory>
 #include <string_view>
-#include <iostream>
 
 #include "piska/TextTool.hpp"
 #include "dr4/keycodes.hpp"

@@ -22,6 +22,8 @@ class OpticObjShort : public Textable, public WidgetChildable {
 
         optor::OpticObj* GetObj();
 
+        [[nodiscard]] virtual std::string GetTypeName() const override {return "OpticObjShort"; };
+
     private:
 
         optor::OpticObj* obj_;

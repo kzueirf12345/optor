@@ -20,6 +20,7 @@
 #include "optics/Vector.hpp"
 #include "widgets/CreateObjButton.hpp"
 #include "widgets/OpticObjShort.hpp"
+#include "widgets/TextBox.hpp"
 #include "widgets/TopBar.hpp"
 #include "widgets/Widget.hpp"
 #include "widgets/WidgetHeader.hpp"
@@ -35,15 +36,10 @@
 #include "optics/Triangle.hpp"
 #include "optics/Sphere.hpp"
 
-// FIXME refactor clipRect and draw texture
-// TODO add optic obj
-// TODO remove optic obj
 // TODO change optic obj features
 // TODO update optic obj features
 
-
 ::dr4::Font* optor::FONT = nullptr;
-
 
 static void CreateScene(cum::DR4BackendPlugin* backend, optor::WidgetManager* manager);
 static void CreateCameraButtons(cum::DR4BackendPlugin* backend, optor::WidgetManager* manager, optor::SceneWidget* sceneWidget);
@@ -255,6 +251,16 @@ void CreateScene(cum::DR4BackendPlugin* backend, optor::WidgetManager* manager) 
     }));
 
     ERROR_HANDLE(&CreateObjsList, manager, sceneWidget);
+
+    auto* textBox = dynamic_cast<optor::TextBox*>(manager->GetDesktop()->AddChild(
+        std::make_unique<optor::TextBox>(
+            dr4::Vec2f{300, optor::STRING_BLOCK_HEIGHT},
+            manager->GetState(),
+            "Text:)"
+        )
+    ));
+
+    textBox->SetPosition({500, 500});
 }
 
 static void CreateCameraButtons(cum::DR4BackendPlugin* backend, optor::WidgetManager* manager, optor::SceneWidget* sceneWidget) {
