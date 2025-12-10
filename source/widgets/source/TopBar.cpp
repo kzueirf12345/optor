@@ -121,7 +121,7 @@ static std::unique_ptr<optor::Widget> CreateViewList(optor::WidgetManager* manag
 
     const size_t childrenCount = parent->GetChildrenCount();
 
-    dr4::Text* textName = manager->GetWindow()->CreateText();
+    std::unique_ptr<dr4::Text> textName(manager->GetWindow()->CreateText());
     textName->SetFont(optor::FONT);
     textName->SetFontSize(40);
 

@@ -6,6 +6,7 @@
 #include "dr4/mouse_buttons.hpp"
 #include "global/Global.hpp"
 #include "pp/canvas.hpp"
+#include "widgets/ColorPicker.hpp"
 #include "widgets/PiskaToolButton.hpp"
 #include "widgets/WidgetChildable.hpp"
 #include "widgets/WidgetScrolledList.hpp"
@@ -69,6 +70,11 @@ optor::WidgetPiska::WidgetPiska(optor::WidgetsState* state)
             &selectedTool_
         ));
     }
+
+    auto* colorPicker = dynamic_cast<optor::ColorPicker*>(AddChild(std::make_unique<optor::ColorPicker>(
+        dr4::Vec2f(400, 300), state_, &piskaTheme_
+    )));
+    colorPicker->SetPosition({listWidth, 0});
 }
 
 void optor::WidgetPiska::SetPosition(const dr4::Vec2f& position) {

@@ -42,6 +42,7 @@ bool optor::PiskaToolButton::OnMousePress  (const ::dr4::Event& event) {
                 (*selectedTool_)->OnEnd();
             }
             *selectedTool_ = tool_;
+            tool_->OnStart();
         } else {
             if (*selectedTool_) {
                 (*selectedTool_)->OnEnd();

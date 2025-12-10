@@ -105,23 +105,25 @@ int main() {
     ppPlugins.push_back(dynamic_cast<cum::PPToolPlugin*>(ERROR_HANDLE([&pluginsManager](){
         return pluginsManager.LoadFromFile("./plugins/pp/libDenchik2.so");
     })));
+    ppPlugins.back()->AfterLoad();
     ppPlugins.push_back(dynamic_cast<cum::PPToolPlugin*>(ERROR_HANDLE([&pluginsManager](){
         return pluginsManager.LoadFromFile("./plugins/pp/libArtemLine.so");
     })));
+    ppPlugins.back()->AfterLoad();
     ppPlugins.push_back(dynamic_cast<cum::PPToolPlugin*>(ERROR_HANDLE([&pluginsManager](){
         return pluginsManager.LoadFromFile("./plugins/pp/libSeva3.so");
     })));
+    ppPlugins.back()->AfterLoad();
     ppPlugins.push_back(dynamic_cast<cum::PPToolPlugin*>(ERROR_HANDLE([&pluginsManager](){
         return pluginsManager.LoadFromFile("./plugins/pp/libArtemText.so");
     })));
+    ppPlugins.back()->AfterLoad();
     // ppPlugins.push_back(dynamic_cast<cum::PPToolPlugin*>(ERROR_HANDLE([&pluginsManager](){
     //     return pluginsManager.LoadFromFile("./plugins/pp/libArtemEssentials.so");
     // })));
     ppPlugins.push_back(dynamic_cast<cum::PPToolPlugin*>(ERROR_HANDLE([&pluginsManager](){
         return pluginsManager.LoadFromFile("./build/source/piska/libpiska.so");
     })));   
-    
-
     ppPlugins.back()->AfterLoad();
 
 //==========GeomPrim=================
@@ -153,6 +155,8 @@ int main() {
 
         ERROR_HANDLE(&dr4::Window::Display, window);
     }
+
+    delete optor::FONT;
     
     return EXIT_SUCCESS;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        // ВОВА ГЕЙ + ПИДОР
 }
