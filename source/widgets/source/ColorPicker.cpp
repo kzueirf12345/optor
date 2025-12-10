@@ -29,9 +29,13 @@ optor::ColorPicker::ColorPicker(const dr4::Vec2f &size, optor::WidgetsState *sta
         texture_->SetSize(size);
     });
 
-    SetOutlineThickness(0);
+    const float thikness = GetOutlineThickness();
 
-    colorRect_->SetSize({size.y, size.y});
+    const dr4::Vec2f inSize = size - 2 * dr4::Vec2f{thikness, thikness};
+
+    texture_->SetZero({thikness, thikness});
+
+    colorRect_->SetSize({inSize.y, inSize.y});
 
     colorPoint_->SetRadius(8.f);
     colorPoint_->SetFillColor(theme->handleColor);
@@ -39,17 +43,17 @@ optor::ColorPicker::ColorPicker(const dr4::Vec2f &size, optor::WidgetsState *sta
     colorPoint_->SetBorderColor({255, 255, 255, 255});
     colorPoint_->SetCenter(colorRect_->GetSize());
 
-    hueRect_->SetSize({size.x - size.y, size.y});
-    hueRect_->SetPos(dr4::Vec2f{size.y, 0});
+    hueRect_->SetSize({inSize.x - inSize.y, inSize.y});
+    hueRect_->SetPos(dr4::Vec2f{inSize.y, 0});
 
     hueLine_->SetColor(theme->handleColor);
     hueLine_->SetThickness(5);
-    hueLine_->SetStart({size.y, 0});
-    hueLine_->SetEnd({size.x, 0});
+    hueLine_->SetStart({inSize.y, 0});
+    hueLine_->SetEnd({inSize.x, 0});
 
-    for (size_t y = 0; y < size.y; ++y) {
-        for (size_t x = 0; x < size.x - size.y; ++x) {
-            hueRect_->SetPixel(x, y, HSV2RGB(static_cast<float>(y) / size.y * 360.f, 1, 1));
+    for (size_t y = 0; y < inSize.y; ++y) {
+        for (size_t x = 0; x < inSize.x - inSize.y; ++x) {
+            hueRect_->SetPixel(x, y, HSV2RGB(static_cast<float>(y) / inSize.y * 360.f, 1, 1));
         }
     }
 

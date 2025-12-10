@@ -51,16 +51,14 @@ optor::WidgetPiska::WidgetPiska(optor::WidgetsState* state)
         }
     }
 
-    const float listMargin = 100;
     const float listWidth = 300;
 
     auto* list = dynamic_cast<optor::WidgetScrolledList*>(AddChild(std::make_unique<optor::WidgetScrolledList>(
-        dr4::Vec2f{listWidth + INIT_SCROLLBAR_WIDTH, state_->window->GetSize().y - 2 *listMargin},
+        dr4::Vec2f{listWidth + INIT_SCROLLBAR_WIDTH - 20, state_->window->GetSize().y - listWidth - 20},
         state_
     )));
 
-    list->SetPosition({0, listMargin});
-
+    list->SetPosition({10, 10});
 
     for (auto& tool : tools_) {
         auto* button = list->AddChild(std::make_unique<optor::PiskaToolButton>(
@@ -72,9 +70,11 @@ optor::WidgetPiska::WidgetPiska(optor::WidgetsState* state)
     }
 
     auto* colorPicker = dynamic_cast<optor::ColorPicker*>(AddChild(std::make_unique<optor::ColorPicker>(
-        dr4::Vec2f(400, 300), state_, &piskaTheme_
+        dr4::Vec2f(listWidth + INIT_SCROLLBAR_WIDTH - 20, listWidth - 20 - 10), state_, &piskaTheme_
     )));
-    colorPicker->SetPosition({listWidth, 0});
+    colorPicker->SetPosition({10, list->GetSize().y + 20});
+
+    colorPicker->SetOutlineThickness(2);
 }
 
 void optor::WidgetPiska::SetPosition(const dr4::Vec2f& position) {

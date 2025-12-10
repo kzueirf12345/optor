@@ -8,7 +8,6 @@
 #include "dr4/math/vec2.hpp"
 #include "dr4/texture.hpp"
 
-#include "dr4/window.hpp"
 #include "pp/canvas.hpp"
 #include "widgets/Widget.hpp"
 
