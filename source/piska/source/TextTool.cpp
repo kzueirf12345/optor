@@ -13,7 +13,7 @@
 #include "piska/Global.hpp"
 #include "piska/Text.hpp"
 
-optor::pp::TextTool::TextTool(dr4::Font* font, ::pp::Canvas* cvs)
+optor::pp::TextTool::TextTool(const dr4::Font* font, ::pp::Canvas* cvs)
     :   cvs_{cvs},
         isDrawing_(false),
         text_{nullptr},

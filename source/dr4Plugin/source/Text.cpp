@@ -76,7 +76,7 @@ void optor::dr4::Text::SetFont(const ::dr4::Font *font) {
     sf::FloatRect boundsSF = ERROR_HANDLE([this](){
         return text_.getLocalBounds();
     });
-    return ::dr4::Vec2f{boundsSF.width, boundsSF.height * 2};
+    return ::dr4::Vec2f{boundsSF.width, 2 * boundsSF.height};
 }
 
 const std::string &optor::dr4::Text::GetText() const {

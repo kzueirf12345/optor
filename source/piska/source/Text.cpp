@@ -11,7 +11,7 @@
 #include "dr4/texture.hpp"
 #include "piska/Global.hpp"
 
-optor::pp::Text::Text(dr4::Font* font, ::pp::Canvas* cvs) 
+optor::pp::Text::Text(const dr4::Font* font, ::pp::Canvas* cvs) 
     :   text_{cvs->GetWindow()->CreateText()},
         tempText_(cvs->GetWindow()->CreateText()),
         isDragged_(false),

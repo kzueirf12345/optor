@@ -17,7 +17,7 @@ class TextTool final: public ::pp::Tool {
 
 public:
 
-    TextTool(dr4::Font* font, ::pp::Canvas* cvs);
+    TextTool(const dr4::Font* font, ::pp::Canvas* cvs);
 
     virtual std::string_view Icon() const override;
     virtual std::string_view Name() const override;
@@ -43,7 +43,7 @@ private:
 
     bool keyHandled_;
 
-    dr4::Font* font_;
+    const dr4::Font* font_;
 
     mutable std::unique_ptr<dr4::Text> tempText_;
 

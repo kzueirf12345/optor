@@ -59,7 +59,11 @@ int main() {
     }));
 
     // auto* dr4Backend = dynamic_cast<cum::DR4BackendPlugin*>(ERROR_HANDLE([&pluginsManager](){
-    //     return pluginsManager.LoadFromFile("./plugins/dr4/v2/libDenchik.so");
+    //     return pluginsManager.LoadFromFile("./plugins/dr4/v2/libEgor.so");
+    // }));
+
+    // auto* dr4Backend = dynamic_cast<cum::DR4BackendPlugin*>(ERROR_HANDLE([&pluginsManager](){
+    //     return pluginsManager.LoadFromFile("./plugins/dr4/v2/artem/dist/plugin/libswuix_sdl3.so");
     // }));
 
     dr4Backend->AfterLoad();
@@ -91,23 +95,32 @@ int main() {
         optor::FONT->LoadFromFile(optor::FONT_PATH);
     });
 
+    window->SetDefaultFont(optor::FONT);
+
 //==========DR4=================
 //==========GeomPrim=================
 
     std::vector<cum::PPToolPlugin*> ppPlugins = {};
 
     ppPlugins.push_back(dynamic_cast<cum::PPToolPlugin*>(ERROR_HANDLE([&pluginsManager](){
-        return pluginsManager.LoadFromFile("./plugins/pp/libDenchik.so");
+        return pluginsManager.LoadFromFile("./plugins/pp/libDenchik2.so");
     })));
     ppPlugins.push_back(dynamic_cast<cum::PPToolPlugin*>(ERROR_HANDLE([&pluginsManager](){
         return pluginsManager.LoadFromFile("./plugins/pp/libArtemLine.so");
     })));
     ppPlugins.push_back(dynamic_cast<cum::PPToolPlugin*>(ERROR_HANDLE([&pluginsManager](){
-        return pluginsManager.LoadFromFile("./plugins/pp/libSeva.so");
+        return pluginsManager.LoadFromFile("./plugins/pp/libSeva3.so");
     })));
     ppPlugins.push_back(dynamic_cast<cum::PPToolPlugin*>(ERROR_HANDLE([&pluginsManager](){
+        return pluginsManager.LoadFromFile("./plugins/pp/libArtemText.so");
+    })));
+    // ppPlugins.push_back(dynamic_cast<cum::PPToolPlugin*>(ERROR_HANDLE([&pluginsManager](){
+    //     return pluginsManager.LoadFromFile("./plugins/pp/libArtemEssentials.so");
+    // })));
+    ppPlugins.push_back(dynamic_cast<cum::PPToolPlugin*>(ERROR_HANDLE([&pluginsManager](){
         return pluginsManager.LoadFromFile("./build/source/piska/libpiska.so");
-    })));    
+    })));   
+    
 
     ppPlugins.back()->AfterLoad();
 

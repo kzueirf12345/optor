@@ -36,7 +36,7 @@ add_subdirectory(source/piska)
 add_subdirectory(source/mipt-ded-zemax)
 
 find_package(X11                            REQUIRED)
-find_package(SFML 2.5.1 COMPONENTS graphics REQUIRED)
+find_package(SFML 2.6.1 COMPONENTS graphics REQUIRED)
 
 
 add_executable(${CMAKE_PROJECT_NAME}
