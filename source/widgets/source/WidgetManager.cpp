@@ -43,6 +43,7 @@ optor::WidgetManager::WidgetManager(dr4::Window* window, std::vector<cum::PPTool
     state_.selectedObj = nullptr;
     state_.needUpdateScene = true;
     state_.piskaPlugins = std::move(piskaPlugins);
+    state_.objCounter = 0;
 }
 
 void optor::WidgetManager::Draw() {

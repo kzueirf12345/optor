@@ -10,6 +10,7 @@
 #include "widgets/TextBox.hpp"
 #include "common/ErrorHandler.hpp"
 #include "common/Utils.hpp"
+#include "widgets/Widget.hpp"
 
 namespace optor 
 {
@@ -114,6 +115,8 @@ void optor::ChangeField<DataT>::OnIdle() {
 
         UpdateCaret();
     }
+
+    optor::Widget::OnIdle();
 }
 
 }

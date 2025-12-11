@@ -15,6 +15,7 @@
 #include "global/Global.hpp"
 #include "widgets/OpticObjDesc.hpp"
 #include "widgets/ChangeField.hpp"
+#include "widgets/ColorRect.hpp"
 #include "widgets/WidgetChildable.hpp"
 #include "widgets/WidgetHeader.hpp"
 #include "widgets/WidgetScrolledList.hpp"
@@ -33,9 +34,9 @@ optor::WidgetHeader* optor::OpticObjDesc::operator()(optor::WidgetChildable* par
     auto list = std::make_unique<optor::WidgetScrolledList>(size_, state_);
 
     AddCoordInfo(list.get());
+    AddMoveButtons(list.get());
     AddColorInfo(list.get());
     AddMaterialFeatures(list.get());
-    AddMoveButtons(list.get());
 
     return dynamic_cast<optor::WidgetHeader*>(parent->AddChild(std::make_unique<optor::WidgetHeader>(
         std::move(list),
@@ -170,8 +171,8 @@ optor::WidgetList* optor::OpticObjDesc::AddColorInfo(optor::WidgetScrolledList* 
         )));
         changeField->SetPosition({textWidget->GetSize().x, (mainWidget->GetSize().y - changeField->GetSize().y) / 2});
 
-        auto* colorRect = dynamic_cast<optor::Widget*>(mainWidget->AddChild(std::make_unique<optor::Widget>(
-            dr4::Vec2f{STRING_BLOCK_HEIGHT, STRING_BLOCK_HEIGHT}, state_
+        auto* colorRect = dynamic_cast<optor::ColorRect*>(mainWidget->AddChild(std::make_unique<optor::ColorRect>(
+            dr4::Vec2f{STRING_BLOCK_HEIGHT, STRING_BLOCK_HEIGHT}, state_, info.getAction, obj_
         )));
         colorRect->SetIsDraggable(false);
         colorRect->SetBackgroundColor(info.color);

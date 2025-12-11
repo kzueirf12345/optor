@@ -30,6 +30,8 @@ struct WidgetsState {
     std::deque<std::unique_ptr<optor::Widget>> modalWidgets;
 
     bool needUpdateScene;
+
+    size_t objCounter;
 };
 
 }

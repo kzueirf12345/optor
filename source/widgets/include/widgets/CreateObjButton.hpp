@@ -158,7 +158,7 @@ bool optor::CreateObjButton<ObjType>::OnMousePress(const ::dr4::Event &event) {
                     optor::STRING_BLOCK_HEIGHT
                 },
                 obj,
-                parent->GetChildrenCount()
+                state_->objCounter++
             ));
         }
     }

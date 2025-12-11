@@ -21,7 +21,7 @@ class OpticObj {
             OpticObj* object;
         };
 
-        OpticObj() = default;
+        OpticObj();
         explicit OpticObj(const Material& material);
         virtual ~OpticObj() = default;
         

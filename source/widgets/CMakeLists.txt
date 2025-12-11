@@ -23,6 +23,7 @@ add_library(widgets STATIC
     source/DeleteObjButton.cpp
     source/ColorPicker.cpp
     source/TextBox.cpp
+    source/ColorRect.cpp
 )
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")

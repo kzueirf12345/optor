@@ -37,6 +37,7 @@
 #include "optics/Sphere.hpp"
 
 // TODO rotate obj
+// TODO multiThreads
 
 ::dr4::Font* optor::FONT = nullptr;
 
@@ -383,7 +384,7 @@ static void CreateObjsList(optor::WidgetManager* manager, optor::SceneWidget* sc
             manager,
             dr4::Vec2f{list->GetSize().x - optor::INIT_SCROLLBAR_WIDTH, optor::STRING_BLOCK_HEIGHT},
             obj,
-            ind
+            manager->GetState()->objCounter++
         );
 
         ERROR_HANDLE(&optor::WidgetChildable::AddChild, list, std::move(listElem));

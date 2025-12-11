@@ -219,7 +219,7 @@ void optor::SceneWidget::OnIdle() {
 
     if (state_->selectedObj != prevSelected) {
         if (prevSelected) {
-            scene_.PopObj();
+            scene_.RemoveObj(aabb);
             aabb = nullptr;
             state_->needUpdateScene = true;
         }
