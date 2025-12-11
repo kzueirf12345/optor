@@ -3,6 +3,8 @@
 
 #include "dr4/math/color.hpp"
 #include <cmath>
+#include <sstream>
+#include <string>
 
 namespace optor
 {
@@ -315,6 +317,41 @@ Vector3<T> Reflect(const Vector3<T>& incident, const Vector3<T>& normal) {
 
 void TransformVector(Vector3d* Vector, const Transform Transform, 
                      Axis Axis, const float AngleRadians = 0.01);
+
+template <typename T>
+Vector3<T> Vector3Parse(const std::string& input) {
+    Vector3<T> result;
+    std::stringstream ss(input);
+    
+    std::string trimmed = input;
+    size_t start = trimmed.find_first_not_of(" \t");
+    size_t end = trimmed.find_last_not_of(" \t");
+    
+    if (start != std::string::npos && end != std::string::npos) {
+        trimmed = trimmed.substr(start, end - start + 1);
+    }
+    
+    ss.str(trimmed);
+    ss.clear();
+    
+    char comma1, comma2;
+    
+    T x, y, z;
+    
+    if (!(ss >> x >> comma1 >> y >> comma2 >> z)) {
+        throw std::invalid_argument("Invalid input format for Vector3 parsing");
+    }
+    
+    if ((comma1 != ',' && comma1 != ';') || (comma2 != ',' && comma2 != ';')) {
+        throw std::invalid_argument("Invalid separator in Vector3 string");
+    }
+    
+    result.x = x;
+    result.y = y;
+    result.z = z;
+    
+    return result;
+}
 
 }
 

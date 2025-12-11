@@ -195,6 +195,19 @@ bool optor::WidgetHeader::OnKeyboardRelease(const dr4::Event& event)
     return optor::Widget::OnKeyboardRelease(event);
 }
 
+bool optor::WidgetHeader::OnTextInput(const dr4::Event& event) {
+    if (isHide_) { return false; }
+
+    if (ERROR_HANDLE([this, &event](){
+            return widget_->OnTextInput(event);
+        })) 
+    {
+        return true;
+    }
+
+    return optor::Widget::OnTextInput(event);
+}
+
 void optor::WidgetHeader::OnIdle           () 
 {
     if (isHide_) { return; }

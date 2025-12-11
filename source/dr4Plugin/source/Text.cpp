@@ -14,7 +14,9 @@ optor::dr4::Text::Text()
     :   text_{},
         offset_{},
         valign_{::dr4::Text::VAlign::TOP}
-{}
+{
+    text_.setCharacterSize(static_cast<unsigned>(18));
+}
 
 void optor::dr4::Text::SetText(const std::string &text) {
     str_ = text;

@@ -14,7 +14,7 @@ optor::OpticObjShort::OpticObjShort(optor::WidgetManager* manager, const dr4::Ve
         optor::Textable(obj->GetTypeName(), manager->GetWindow()),
         obj_(obj),
         desktop_(manager->GetDesktop()),
-        desc_{dr4::Vec2f(800, 600), manager->GetState(), obj},
+        desc_{dr4::Vec2f(400, 600), manager->GetState(), obj},
         descButton_(dr4::KEYCODE_E)
 {
     ERROR_HANDLE([this, &size](){

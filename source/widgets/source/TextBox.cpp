@@ -48,9 +48,10 @@ optor::TextBox::TextBox(const dr4::Vec2f& size, optor::WidgetsState* state,
 bool optor::TextBox::OnMousePress(const dr4::Event &evt) {
     if (isHide_) return false;
 
-    const bool res = optor::Widget::OnMousePress(evt);
+    if (IsInderectedHovered() && evt.mouseButton.button == dr4::MouseButtonType::LEFT) 
+    {
+        state_->selectedWidget = this;
 
-    if (this == state_->selectedWidget && evt.mouseButton.button == dr4::MouseButtonType::LEFT) {
         const size_t n = textStr_.size();
         size_t caretPos = FindLetterPos(evt.mouseButton.pos.x - AbsCoord().x);
 
@@ -84,7 +85,7 @@ bool optor::TextBox::OnMousePress(const dr4::Event &evt) {
         return true;
     }
 
-    return res;
+    return false;
 }
 
 bool optor::TextBox::OnMouseRelease(const dr4::Event &evt) {
@@ -176,6 +177,10 @@ bool optor::TextBox::OnKeyboardPress(const dr4::Event &evt) {
 
 bool optor::TextBox::OnTextInput(const dr4::Event &evt) {
     if (isHide_) return false;
+
+    if (state_->selectedWidget != this) {
+        return false;
+    }
 
     if (!keyHandled_) {
         if (isSelectedSmth_ || inSelectMode_) {

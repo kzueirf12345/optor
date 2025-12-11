@@ -37,6 +37,8 @@ void optor::WidgetButtonMoveOpticObj::SetPosition(const dr4::Vec2f& position) {
 }
 
 void optor::WidgetButtonMoveOpticObj::OnIdle() {
+    if (isHide_) return;
+
     optor::Vector3d offset = {};
 
     switch (dir_) {
@@ -52,7 +54,7 @@ void optor::WidgetButtonMoveOpticObj::OnIdle() {
     }
 
     if (isPressed_) {
-        ERROR_HANDLE(&optor::OpticObj::Move, state_->selectedObj, offset);
+        ERROR_HANDLE(&optor::OpticObj::Move, obj_, offset);
         state_->needUpdateScene = true;
     }
 

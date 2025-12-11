@@ -85,8 +85,8 @@ static constexpr inline double PROGRAM_HEIGHT = 1100;
 static constexpr inline unsigned int FRAME_LIMIT = 20;
 
 static constexpr inline float INIT_WIDGET_BORDER_THICKNESS = 5;
-static constexpr inline float INIT_HEADER_HEIGHT = 50;
-static constexpr inline float INIT_SCROLLBAR_WIDTH = 50;
+static constexpr inline float INIT_HEADER_HEIGHT = 35;
+static constexpr inline float INIT_SCROLLBAR_WIDTH = 28;
 
 static constexpr inline ::dr4::MouseButtonType    INIT_DRAG_WINDOW_BUTTON_         = ::dr4::MouseButtonType::MIDDLE;
 static constexpr inline ::dr4::MouseButtonType    INIT_SELECT_WINDOW_BUTTON_       = ::dr4::MouseButtonType::LEFT;
@@ -103,7 +103,7 @@ static const inline std::string FONT_PATH = "/usr/share/fonts/TTF/CaskaydiaCoveN
 
 extern ::dr4::Font* FONT;
 
-static constexpr inline float STRING_BLOCK_HEIGHT = 50.;
+static constexpr inline float STRING_BLOCK_HEIGHT = 28.;
 
 }
 

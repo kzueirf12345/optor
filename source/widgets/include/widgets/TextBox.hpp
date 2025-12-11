@@ -54,17 +54,17 @@ class TextBox: public Widget, public Textable {
 
         size_t FindLetterPos(float mousePosX) const;
 
-        bool HandleTextFinish(const dr4::Event::KeyEvent& evt);
-        bool HandleBackspace(const dr4::Event::KeyEvent& evt);
-        bool HandleDelete(const dr4::Event::KeyEvent& evt);
-        bool HandleArrowLeft(const dr4::Event::KeyEvent& evt);
-        bool HandleArrowRight(const dr4::Event::KeyEvent& evt);
-        bool HandleA(const dr4::Event::KeyEvent& evt);
-        bool HandleC(const dr4::Event::KeyEvent& evt);
-        bool HandleV(const dr4::Event::KeyEvent& evt);
-        bool HandleX(const dr4::Event::KeyEvent& evt);
-        bool HandleHome(const dr4::Event::KeyEvent& evt);
-        bool HandleEnd(const dr4::Event::KeyEvent& evt);
+        virtual bool HandleTextFinish(const dr4::Event::KeyEvent& evt);
+        virtual bool HandleBackspace(const dr4::Event::KeyEvent& evt);
+        virtual bool HandleDelete(const dr4::Event::KeyEvent& evt);
+        virtual bool HandleArrowLeft(const dr4::Event::KeyEvent& evt);
+        virtual bool HandleArrowRight(const dr4::Event::KeyEvent& evt);
+        virtual bool HandleA(const dr4::Event::KeyEvent& evt);
+        virtual bool HandleC(const dr4::Event::KeyEvent& evt);
+        virtual bool HandleV(const dr4::Event::KeyEvent& evt);
+        virtual bool HandleX(const dr4::Event::KeyEvent& evt);
+        virtual bool HandleHome(const dr4::Event::KeyEvent& evt);
+        virtual bool HandleEnd(const dr4::Event::KeyEvent& evt);
 
         void EraseLeftText();
         void EraseRightText();

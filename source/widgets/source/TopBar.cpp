@@ -123,7 +123,6 @@ static std::unique_ptr<optor::Widget> CreateViewList(optor::WidgetManager* manag
 
     std::unique_ptr<dr4::Text> textName(manager->GetWindow()->CreateText());
     textName->SetFont(optor::FONT);
-    textName->SetFontSize(40);
 
     float maxSizeX = 0;
     for (size_t ind = 0; ind < childrenCount; ++ind) {
