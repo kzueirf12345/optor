@@ -1,3 +1,4 @@
+#include <cstdio>
 #include <cstdlib>
 #include <dlfcn.h>
 #include <linux/limits.h>
@@ -35,7 +36,6 @@
 #include "optics/Sphere.hpp"
 
 // TODO rotate obj
-// TODO multiThreads
 
 ::dr4::Font* optor::FONT = nullptr;
 

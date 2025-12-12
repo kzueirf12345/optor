@@ -25,6 +25,8 @@ class Plane : public OpticObj {
 
         virtual void Move(const optor::Vector3d& offset) override final;
 
+        virtual void WriteSerialize(FILE* file, size_t baseTabCnt) const override;
+
         std::array<optor::Vector3d, 8> GetAABB() const override;
         virtual optor::Vector3d GetCoord() const override;
 

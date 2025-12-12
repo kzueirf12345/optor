@@ -96,3 +96,21 @@ std::array<optor::Vector3d, 8> optor::Sphere::GetAABB() const
         optor::Vector3d{maxPoint.x, maxPoint.y, maxPoint.z}
     };
 }
+
+void optor::Sphere::WriteSerialize(FILE* file, size_t baseTabCnt) const {
+    std::string baseIndent(baseTabCnt, ' ');
+    std::string innerIndent(baseTabCnt + 4, ' ');
+    
+    fprintf(file, "%s{\n", baseIndent.c_str());
+    
+    fprintf(file, "%s\"type\": \"%s\",\n", innerIndent.c_str(), GetTypeName().c_str());
+    
+    OpticObj::WriteSerialize(file, baseTabCnt + 4);
+    
+    fprintf(file, "%s\"center\": [%g, %g, %g],\n", 
+            innerIndent.c_str(), center_.x, center_.y, center_.z);
+    
+    fprintf(file, "%s\"radius\": %g\n", innerIndent.c_str(), radius_);
+    
+    fprintf(file, "%s}", baseIndent.c_str());
+}

@@ -1,5 +1,7 @@
 #include <cassert>
 #include <memory>
+#include <filesystem>
+#include <string>
 
 #include "widgets/SceneWidget.hpp"
 #include "dr4/keycodes.hpp"
@@ -19,13 +21,22 @@ optor::SceneWidget::SceneWidget(const dr4::Vec2f& size,
     :   optor::Widget{size, state},
         texture_{state->window->CreateTexture()},
         scene_{state->window, size},
-        needUpdateScene_(false)
+        needUpdateScene_(false),
+        serializeFileNum_(0),
+        serializeFile_(nullptr),
+        notNeedSerilize_(false)
 {
     ERROR_HANDLE([this, size](){
         texture_->SetSize(size);
     });
 
     ERROR_HANDLE(&optor::Scene::Update, scene_);
+
+    ERROR_HANDLE([this](){
+        std::filesystem::create_directory("./build/" + SERIALIZE_FOLDERNAME);
+    });
+
+    WriteSerialize();
 }
 
 void optor::SceneWidget::SetPosition(const dr4::Vec2f& position) {
@@ -99,36 +110,42 @@ bool optor::SceneWidget::OnKeyboardPress(const dr4::Event& event) {
             case dr4::KeyCode::KEYCODE_W: {
                 ERROR_HANDLE(&optor::Scene::SetMoveDir, scene_, optor::MoveDirection::FORWARD);
                 needUpdateScene_ = true;
+                notNeedSerilize_ = true;
                 return true;
             }
 
             case dr4::KeyCode::KEYCODE_S: {
                 ERROR_HANDLE(&optor::Scene::SetMoveDir, scene_, optor::MoveDirection::BACKWARD);
                 needUpdateScene_ = true;
+                notNeedSerilize_ = true;
                 return true;
             }
 
             case dr4::KeyCode::KEYCODE_A: {
                 ERROR_HANDLE(&optor::Scene::SetMoveDir, scene_, optor::MoveDirection::LEFT);
                 needUpdateScene_ = true;
+                notNeedSerilize_ = true;
                 return true;
             }
 
             case dr4::KeyCode::KEYCODE_D: {
                 ERROR_HANDLE(&optor::Scene::SetMoveDir, scene_, optor::MoveDirection::RIGHT);
                 needUpdateScene_ = true;
+                notNeedSerilize_ = true;
                 return true;
             }
 
             case dr4::KeyCode::KEYCODE_SPACE: {
                 ERROR_HANDLE(&optor::Scene::SetMoveDir, scene_, optor::MoveDirection::UP);
                 needUpdateScene_ = true;
+                notNeedSerilize_ = true;
                 return true;
             }
 
             case dr4::KeyCode::KEYCODE_LCONTROL: {
                 ERROR_HANDLE(&optor::Scene::SetMoveDir, scene_, optor::MoveDirection::DOWN);
                 needUpdateScene_ = true;
+                notNeedSerilize_ = true;
                 return true;
             }
 
@@ -190,6 +207,7 @@ void optor::SceneWidget::RotateCamera(const dr4::Vec2f& mouseOffset) {
     if (speed) {
         ERROR_HANDLE(&optor::Camera::Rotate, scene_.GetCamera(), dir, speed);
         state_->needUpdateScene = true;
+        notNeedSerilize_ = true;
     }
     
     if (mouseOffset.y < 0) {
@@ -203,6 +221,7 @@ void optor::SceneWidget::RotateCamera(const dr4::Vec2f& mouseOffset) {
     if (speed) {
         ERROR_HANDLE(&optor::Camera::Rotate, scene_.GetCamera(), dir, speed);
         state_->needUpdateScene = true;
+        notNeedSerilize_ = true;
     }
 }
 
@@ -222,12 +241,14 @@ void optor::SceneWidget::OnIdle() {
             scene_.RemoveObj(aabb);
             aabb = nullptr;
             state_->needUpdateScene = true;
+            notNeedSerilize_ = true;
         }
         if (state_->selectedObj)
         {
             aabb = scene_.AddObj(std::make_unique<optor::AABB>(state_->selectedObj->GetAABB(), optor::materials::SELECTOR));
             prevCoord = state_->selectedObj->GetCoord();
             state_->needUpdateScene = true;
+            notNeedSerilize_ = true;
         }
         prevSelected = state_->selectedObj;
     }
@@ -241,6 +262,12 @@ void optor::SceneWidget::OnIdle() {
     if (state_->needUpdateScene || needUpdateScene_) {
         ERROR_HANDLE(&optor::Scene::Update, scene_);
         state_->needUpdateScene = false;
+
+        if (!notNeedSerilize_) {
+            WriteSerialize();
+        } else {
+            notNeedSerilize_ = false;
+        }
     }
 
 }
@@ -253,3 +280,13 @@ optor::OpticObj* optor::SceneWidget::AddObj(std::unique_ptr<optor::OpticObj> obj
 const optor::Camera& optor::SceneWidget::GetCamera() const  { return scene_.GetCamera(); }
       optor::Camera& optor::SceneWidget::GetCamera()        { return scene_.GetCamera(); }
 const optor::Scene&  optor::SceneWidget::GetScene()  const  { return scene_; }
+
+void optor::SceneWidget::WriteSerialize() {
+    const std::string curSerializeFilename = (SERIALIZE_FILENAME + std::to_string(serializeFileNum_++) + ".json");
+
+    serializeFile_ = std::fopen(curSerializeFilename.c_str(), "wb");
+
+    scene_.WriteSerialize(serializeFile_, 0);
+
+    std::fclose(serializeFile_);
+}

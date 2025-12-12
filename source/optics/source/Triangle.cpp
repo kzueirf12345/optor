@@ -87,3 +87,25 @@ std::array<optor::Vector3d, 8> optor::Triangle::GetAABB() const
         optor::Vector3d{maxPoint.x, maxPoint.y, maxPoint.z}
     };
 }
+
+void optor::Triangle::WriteSerialize(FILE* file, size_t baseTabCnt) const {
+    std::string baseIndent(baseTabCnt, ' ');
+    std::string innerIndent(baseTabCnt + 4, ' ');
+    std::string verticesIndent(baseTabCnt + 8, ' ');
+    
+    fprintf(file, "%s{\n", baseIndent.c_str());
+    
+    fprintf(file, "%s\"type\": \"%s\",\n", innerIndent.c_str(), GetTypeName().c_str());
+    
+    OpticObj::WriteSerialize(file, baseTabCnt + 4);
+    
+    fprintf(file, "%s\"vertices\": [\n", innerIndent.c_str());
+    
+    fprintf(file, "%s[%g, %g, %g],\n", verticesIndent.c_str(), v0_.x, v0_.y, v0_.z);
+    fprintf(file, "%s[%g, %g, %g],\n", verticesIndent.c_str(), v1_.x, v1_.y, v1_.z);
+    fprintf(file, "%s[%g, %g, %g]\n", verticesIndent.c_str(), v2_.x, v2_.y, v2_.z);
+    
+    fprintf(file, "%s]\n", innerIndent.c_str());
+    
+    fprintf(file, "%s}", baseIndent.c_str());
+}

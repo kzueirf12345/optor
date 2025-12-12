@@ -22,6 +22,8 @@ class Light : public Sphere {
         void SetColor(const optor::Vector3d& color);
         void SetIntensity(double intensity);
 
+        virtual void WriteSerialize(FILE* file, size_t baseTabCnt) const override;
+
         [[nodiscard]] virtual std::string GetTypeName() const override {return "Light"; };
 
     private:

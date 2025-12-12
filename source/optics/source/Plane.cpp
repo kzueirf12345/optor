@@ -54,3 +54,22 @@ std::array<optor::Vector3d, 8> optor::Plane::GetAABB() const {
         point_ + optor::Vector3d{ INFINITY,  INFINITY,  INFINITY}
     };
 }
+
+void optor::Plane::WriteSerialize(FILE* file, size_t baseTabCnt) const  {
+    std::string baseIndent(baseTabCnt, ' ');
+    std::string innerIndent(baseTabCnt + 4, ' ');
+    
+    fprintf(file, "%s{\n", baseIndent.c_str());
+    
+    fprintf(file, "%s\"type\": \"%s\",\n", innerIndent.c_str(), GetTypeName().c_str());
+    
+    OpticObj::WriteSerialize(file, baseTabCnt + 4);
+    
+    fprintf(file, "%s\"point\": [%g, %g, %g],\n", 
+            innerIndent.c_str(), point_.x, point_.y, point_.z);
+    
+    fprintf(file, "%s\"normal\": [%g, %g, %g]\n", 
+            innerIndent.c_str(), normal_.x, normal_.y, normal_.z);
+    
+    fprintf(file, "%s}", baseIndent.c_str());
+}

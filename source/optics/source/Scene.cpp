@@ -285,3 +285,27 @@ const std::vector<std::unique_ptr<optor::OpticObj>>& optor::Scene::GetObjs() con
 dr4::Image* optor::Scene::GetImage() const {
     return image_.get();
 }
+
+void optor::Scene::WriteSerialize(FILE* file, size_t baseTabCnt) const {
+    std::string baseIndent(baseTabCnt, ' ');
+    std::string innerIndent(baseTabCnt + 4, ' ');
+    
+    fprintf(file, "%s{\n", baseIndent.c_str());
+    
+    fprintf(file, "%s\"type\": \"Scene\",\n", innerIndent.c_str());
+    
+    fprintf(file, "%s\"objects\": [\n", innerIndent.c_str());
+    
+    for (size_t i = 0; i < objs_.size(); ++i) {
+        objs_[i]->WriteSerialize(file, baseTabCnt + 4);
+        
+        if (i < objs_.size() - 1) {
+            fprintf(file, ",");
+        }
+        fprintf(file, "\n");
+    }
+    
+    fprintf(file, "%s]\n", innerIndent.c_str());
+    
+    fprintf(file, "%s}", baseIndent.c_str());
+}

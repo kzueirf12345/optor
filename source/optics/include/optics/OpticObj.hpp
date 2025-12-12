@@ -60,6 +60,7 @@ class OpticObj {
         void SetTransparency(double transparency) { material_.SetTransparency(transparency); }
         void SetRefractivity(double refractivity) { material_.SetRefractivity(refractivity); }
 
+        virtual void WriteSerialize(FILE* file, size_t baseTabCnt) const ;
 
         virtual void SetCoord(const optor::Vector3d& pos) { Move(pos - GetCoord()); };
         virtual void Move(const optor::Vector3d& offset) = 0;

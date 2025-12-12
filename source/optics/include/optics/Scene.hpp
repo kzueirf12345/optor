@@ -40,6 +40,8 @@ class Scene {
         [[nodiscard]] const std::vector<std::unique_ptr<optor::OpticObj>>& GetObjs() const ;
         [[nodiscard]] dr4::Image* GetImage() const;
 
+        void WriteSerialize(FILE* file, size_t baseTabCnt) const ;
+
         void SetMoveDir(optor::MoveDirection moveDir);
 
         OpticObj* GetObjAtPixel(const optor::Vector2d& pixel);
