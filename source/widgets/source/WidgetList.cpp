@@ -18,7 +18,7 @@ optor::Widget* optor::WidgetList::AddChild(std::unique_ptr<Widget> child)
     auto* const childPtr = children_.back().get();
     childPtr->SetParent(this);
     childPtr->SetPosition(childPtr->GetPosition() + dr4::Vec2f{INIT_WIDGET_BORDER_THICKNESS, rect_->GetSize().y - INIT_WIDGET_BORDER_THICKNESS});
-    childPtr->SetOutlineThickness(0);
+    // childPtr->SetOutlineThickness(0);
 
     const dr4::Vec2f size = rect_->GetSize();
 

@@ -26,7 +26,7 @@ optor::pp::TextTool::TextTool(const dr4::Font* font, ::pp::Canvas* cvs)
 }
 
 std::string_view optor::pp::TextTool::Icon() const {
-    return "TextToolIcon";
+    return "\ue64e";
 }
 
 std::string_view optor::pp::TextTool::Name() const {

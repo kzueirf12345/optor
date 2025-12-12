@@ -165,7 +165,7 @@ void CreateScene(cum::DR4BackendPlugin* backend, optor::WidgetManager* manager) 
         manager->GetDesktop(),
         std::make_unique<optor::WidgetHeader>(
             std::make_unique<optor::SceneWidget>(
-                dr4::Vec2f{1850, 900},
+                dr4::Vec2f{1950, 900},
                 manager->GetState()
             ),
             "Scene",
@@ -173,7 +173,7 @@ void CreateScene(cum::DR4BackendPlugin* backend, optor::WidgetManager* manager) 
         )
     ));
 
-    ERROR_HANDLE(&optor::Widget::SetPosition, sceneWidgetWithHeader, dr4::Vec2f(425, 100));
+    ERROR_HANDLE(&optor::Widget::SetPosition, sceneWidgetWithHeader, dr4::Vec2f(350, manager->GetDesktop()->GetSize().y / 15.f));
 
     auto* sceneWidget = dynamic_cast<optor::SceneWidget*>(sceneWidgetWithHeader->GetWidget());
 
@@ -216,7 +216,7 @@ void CreateScene(cum::DR4BackendPlugin* backend, optor::WidgetManager* manager) 
     // }));
 
     auto* floorPlane = dynamic_cast<optor::Plane*>(ERROR_HANDLE([sceneWidget](){
-        return sceneWidget->AddObj(std::make_unique<optor::Plane>(optor::Vector3d(0, -4, 10), optor::Vector3d(0, 1, 0), optor::materials::WOOD));
+        return sceneWidget->AddObj(std::make_unique<optor::Plane>(optor::Vector3d(0, -4, 10), optor::Vector3d(0, 1, 0), optor::materials::PLASTIC));
     }));
 
     auto* triangle = dynamic_cast<optor::Triangle*>(ERROR_HANDLE([sceneWidget](){
@@ -265,7 +265,7 @@ static void CreateCameraButtons(cum::DR4BackendPlugin* backend, optor::WidgetMan
         manager->GetState()
     );
 
-    ERROR_HANDLE(&optor::Widget::SetPosition, cameraButtons, dr4::Vec2f(50, 850 - 2*optor::INIT_HEADER_HEIGHT));
+    ERROR_HANDLE(&optor::Widget::SetPosition, cameraButtons, dr4::Vec2f(0, 845 - 2*optor::INIT_HEADER_HEIGHT));
 
     cameraButtons->SetName("Camera buttons");
 
@@ -275,7 +275,7 @@ static void CreateCameraButtons(cum::DR4BackendPlugin* backend, optor::WidgetMan
         std::make_unique<optor::WidgetButtonCamera>(
             buttonSize,
             manager->GetState(),
-            "left",
+            "\uf060",
             &sceneWidget->GetCamera(),
             optor::MoveDirection::LEFT
         )
@@ -289,7 +289,7 @@ static void CreateCameraButtons(cum::DR4BackendPlugin* backend, optor::WidgetMan
         std::make_unique<optor::WidgetButtonCamera>(
             buttonSize,
             manager->GetState(),
-            "right",
+            "\uf061",
             &sceneWidget->GetCamera(),
             optor::MoveDirection::RIGHT
         )
@@ -303,7 +303,7 @@ static void CreateCameraButtons(cum::DR4BackendPlugin* backend, optor::WidgetMan
         std::make_unique<optor::WidgetButtonCamera>(
             buttonSize,
             manager->GetState(),
-            "up",
+            "\uf062",
             &sceneWidget->GetCamera(),
             optor::MoveDirection::UP
         )
@@ -317,7 +317,7 @@ static void CreateCameraButtons(cum::DR4BackendPlugin* backend, optor::WidgetMan
         std::make_unique<optor::WidgetButtonCamera>(
             buttonSize,
             manager->GetState(),
-            "down",
+            "\uf063",
             &sceneWidget->GetCamera(),
             optor::MoveDirection::DOWN
         )
@@ -331,7 +331,7 @@ static void CreateCameraButtons(cum::DR4BackendPlugin* backend, optor::WidgetMan
         std::make_unique<optor::WidgetButtonCamera>(
             buttonSize,
             manager->GetState(),
-            "forward",
+            "\uf062",
             &sceneWidget->GetCamera(),
             optor::MoveDirection::FORWARD
         )
@@ -345,7 +345,7 @@ static void CreateCameraButtons(cum::DR4BackendPlugin* backend, optor::WidgetMan
         std::make_unique<optor::WidgetButtonCamera>(
             buttonSize,
             manager->GetState(),
-            "backword",
+            "\uf063",
             &sceneWidget->GetCamera(),
             optor::MoveDirection::BACKWARD
         )
@@ -366,7 +366,7 @@ static void CreateCameraButtons(cum::DR4BackendPlugin* backend, optor::WidgetMan
 
 static void CreateObjsList(optor::WidgetManager* manager, optor::SceneWidget* sceneWidget) {
     auto list = std::make_unique<optor::WidgetScrolledList>(
-        dr4::Vec2f(250, 250),
+        dr4::Vec2f(250, 250 + optor::INIT_HEADER_HEIGHT),
         manager->GetState()
     );
 
@@ -380,7 +380,7 @@ static void CreateObjsList(optor::WidgetManager* manager, optor::SceneWidget* sc
 
         auto listElem = std::make_unique<optor::OpticObjShort>(
             manager,
-            dr4::Vec2f{list->GetSize().x - optor::INIT_SCROLLBAR_WIDTH, optor::STRING_BLOCK_HEIGHT},
+            dr4::Vec2f{list->GetSize().x - optor::INIT_SCROLLBAR_WIDTH - 15, optor::STRING_BLOCK_HEIGHT},
             obj,
             manager->GetState()->objCounter++
         );
@@ -394,7 +394,7 @@ static void CreateObjsList(optor::WidgetManager* manager, optor::SceneWidget* sc
         optor::WidgetHeader::CloseMode::HIDE
     );
 
-    listWithHeader->SetPosition({50, 100});
+    listWithHeader->SetPosition({0, 75});
 
     auto* listWithHeaderPtr = dynamic_cast<optor::WidgetHeader*>(ERROR_HANDLE(&optor::WidgetChildable::AddChild, manager->GetDesktop(), std::move(listWithHeader)));
 
@@ -403,7 +403,7 @@ static void CreateObjsList(optor::WidgetManager* manager, optor::SceneWidget* sc
 
 static void CreateAddList(optor::WidgetManager* manager, optor::SceneWidget* sceneWidget, optor::WidgetScrolledList* objList) {
     auto list = std::make_unique<optor::WidgetScrolledList>(
-        dr4::Vec2f(250, 250),
+        dr4::Vec2f(250, 300 ),
         manager->GetState()
     );
 
@@ -415,7 +415,7 @@ static void CreateAddList(optor::WidgetManager* manager, optor::SceneWidget* sce
         optor::WidgetHeader::CloseMode::HIDE
     );
 
-    listWithHeader->SetPosition({50, 450 - optor::INIT_HEADER_HEIGHT});
+    listWithHeader->SetPosition({0, 435 - optor::INIT_HEADER_HEIGHT});
 
     auto* listWithHeaderPtr = dynamic_cast<optor::WidgetHeader*>(ERROR_HANDLE(&optor::WidgetChildable::AddChild, manager->GetDesktop(), std::move(listWithHeader)));
 
@@ -425,42 +425,42 @@ static void CreateAddList(optor::WidgetManager* manager, optor::SceneWidget* sce
 
     listPtr->AddChild(std::make_unique<optor::CreateObjButton<optor::Sphere>>(
         manager,
-         dr4::Vec2f(listPtr->GetSize().x - optor::INIT_SCROLLBAR_WIDTH, optor::STRING_BLOCK_HEIGHT), 
+         dr4::Vec2f(listPtr->GetSize().x - optor::INIT_SCROLLBAR_WIDTH - 15, optor::STRING_BLOCK_HEIGHT), 
          "Sphere", 
          std::vector<optor::WidgetChildable*>{objList}, 
          sceneWidget
     ));
     listPtr->AddChild(std::make_unique<optor::CreateObjButton<optor::Triangle>>(
         manager,
-         dr4::Vec2f(listPtr->GetSize().x - optor::INIT_SCROLLBAR_WIDTH, optor::STRING_BLOCK_HEIGHT), 
+         dr4::Vec2f(listPtr->GetSize().x - optor::INIT_SCROLLBAR_WIDTH - 15, optor::STRING_BLOCK_HEIGHT), 
          "Triangle", 
          std::vector<optor::WidgetChildable*>{objList}, 
          sceneWidget
     ));
     listPtr->AddChild(std::make_unique<optor::CreateObjButton<optor::AABB>>(
         manager,
-         dr4::Vec2f(listPtr->GetSize().x - optor::INIT_SCROLLBAR_WIDTH, optor::STRING_BLOCK_HEIGHT), 
+         dr4::Vec2f(listPtr->GetSize().x - optor::INIT_SCROLLBAR_WIDTH - 15, optor::STRING_BLOCK_HEIGHT), 
          "AABB", 
          std::vector<optor::WidgetChildable*>{objList}, 
          sceneWidget
     ));
     listPtr->AddChild(std::make_unique<optor::CreateObjButton<optor::FinitPlane>>(
         manager,
-         dr4::Vec2f(listPtr->GetSize().x - optor::INIT_SCROLLBAR_WIDTH, optor::STRING_BLOCK_HEIGHT), 
+         dr4::Vec2f(listPtr->GetSize().x - optor::INIT_SCROLLBAR_WIDTH - 15, optor::STRING_BLOCK_HEIGHT), 
          "FinitPlane", 
          std::vector<optor::WidgetChildable*>{objList}, 
          sceneWidget
     ));
     listPtr->AddChild(std::make_unique<optor::CreateObjButton<optor::Light>>(
         manager,
-         dr4::Vec2f(listPtr->GetSize().x - optor::INIT_SCROLLBAR_WIDTH, optor::STRING_BLOCK_HEIGHT), 
+         dr4::Vec2f(listPtr->GetSize().x - optor::INIT_SCROLLBAR_WIDTH - 15, optor::STRING_BLOCK_HEIGHT), 
          "Light", 
          std::vector<optor::WidgetChildable*>{objList}, 
          sceneWidget
     ));
     listPtr->AddChild(std::make_unique<optor::CreateObjButton<optor::Plane>>(
         manager,
-         dr4::Vec2f(listPtr->GetSize().x - optor::INIT_SCROLLBAR_WIDTH, optor::STRING_BLOCK_HEIGHT), 
+         dr4::Vec2f(listPtr->GetSize().x - optor::INIT_SCROLLBAR_WIDTH - 15, optor::STRING_BLOCK_HEIGHT), 
          "Plane", 
          std::vector<optor::WidgetChildable*>{objList}, 
          sceneWidget

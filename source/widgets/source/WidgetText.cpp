@@ -14,6 +14,8 @@ optor::WidgetText::WidgetText(const dr4::Vec2f& size, optor::WidgetsState* state
         texture_->SetSize(rect_->GetSize());
     });
 
+    // texture_->SetZero({10, 0});
+
     ERROR_HANDLE([this, &size](){
         const dr4::Vec2f localBounds = text_->GetBounds();
         text_->SetPos((size.x - localBounds.x) / 2,

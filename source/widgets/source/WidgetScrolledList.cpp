@@ -32,7 +32,7 @@ optor::WidgetScrolledList::WidgetScrolledList(const dr4::Vec2f& size, optor::Wid
 }
 
 void optor::WidgetScrolledList::Scroll(float percentage) {
-    const float maxSize = GetListSize();
+    const float maxSize = GetListSize() + (children_.size() > 0 ? children_.size() - 1 : 0) * 5;
     const float diffSize = rect_->GetSize().y - maxSize;
     baseOffset_ = diffSize * percentage;
 }
@@ -80,11 +80,11 @@ optor::Widget* optor::WidgetScrolledList::AddChild(std::unique_ptr<Widget> child
     childPtr->SetPosition(
         childPtr->GetPosition() + 
         dr4::Vec2f{
-            INIT_WIDGET_BORDER_THICKNESS, 
-            GetListSize() - childPtr->GetSize().y + INIT_WIDGET_BORDER_THICKNESS
+            INIT_WIDGET_BORDER_THICKNESS + 5, 
+            GetListSize() - childPtr->GetSize().y + INIT_WIDGET_BORDER_THICKNESS + (children_.size() - 1) * 5
         }
     );
-    childPtr->SetOutlineThickness(0);
+    // childPtr->SetOutlineThickness(-2);
     childPtr->SetIsDraggable(false);
     startPoses_.push_back(childPtr->GetPosition());
 

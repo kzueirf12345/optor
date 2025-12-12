@@ -261,12 +261,12 @@ optor::WidgetChildable* optor::OpticObjDesc::AddMoveButtons(optor::WidgetScrolle
     };
 
     std::vector<ButtonInfo> moveButtons = {
-        {"up",       {offset + buttonSize.x / 2          , 0},                    MoveDirection::UP},
-        {"down",     {offset + buttonSize.x / 2          , 2 * buttonSize.y},     MoveDirection::DOWN},
-        {"left",     {offset                             , buttonSize.y},         MoveDirection::LEFT},
-        {"right",    {offset + buttonSize.x              , buttonSize.y},         MoveDirection::RIGHT},
-        {"forward",  {panelSize.x - offset - buttonSize.x, buttonSize.y / 2},     MoveDirection::FORWARD},
-        {"backward", {panelSize.x - offset - buttonSize.x, buttonSize.y * 3 / 2}, MoveDirection::BACKWARD}
+        {"\uf062", {offset + buttonSize.x / 2          , 0},                    MoveDirection::UP},
+        {"\uf063", {offset + buttonSize.x / 2          , 2 * buttonSize.y},     MoveDirection::DOWN},
+        {"\uf060", {offset                             , buttonSize.y},         MoveDirection::LEFT},
+        {"\uf061", {offset + buttonSize.x              , buttonSize.y},         MoveDirection::RIGHT},
+        {"\uf062", {panelSize.x - offset - buttonSize.x, buttonSize.y / 2},     MoveDirection::FORWARD},
+        {"\uf063", {panelSize.x - offset - buttonSize.x, buttonSize.y * 3 / 2}, MoveDirection::BACKWARD}
     };
 
     for (const auto& info : moveButtons) {

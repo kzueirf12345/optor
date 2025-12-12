@@ -21,7 +21,7 @@ optor::dr4::Text::Text()
 void optor::dr4::Text::SetText(const std::string &text) {
     str_ = text;
     ERROR_HANDLE([this, &text](){
-        text_.setString(text);
+        text_.setString(sf::String::fromUtf8(text.begin(), text.end()));
     });
 }
 

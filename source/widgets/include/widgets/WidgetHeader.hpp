@@ -43,6 +43,7 @@ protected:
     std::unique_ptr<optor::Widget> widget_;
 
     std::unique_ptr<dr4::Rectangle> closeRect_;
+    std::unique_ptr<dr4::Text> closeText_;
 
     CloseMode closeMode_;
 

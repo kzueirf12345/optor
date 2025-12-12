@@ -13,7 +13,7 @@ optor::pp::RectTool::RectTool(::pp::Canvas* cvs)
 {}
 
 std::string_view optor::pp::RectTool::Icon() const {
-    return "RectToolIcon";
+    return "\ue88b";
 }
 
 std::string_view optor::pp::RectTool::Name() const {

@@ -66,11 +66,11 @@ optor::CreateObjButton<ObjType>::CreateObjButton(optor::WidgetManager* manager, 
     });
 
     
-    ERROR_HANDLE([this, &size](){
-        const dr4::Vec2f localBounds = text_->GetBounds();
-        text_->SetPos((size.x - localBounds.x) / 2,
-                      (size.y - localBounds.y) / 2);
-    });
+    // ERROR_HANDLE([this, &size](){
+    //     const dr4::Vec2f localBounds = text_->GetBounds();
+    //     text_->SetPos((size.x - localBounds.x) / 2,
+    //                   (size.y - localBounds.y) / 2);
+    // });
 }
 
 template<typename ObjType>

@@ -20,6 +20,8 @@ optor::PiskaToolButton::PiskaToolButton(const dr4::Vec2f& size,
         texture_->SetSize(size);
     });
 
+    text_->SetFontSize(50);
+
     
     ERROR_HANDLE([this, &size](){
         const dr4::Vec2f localBounds = text_->GetBounds();

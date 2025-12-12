@@ -15,7 +15,7 @@ optor::pp::CircleTool::CircleTool(::pp::Canvas* cvs)
 {}
 
 std::string_view optor::pp::CircleTool::Icon() const {
-    return "CircleToolIcon";
+    return "\ueabc";
 }
 
 std::string_view optor::pp::CircleTool::Name() const {

@@ -136,7 +136,7 @@ static std::unique_ptr<optor::Widget> CreateViewList(optor::WidgetManager* manag
         }
 
         textName->SetText(name.value());
-        maxSizeX = std::max(textName->GetBounds().x, maxSizeX);
+        maxSizeX = std::max(1.5f * textName->GetBounds().x, maxSizeX);
     }
 
     for (size_t ind = 0; ind < childrenCount; ++ind) {
@@ -173,7 +173,7 @@ static void HandleChild(optor::Widget* child, optor::WidgetList* list, optor::Wi
     textName->SetFont(optor::FONT);
     // textName->SetFontSize(40);
 
-    dr4::Vec2f size = {sizeX, optor::STRING_BLOCK_HEIGHT};
+    dr4::Vec2f size = {sizeX, 1.5 * optor::STRING_BLOCK_HEIGHT};
 
     delete textName;
 
@@ -202,13 +202,13 @@ static void HandleChild(optor::Widget* child, optor::WidgetList* list, optor::Wi
 
     auto textableText = dynamic_cast<optor::Textable*>(textWidget.get())->GetText();
 
-    textableText->SetPos(0, textableText->GetPos().y);
+    textableText->SetPos(10, textableText->GetPos().y);
     
     ERROR_HANDLE([&textWidget, &size](){
         textWidget->SetPosition({size.y, 0});
     });
 
-    textWidget->SetOutlineThickness(0);
+    // textWidget->SetOutlineThickness(0);
 
     auto checkBox = std::make_unique<optor::HideCheckbox>(
         dr4::Vec2f{size.y, size.y},
@@ -216,7 +216,7 @@ static void HandleChild(optor::Widget* child, optor::WidgetList* list, optor::Wi
         (headerChild ? headerChild : child)
     );
 
-    checkBox->SetOutlineThickness(0);
+    // checkBox->SetOutlineThickness(0);
 
     auto* listElem = dynamic_cast<optor::WidgetChildable*>(ERROR_HANDLE(
         &optor::WidgetChildable::AddChild,

@@ -17,28 +17,28 @@ optor::OpticObjShort::OpticObjShort(optor::WidgetManager* manager, const dr4::Ve
         desc_{dr4::Vec2f(400, 600), manager->GetState(), obj},
         descButton_(dr4::KEYCODE_E)
 {
-    ERROR_HANDLE([this, &size](){
-        const dr4::Vec2f localBounds = text_->GetBounds();
-        text_->SetPos((size.x - localBounds.x) / 2,
-                      (size.y - localBounds.y) / 2);
-    });
+    // ERROR_HANDLE([this, &size](){
+    //     const dr4::Vec2f localBounds = text_->GetBounds();
+    //     text_->SetPos((size.x - localBounds.x) / 2,
+    //                   (size.y - localBounds.y) / 2);
+    // });
 
     auto* deleteButton = dynamic_cast<optor::DeleteObjButton*>(AddChild(std::make_unique<optor::DeleteObjButton>(
         dr4::Vec2f{size.y, size.y},
         state_,
-        "X",
+        "󰆴",
         this
     )));
 
     deleteButton->SetPosition({size.x - size.y, 0});
     deleteButton->SetOutlineThickness(0);
 
-    auto* numWidget = dynamic_cast<optor::WidgetText*>(AddChild(std::make_unique<optor::WidgetText>(
-        dr4::Vec2f{size.y, size.y},
-        manager->GetState(),
-        std::to_string(ind)
-    )));
-    numWidget->SetOutlineThickness(0);
+    // auto* numWidget = dynamic_cast<optor::WidgetText*>(AddChild(std::make_unique<optor::WidgetText>(
+    //     dr4::Vec2f{size.y, size.y},
+    //     manager->GetState(),
+    //     std::to_string(ind)
+    // )));
+    // numWidget->SetOutlineThickness(0);
 }
 
 void optor::OpticObjShort::OnIdle() {

@@ -23,14 +23,23 @@ optor::WidgetHeader::WidgetHeader(std::unique_ptr<optor::Widget> widget,
         texture_{widget->GetState()->window->CreateTexture()},
         widget_{std::move(widget)},
         closeRect_(state_->window->CreateRectangle()),
-        closeMode_(closeMode)
+        closeMode_(closeMode),
+        closeText_(state_->window->CreateText())
 {
     closeRect_->SetPos({
         rect_->GetSize().x - INIT_HEADER_HEIGHT - (float)widget_->GetOutlineThickness(), 
         (float)widget_->GetOutlineThickness()}
     );
     closeRect_->SetSize({INIT_HEADER_HEIGHT, INIT_HEADER_HEIGHT});
-    closeRect_->SetFillColor(optor::color::Red);
+    closeRect_->SetFillColor(optor::color::ButtonReleased);
+    closeRect_->SetBorderThickness(-2);
+    closeRect_->SetBorderColor(optor::color::WindowBorder);
+
+    closeText_->SetText("");
+    closeText_->SetFont(optor::FONT);
+    closeText_->SetColor(optor::color::TextPrimary);
+    closeText_->SetFontSize(30);
+    closeText_->SetPos(closeRect_->GetPos() + (closeRect_->GetSize() - closeText_->GetBounds()) / 2);//+ (closeRect_->GetSize() - closeText_->GetBounds()) / 2
 
     ERROR_HANDLE([this](){
         texture_->SetSize(rect_->GetSize());
@@ -39,7 +48,7 @@ optor::WidgetHeader::WidgetHeader(std::unique_ptr<optor::Widget> widget,
     SetDragButton(dr4::MouseButtonType::LEFT);
     SetPosition(widget_->GetPosition() + dr4::Vec2f{0, -INIT_HEADER_HEIGHT});
     SetParent(widget_->GetParent());
-    SetBackgroundColor(optor::color::Black);
+    SetBackgroundColor(optor::color::ButtonIdle);
     SetBorderColor(widget_->GetBorderColor());
     SetOutlineThickness(widget_->GetOutlineThickness());
     SetIsDraggable(widget_->GetIsDraggable());
@@ -48,7 +57,7 @@ optor::WidgetHeader::WidgetHeader(std::unique_ptr<optor::Widget> widget,
 
     widget_->SetPosition({rect_->GetBorderThickness(), rect_->GetBorderThickness() + INIT_HEADER_HEIGHT});
     widget_->SetParent(this);
-    widget_->SetOutlineThickness(0);
+    // widget_->SetOutlineThickness(0);
     widget_->SetIsDraggable(false);
     widget_->SetIsFreeDraggable(false);
 
@@ -89,6 +98,10 @@ void optor::WidgetHeader::Draw (dr4::Texture& srcTexture)
 
     ERROR_HANDLE([this](){
         texture_->Draw(*closeRect_);
+    });
+
+    ERROR_HANDLE([this](){
+        texture_->Draw(*closeText_);
     });
 
     ERROR_HANDLE([this, &srcTexture](){

@@ -21,17 +21,17 @@ namespace color
 #endif /*OPTOR_PALETE_NAME*/
 
 #if OPTOR_PALETE_NAME == TNC
-    static const ::dr4::Color ProgramBackground(0x16, 0x17, 0x20, 0xff);
+    static const ::dr4::Color ProgramBackground(0x2e, 0x34, 0x36, 0xff);     // Основной фон программы
 
-    static const ::dr4::Color WindowBackground(0x20, 0x21, 0x2d, 0xff);
-    static const ::dr4::Color WindowBorder(0x41, 0x42, 0x5a, 0xff);
+    static const ::dr4::Color WindowBackground(0x3c, 0x40, 0x43, 0xff);      // Фон окон/панелей
+    static const ::dr4::Color WindowBorder(0x55, 0x57, 0x53, 0xff);          // Границы окон
 
-    static const ::dr4::Color TextPrimary(0xc0, 0xca, 0xf5, 0xff);
+    static const ::dr4::Color TextPrimary(0xf2, 0xf2, 0xf2, 0xff);           // Основной текст
 
-    static const ::dr4::Color ButtonReleased(0x28, 0x29, 0x3d, 0xff);
-    static const ::dr4::Color ButtonPressed(0x35, 0x36, 0x4e, 0xff);
-    static const ::dr4::Color ButtonIdle(0x24, 0x25, 0x36, 0xff);
-    static const ::dr4::Color ScrollBarThumb(0x41, 0x42, 0x5a, 0xff);
+    static const ::dr4::Color ButtonReleased(0x4a, 0x4d, 0x52, 0xff);        // Кнопка отпущена
+    static const ::dr4::Color ButtonPressed(0x35, 0x5c, 0x7a, 0xff);         // Кнопка нажата (синий акцент)
+    static const ::dr4::Color ButtonIdle(0x40, 0x43, 0x48, 0xff);            // Кнопка неактивна
+    static const ::dr4::Color ScrollBarThumb(0x55, 0x57, 0x53, 0xff);        // Ползунок скроллбара
 
     static const ::dr4::Color Red(0xf7, 0x76, 0x8e, 0xff);
     static const ::dr4::Color Green(0x9e, 0xce, 0x6a, 0xff);
@@ -80,7 +80,7 @@ const optor::Material MATTE_GLASS    ({0.05, 0.05, 0.05}, {0.5, 0.5, 0.55},{0.3,
 static constexpr inline double EPSILON = 1e-8;
 
 static constexpr inline double PROGRAM_WIDTH  = 2300;
-static constexpr inline double PROGRAM_HEIGHT = 1100;
+static constexpr inline double PROGRAM_HEIGHT = 1000;
 
 static constexpr inline unsigned int FRAME_LIMIT = 20;
 
