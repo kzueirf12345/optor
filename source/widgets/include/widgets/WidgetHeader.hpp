@@ -3,6 +3,7 @@
 
 #include <memory>
 
+#include "dr4/event.hpp"
 #include "dr4/texture.hpp"
 
 #include "widgets/Textable.hpp"
@@ -29,6 +30,7 @@ public:
     virtual bool OnMouseRelease   (const dr4::Event& event) override;
     virtual bool OnKeyboardPress  (const dr4::Event& event) override;
     virtual bool OnKeyboardRelease(const dr4::Event& event) override;
+    virtual bool OnTextInput      (const dr4::Event& event) override;
     virtual void OnIdle           () override;
     
     void SetTitle(const std::string& title);
@@ -41,6 +43,7 @@ protected:
     std::unique_ptr<optor::Widget> widget_;
 
     std::unique_ptr<dr4::Rectangle> closeRect_;
+    std::unique_ptr<dr4::Text> closeText_;
 
     CloseMode closeMode_;
 

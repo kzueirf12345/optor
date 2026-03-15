@@ -98,7 +98,7 @@ optor::TopBar::TopBar(optor::WidgetManager* manager)
     curAbsPosition = {0, 0};
 
     auto* view = dynamic_cast<optor::TopBarButton*>(AddChild(std::make_unique<optor::TopBarButton>(
-        dr4::Vec2f(std::string("view").size() * 12.f, rect_->GetSize().y),
+        dr4::Vec2f(std::string("view").size() * 20.f, rect_->GetSize().y),
         manager_->GetState(), 
         std::move(CreateViewList(manager_, manager_->GetDesktop())), 
         "view",
@@ -108,7 +108,7 @@ optor::TopBar::TopBar(optor::WidgetManager* manager)
     UpdatePositions(dynamic_cast<optor::WidgetList*>(view->GetWidget()), view->AbsCoord());
 }
 
-static void HandleChild(optor::Widget* child, optor::WidgetList* list, optor::WidgetManager* manager);
+static void HandleChild(optor::Widget* child, optor::WidgetList* list, optor::WidgetManager* manager, float sizeX);
 
 static std::unique_ptr<optor::Widget> CreateViewList(optor::WidgetManager* manager, const optor::WidgetChildable* parent)
 {
@@ -120,17 +120,36 @@ static std::unique_ptr<optor::Widget> CreateViewList(optor::WidgetManager* manag
     );
 
     const size_t childrenCount = parent->GetChildrenCount();
+
+    std::unique_ptr<dr4::Text> textName(manager->GetWindow()->CreateText());
+    textName->SetFont(optor::FONT);
+
+    float maxSizeX = 0;
     for (size_t ind = 0; ind < childrenCount; ++ind) {
 
         auto* child = parent->GetChild(ind);
 
-        ERROR_HANDLE(HandleChild, child, list.get(), manager);
+        std::optional<std::string> name = child->GetName();
+
+        if (!name.has_value()) {
+            name = child->GetTypeName();
+        }
+
+        textName->SetText(name.value());
+        maxSizeX = std::max(1.5f * textName->GetBounds().x, maxSizeX);
+    }
+
+    for (size_t ind = 0; ind < childrenCount; ++ind) {
+
+        auto* child = parent->GetChild(ind);
+
+        ERROR_HANDLE(HandleChild, child, list.get(), manager, maxSizeX);
     }
 
     return std::move(list);
 }
 
-static void HandleChild(optor::Widget* child, optor::WidgetList* list, optor::WidgetManager* manager)
+static void HandleChild(optor::Widget* child, optor::WidgetList* list, optor::WidgetManager* manager, float sizeX)
 {
     assert(child);
     assert(list);
@@ -154,7 +173,7 @@ static void HandleChild(optor::Widget* child, optor::WidgetList* list, optor::Wi
     textName->SetFont(optor::FONT);
     // textName->SetFontSize(40);
 
-    dr4::Vec2f size = textName->GetBounds();
+    dr4::Vec2f size = {sizeX, 1.5 * optor::STRING_BLOCK_HEIGHT};
 
     delete textName;
 
@@ -183,13 +202,13 @@ static void HandleChild(optor::Widget* child, optor::WidgetList* list, optor::Wi
 
     auto textableText = dynamic_cast<optor::Textable*>(textWidget.get())->GetText();
 
-    textableText->SetPos(0, textableText->GetPos().y);
+    textableText->SetPos(10, textableText->GetPos().y);
     
     ERROR_HANDLE([&textWidget, &size](){
         textWidget->SetPosition({size.y, 0});
     });
 
-    textWidget->SetOutlineThickness(0);
+    // textWidget->SetOutlineThickness(0);
 
     auto checkBox = std::make_unique<optor::HideCheckbox>(
         dr4::Vec2f{size.y, size.y},
@@ -197,7 +216,7 @@ static void HandleChild(optor::Widget* child, optor::WidgetList* list, optor::Wi
         (headerChild ? headerChild : child)
     );
 
-    checkBox->SetOutlineThickness(0);
+    // checkBox->SetOutlineThickness(0);
 
     auto* listElem = dynamic_cast<optor::WidgetChildable*>(ERROR_HANDLE(
         &optor::WidgetChildable::AddChild,
@@ -224,6 +243,11 @@ void optor::TopBar::UpdatePositions(optor::WidgetList* list, dr4::Vec2f absCoord
         auto* hideButton = dynamic_cast<optor::TopBarButton*>(dynamic_cast<optor::WidgetChildable*>(child)->GetChild(0));
 
         if (hideButton) {
+
+            // std::cerr << list->GetSize().x - hideButton->GetSize().x - 50 << std::endl;
+
+            // hideButton->GetParent()->SetSize({list->GetSize().x - hideButton->GetSize().x , hideButton->GetParent()->GetPosition().y});
+
             switch (hideButton->GetWidgetPos()) {
                 case optor::TopBarButton::WidgetPos::BOTTOM:
                     hideButton->GetWidget()->SetPosition(absCoord + dr4::Vec2f(0, child->GetPosition().y + child->GetSize().y));

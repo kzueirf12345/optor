@@ -13,9 +13,10 @@ optor::WidgetCheckbox::WidgetCheckbox(const ::dr4::Vec2f& size,
         action_(action),
         pressedText_{state->window->CreateText()}
 {
-    pressedText_->SetText("V");
+    pressedText_->SetText("\uf42e");
     pressedText_->SetColor(optor::color::TextPrimary);
     pressedText_->SetFont(optor::FONT);
+    pressedText_->SetFontSize(30);
 
     isPressed_ = isPressed;
     

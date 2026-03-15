@@ -32,6 +32,8 @@ class Sphere: public optor::OpticObj {
         std::array<optor::Vector3d, 8> GetAABB() const override;
         virtual optor::Vector3d GetCoord() const override;
 
+        virtual void WriteSerialize(FILE* file, size_t baseTabCnt) const  override;
+
         [[nodiscard]] virtual std::string GetTypeName() const override {return "Sphere"; };
 
     protected:

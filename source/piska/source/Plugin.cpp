@@ -34,12 +34,12 @@ void optor::pp::PPToolPlugin::AfterLoad() {
 }
 
 std::vector<std::unique_ptr<::pp::Tool>> optor::pp::PPToolPlugin::CreateTools(::pp::Canvas *cvs) {
-    const static std::unique_ptr<dr4::Font> font(cvs->GetWindow()->CreateFont());
+    // const static std::unique_ptr<dr4::Font> font(cvs->GetWindow()->CreateFont());
     std::vector<std::unique_ptr<::pp::Tool>> vec;
     vec.emplace_back(std::make_unique<optor::pp::RectTool>(cvs));
     vec.emplace_back(std::make_unique<optor::pp::CircleTool>(cvs));
     vec.emplace_back(std::make_unique<optor::pp::ArrowTool>(cvs));
-    vec.emplace_back(std::make_unique<optor::pp::TextTool>(font.get(), cvs));
+    vec.emplace_back(std::make_unique<optor::pp::TextTool>(cvs->GetWindow()->GetDefaultFont(), cvs));
     return vec;
 }
 

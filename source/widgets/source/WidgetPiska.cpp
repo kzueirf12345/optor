@@ -6,6 +6,7 @@
 #include "dr4/mouse_buttons.hpp"
 #include "global/Global.hpp"
 #include "pp/canvas.hpp"
+#include "widgets/ColorPicker.hpp"
 #include "widgets/PiskaToolButton.hpp"
 #include "widgets/WidgetChildable.hpp"
 #include "widgets/WidgetScrolledList.hpp"
@@ -17,8 +18,9 @@ optor::WidgetPiska::WidgetPiska(optor::WidgetsState* state)
         tools_(),
         shapes_{},
         piskaTheme_{
-            .shapeColor = optor::color::Red,
-            .lineColor = optor::color::Poison,
+            .shapeFillColor = optor::color::Transparent,
+            .shapeBorderColor = optor::color::Red,
+            .selectColor = optor::color::Poison,
             .textColor = optor::color::TextPrimary,
             .baseFontSize = 20,
             .handleColor = optor::color::Cyan,
@@ -49,25 +51,30 @@ optor::WidgetPiska::WidgetPiska(optor::WidgetsState* state)
         }
     }
 
-    const float listMargin = 100;
     const float listWidth = 300;
 
     auto* list = dynamic_cast<optor::WidgetScrolledList*>(AddChild(std::make_unique<optor::WidgetScrolledList>(
-        dr4::Vec2f{listWidth + INIT_SCROLLBAR_WIDTH, state_->window->GetSize().y - 2 *listMargin},
+        dr4::Vec2f{listWidth + INIT_SCROLLBAR_WIDTH - 20, state_->window->GetSize().y - listWidth - 20},
         state_
     )));
 
-    list->SetPosition({0, listMargin});
-
+    list->SetPosition({10, 10});
 
     for (auto& tool : tools_) {
         auto* button = list->AddChild(std::make_unique<optor::PiskaToolButton>(
-            dr4::Vec2f(listWidth, 100),
+            dr4::Vec2f(listWidth - 40, 100),
             state_,
             tool.get(),
             &selectedTool_
         ));
     }
+
+    auto* colorPicker = dynamic_cast<optor::ColorPicker*>(AddChild(std::make_unique<optor::ColorPicker>(
+        dr4::Vec2f(listWidth + INIT_SCROLLBAR_WIDTH - 20, listWidth - 20 - 10), state_, &piskaTheme_
+    )));
+    colorPicker->SetPosition({10, list->GetSize().y + 20});
+
+    colorPicker->SetOutlineThickness(2);
 }
 
 void optor::WidgetPiska::SetPosition(const dr4::Vec2f& position) {

@@ -1,6 +1,8 @@
 #include <cassert>
 #include <limits>
 #include <optional>
+#include <algorithm>
+#include <thread>
 
 #include "optics/Scene.hpp"
 #include "common/ErrorHandler.hpp"
@@ -29,21 +31,59 @@ void optor::Scene::Update() {
         ERROR_HANDLE(&optor::Camera::Move, camera_, moveDir_, optor::CAMERA_MOVE_SPEED);
     }
 
-    for (size_t y = 0; y < size_.y; ++y) {
-        for (size_t x = 0; x < size_.x; ++x) {
-            const size_t pixelIndex = y * size_.x + x;
-            
-            const optor::Vector2d pixel(x, y);
-            const optor::Vector3d rayDirection = ERROR_HANDLE(&optor::Camera::GetRay, camera_, pixel, size_);
-            const optor::Vector3d rayOrigin = camera_.GetPosition();
-            
-            const optor::Vector3d pixelColor = TraceRay(rayOrigin, rayDirection);
+    objs_.erase(
+        std::remove_if(objs_.begin(), objs_.end(), [](auto& obj) { return obj->GetMustRemoved(); }),
+        objs_.end()
+    );
 
-            image_->SetPixel(x, y, dr4::Color(pixelColor.x * 255, pixelColor.y * 255, pixelColor.z * 255, 255));
+    const int threadsX = 8;
+    const int threadsY = 8;
+
+    const int blockW = size_.x / threadsX;
+    const int blockH = size_.y / threadsY;
+
+    std::vector<std::thread> workers;
+    workers.reserve(threadsX * threadsY);
+
+    for (int by = 0; by < threadsY; ++by) {
+        for (int bx = 0; bx < threadsX; ++bx) {
+
+            workers.emplace_back([=, this]() {
+
+                const int startX = bx * blockW;
+                const int startY = by * blockH;
+
+                const int endX = (bx == threadsX - 1) ? size_.x : startX + blockW;
+                const int endY = (by == threadsY - 1) ? size_.y : startY + blockH;
+
+                for (int y = startY; y < endY; ++y) {
+                    for (int x = startX; x < endX; ++x) {
+
+                        const optor::Vector2d pixel(x, y);
+                        const optor::Vector3d rayDirection =
+                            ERROR_HANDLE(&optor::Camera::GetRay, camera_, pixel, size_);
+                        const optor::Vector3d rayOrigin = camera_.GetPosition();
+
+                        const optor::Vector3d pixelColor = TraceRay(rayOrigin, rayDirection);
+
+                        image_->SetPixel(x, y,
+                            dr4::Color(
+                                pixelColor.x * 255,
+                                pixelColor.y * 255,
+                                pixelColor.z * 255,
+                                255
+                            )
+                        );
+                    }
+                }
+            });
         }
     }
 
+    for (auto& t : workers)
+        t.join();
 }
+
 
 optor::Vector3d optor::Scene::TraceRay(const optor::Vector3d& origin, const optor::Vector3d& direction, int depth) const {
     if (depth > maxRecursionDepth_) {
@@ -195,6 +235,21 @@ void optor::Scene::PopObj() {
     objs_.pop_back();
 }
 
+bool optor::Scene::RemoveObj(optor::OpticObj* obj) {
+    if (!obj) {
+        return false;
+    }
+
+    for(auto it = objs_.begin(); it != objs_.end(); ++it) {
+        if (it->get() == obj) {
+            objs_.erase(it);
+            return true;
+        }
+    }
+
+    return false;
+}
+
 const optor::Camera& optor::Scene::GetCamera() const  {
     return camera_;
 }
@@ -229,4 +284,28 @@ const std::vector<std::unique_ptr<optor::OpticObj>>& optor::Scene::GetObjs() con
 
 dr4::Image* optor::Scene::GetImage() const {
     return image_.get();
+}
+
+void optor::Scene::WriteSerialize(FILE* file, size_t baseTabCnt) const {
+    std::string baseIndent(baseTabCnt, ' ');
+    std::string innerIndent(baseTabCnt + 4, ' ');
+    
+    fprintf(file, "%s{\n", baseIndent.c_str());
+    
+    fprintf(file, "%s\"type\": \"Scene\",\n", innerIndent.c_str());
+    
+    fprintf(file, "%s\"objects\": [\n", innerIndent.c_str());
+    
+    for (size_t i = 0; i < objs_.size(); ++i) {
+        objs_[i]->WriteSerialize(file, baseTabCnt + 4);
+        
+        if (i < objs_.size() - 1) {
+            fprintf(file, ",");
+        }
+        fprintf(file, "\n");
+    }
+    
+    fprintf(file, "%s]\n", innerIndent.c_str());
+    
+    fprintf(file, "%s}", baseIndent.c_str());
 }

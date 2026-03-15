@@ -26,7 +26,7 @@ public:
 
 public:
 
-    Text(dr4::Font* font, ::pp::Canvas* cvs);
+    Text(const dr4::Font* font, ::pp::Canvas* cvs);
 
     virtual bool OnMouseDown(const dr4::Event::MouseButton &evt) override;
     virtual bool OnMouseUp(const dr4::Event::MouseButton &evt) override;

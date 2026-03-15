@@ -14,11 +14,11 @@ optor::pp::Rect::Rect(::pp::Canvas* cvs)
 {
     rect_->SetSize({1, 1});
     rect_->SetBorderThickness(-10);
-    rect_->SetBorderColor(cvs->GetControlsTheme().shapeColor);
-    rect_->SetFillColor({0, 0, 0, 0});
+    rect_->SetBorderColor(cvs->GetControlsTheme().shapeBorderColor);
+    rect_->SetFillColor(cvs->GetControlsTheme().shapeFillColor);
 
     selectRect_->SetBorderThickness(OutlineThickness);
-    selectRect_->SetBorderColor(cvs->GetControlsTheme().lineColor);
+    selectRect_->SetBorderColor(cvs->GetControlsTheme().selectColor);
     selectRect_->SetFillColor({0, 0, 0, 0});
 
     UpdateSelectRect();

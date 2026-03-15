@@ -3,6 +3,7 @@
 
 #include "dr4/math/vec2.hpp"
 #include "piska/Circle.hpp"
+// #include "piska/ColorPicker.hpp"
 #include "pp/canvas.hpp"
 #include "pp/tool.hpp"
 
@@ -28,6 +29,7 @@ public:
     virtual bool OnMouseDown(const dr4::Event::MouseButton &evt) override;
     virtual bool OnMouseUp(const dr4::Event::MouseButton &evt) override;
     virtual bool OnMouseMove(const dr4::Event::MouseMove &evt) override;
+    // virtual bool OnKeyDown(const dr4::Event::KeyEvent &evt) override;
 
 private:
 
@@ -38,6 +40,8 @@ private:
     optor::pp::Circle* circle_;
 
     ::dr4::Vec2f startPos_;
+
+    // ColorPicker* colorPicker_;
 
 };
 

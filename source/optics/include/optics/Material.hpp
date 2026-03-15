@@ -21,13 +21,25 @@ class Material {
         [[nodiscard]] double          GetTransparency() const noexcept;
         [[nodiscard]] double          GetRefractivity() const noexcept;
 
-        void SetAmbientColor (const optor::Vector3d& color);
-        void SetDiffuseColor (const optor::Vector3d& color);
+        void SetAmbientColor(const optor::Vector3d& color);
+        void SetAmbientColorX(double color0);
+        void SetAmbientColorY(double color1);
+        void SetAmbientColorZ(double color2);
+
+        void SetDiffuseColor(const optor::Vector3d& color);
+        void SetDiffuseColorX(double color0);
+        void SetDiffuseColorY(double color1);
+        void SetDiffuseColorZ(double color2);
+
         void SetSpecularColor(const optor::Vector3d& color);
-        void SetShininess    (double shininess);
-        void SetReflectivity (double reflectivity);
-        void SetTransparency (double transparency);
-        void SetRefractivity (double refractivity);
+        void SetSpecularColorX(double color0);
+        void SetSpecularColorY(double color1);
+        void SetSpecularColorZ(double color2);
+
+        void SetShininess(double shininess);
+        void SetReflectivity(double reflectivity);
+        void SetTransparency(double transparency);
+        void SetRefractivity(double refractivity);
 
     private:
         optor::Vector3d ambient_;  

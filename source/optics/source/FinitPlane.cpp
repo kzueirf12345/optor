@@ -83,6 +83,31 @@ void optor::FinitPlane::SetMaterial(const Material& material) {
     });
 }
 
+void optor::FinitPlane::WriteSerialize(FILE* file, size_t baseTabCnt) const  {
+    std::string baseIndent(baseTabCnt, ' ');
+    std::string innerIndent(baseTabCnt + 4, ' ');
+    
+    fprintf(file, "%s{\n", baseIndent.c_str());
+    
+    fprintf(file, "%s\"type\": \"%s\",\n", innerIndent.c_str(), GetTypeName().c_str());
+    
+    OpticObj::WriteSerialize(file, baseTabCnt + 4);
+    
+    fprintf(file, "%s\"center\": [%g, %g, %g],\n", 
+            innerIndent.c_str(), 
+            center_.x, center_.y, center_.z);
+    
+    fprintf(file, "%s\"normal\": [%g, %g, %g],\n", 
+            innerIndent.c_str(), 
+            normal_.x, normal_.y, normal_.z);
+    
+    fprintf(file, "%s\"size\": [%g, %g]\n", 
+            innerIndent.c_str(), 
+            size_.x, size_.y);
+    
+    fprintf(file, "%s}", baseIndent.c_str());
+}
+
 void optor::FinitPlane::Move(const optor::Vector3d& offset) {
     center_ += offset;
 

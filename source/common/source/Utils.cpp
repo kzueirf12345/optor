@@ -10,3 +10,10 @@ double common::Rad2Deg(double rad) noexcept{
     static constexpr double factor = 180 / std::numbers::pi;
     return rad * factor;
 }
+std::string common::to_string(double value) {
+    char buffer[64] = {};
+    
+    snprintf(buffer, 64, "%g", value);
+    
+    return std::string(buffer);
+}

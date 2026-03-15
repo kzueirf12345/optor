@@ -2,6 +2,7 @@
 #include <optional>
 #include <thread>
 
+#include <SFML/System/String.hpp>
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Sprite.hpp>
@@ -10,6 +11,7 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/VideoMode.hpp>
 #include "SFML/Window/Mouse.hpp"
+#include <SFML/Window/Clipboard.hpp>
 
 #include "dr4Plugin/Window.hpp"
 #include "dr4Plugin/Font.hpp"
@@ -147,6 +149,22 @@ void optor::dr4::Window::Sleep(double time) {
     return new optor::dr4::Text();
 }
 
+void optor::dr4::Window::SetDefaultFont(const ::dr4::Font* font) {
+    font_ = font;
+}
+
+const ::dr4::Font* optor::dr4::Window::GetDefaultFont() {
+    return font_;
+}
+
+void optor::dr4::Window::SetClipboard(const std::string& string) {
+    sf::Clipboard::setString(string);
+}
+
+std::string optor::dr4::Window::GetClipboard() {
+    return sf::Clipboard::getString().toAnsiString(); 
+}
+
 void optor::dr4::Window::StartTextInput() {
     //PASS
 }
@@ -266,20 +284,23 @@ std::optional<::dr4::Event> optor::dr4::Window::PollEvent()
 
 static dr4::KeyMode KeyModeSF2DR4(sf::Event::KeyEvent event) noexcept
 {
-    if (event.alt) {
-        return dr4::KeyMode::KEYMOD_ALT;
-    }
+    uint16_t mode = dr4::KeyMode::KEYMOD_NONE;
 
     if (event.shift) {
-        return dr4::KeyMode::KEYMOD_SHIFT;
+        mode |= dr4::KeyMode::KEYMOD_SHIFT;
     }
 
     if (event.control) {
-        return dr4::KeyMode::KEYMOD_CTRL;
+        mode |= dr4::KeyMode::KEYMOD_CTRL;
     }
 
-    return dr4::KeyMode::KEYMOD_NONE;
-}   
+    if (event.alt) {
+        mode |= dr4::KeyMode::KEYMOD_ALT;
+    }
+
+    return static_cast<dr4::KeyMode>(mode);
+}
+
 
 #define CASE_RET_TYPE_(guiType, huiType) \
         case guiType: return huiType

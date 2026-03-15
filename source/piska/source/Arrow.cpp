@@ -22,16 +22,16 @@ optor::pp::Arrow::Arrow(::pp::Canvas* cvs)
 {
     line_->SetStart({0, 0});
     line_->SetEnd({1, 1});
-    line_->SetColor(cvs->GetControlsTheme().shapeColor);
+    line_->SetColor(cvs->GetControlsTheme().shapeBorderColor);
     line_->SetThickness(10);
 
-    leftTip_->SetColor(cvs->GetControlsTheme().shapeColor);
-    rightTip_->SetColor(cvs->GetControlsTheme().shapeColor);
+    leftTip_->SetColor(cvs->GetControlsTheme().shapeBorderColor);
+    rightTip_->SetColor(cvs->GetControlsTheme().shapeBorderColor);
     leftTip_->SetThickness(10);
     rightTip_->SetThickness(10);
 
     selectRect_->SetBorderThickness(OutlineThickness);
-    selectRect_->SetBorderColor(cvs->GetControlsTheme().lineColor);
+    selectRect_->SetBorderColor(cvs->GetControlsTheme().selectColor);
     selectRect_->SetFillColor({0, 0, 0, 0});
 
     startPoint_->SetRadius(8.0f);

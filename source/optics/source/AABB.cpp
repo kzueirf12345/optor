@@ -97,3 +97,30 @@ void optor::AABB::SetMaterial(const Material& material)
 std::array<optor::Vector3d, 8> optor::AABB::GetAABB() const {
     return points_;
 }
+
+void optor::AABB::WriteSerialize(FILE* file, size_t baseTabCnt) const  {
+    std::string baseIndent(baseTabCnt, ' ');
+    std::string innerIndent(baseTabCnt + 4, ' ');
+    std::string pointsIndent(baseTabCnt + 8, ' ');
+    
+    fprintf(file, "%s{\n", baseIndent.c_str());
+    
+    fprintf(file, "%s\"type\": \"%s\",\n", innerIndent.c_str(), GetTypeName().c_str());
+    
+    OpticObj::WriteSerialize(file, baseTabCnt + 4);
+    
+    fprintf(file, "%s\"points\": [\n", innerIndent.c_str());
+    
+    for (size_t i = 0; i < points_.size(); ++i) {
+        const auto& point = points_[i];
+        fprintf(file, "%s[%g, %g, %g]", pointsIndent.c_str(), point.x, point.y, point.z);
+        
+        if (i < points_.size() - 1) {
+            fprintf(file, ",");
+        }
+        fprintf(file, "\n");
+    }
+    fprintf(file, "%s]\n", innerIndent.c_str());
+    
+    fprintf(file, "%s}", baseIndent.c_str());
+}

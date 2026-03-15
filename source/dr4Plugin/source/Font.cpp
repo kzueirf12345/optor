@@ -8,7 +8,8 @@ optor::dr4::Font::Font()
     :   font_{}
 {
     try {
-        LoadFromFile("/usr/share/fonts/TTF/CaskaydiaCoveNerdFontMono-Regular.ttf");
+        // LoadFromFile("/usr/share/fonts/TTF/CaskaydiaCoveNerdFontMono-Regular.ttf");
+        LoadFromFile("/usr/share/fonts/TTF/0xProtoNerdFont-Regular.ttf");
     } catch(const std::runtime_error& e) {
 
     }

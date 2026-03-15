@@ -2,7 +2,6 @@
 #include <cassert>
 #include <cstdio>
 #include <memory>
-#include <iostream>
 
 #include "piska/Text.hpp"
 #include "dr4/math/color.hpp"
@@ -11,7 +10,7 @@
 #include "dr4/texture.hpp"
 #include "piska/Global.hpp"
 
-optor::pp::Text::Text(dr4::Font* font, ::pp::Canvas* cvs) 
+optor::pp::Text::Text(const dr4::Font* font, ::pp::Canvas* cvs) 
     :   text_{cvs->GetWindow()->CreateText()},
         tempText_(cvs->GetWindow()->CreateText()),
         isDragged_(false),
@@ -43,12 +42,12 @@ optor::pp::Text::Text(dr4::Font* font, ::pp::Canvas* cvs)
     caret_->SetStart({0, 0});
     caret_->SetEnd({0, 0.7f * text_->GetBounds().y});
 
-    const dr4::Color lineColor = cvs->GetControlsTheme().lineColor;
-    selectedTextRect_->SetFillColor({lineColor.r, lineColor.g, lineColor.b, 100});
+    const dr4::Color selectColor = cvs->GetControlsTheme().selectColor;
+    selectedTextRect_->SetFillColor({selectColor.r, selectColor.g, selectColor.b, 100});
     selectedTextRect_->SetSize({1, 1});
 
     selectRect_->SetBorderThickness(OutlineThickness);
-    selectRect_->SetBorderColor(cvs->GetControlsTheme().lineColor);
+    selectRect_->SetBorderColor(cvs->GetControlsTheme().selectColor);
     selectRect_->SetFillColor({0, 0, 0, 0});
 
     UpdateCaret();
@@ -191,8 +190,8 @@ void optor::pp::Text::EraseSelectedText() {
         return;
     }
 
-    const float minPos = std::min(caretPos_, selectPos_);
-    const float maxPos = std::max(caretPos_, selectPos_);
+    const size_t minPos = std::min(caretPos_, selectPos_);
+    const size_t maxPos = std::max(caretPos_, selectPos_);
     textStr_.erase(minPos, maxPos - minPos);
     text_->SetText(textStr_);
     SetCaretPos(minPos);

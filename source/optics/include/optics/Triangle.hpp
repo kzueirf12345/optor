@@ -8,7 +8,12 @@
 
 namespace optor {
 
+class TriangleMesh;
+
 class Triangle : public OpticObj {
+public:
+    friend TriangleMesh;
+
 public:
     Triangle(const optor::Vector3d& v0, const optor::Vector3d& v1, const optor::Vector3d& v2);
     Triangle(const optor::Vector3d& v0, const optor::Vector3d& v1, const optor::Vector3d& v2, const Material& material);
@@ -22,6 +27,9 @@ public:
 
     std::array<optor::Vector3d, 8> GetAABB() const override;
     virtual optor::Vector3d GetCoord() const override;
+
+    virtual void WriteSerialize(FILE* file, size_t baseTabCnt) const override;
+
     [[nodiscard]] virtual std::string GetTypeName() const override {return "Triangle"; };
 
 private:

@@ -14,7 +14,13 @@
 namespace optor 
 {
 
+class ObjDescButton;
+
 class OpticObjDesc {
+    public:
+
+        friend ObjDescButton;
+
     public:
         OpticObjDesc(const dr4::Vec2f& size, optor::WidgetsState* state, optor::OpticObj* obj);
 

@@ -3,6 +3,7 @@
 
 #include "SFML/Graphics/RenderWindow.hpp"
 
+#include "dr4/texture.hpp"
 #include "dr4/window.hpp"
 #include <SFML/System/Vector2.hpp>
 #include <chrono>
@@ -43,6 +44,13 @@ public:
     virtual ::dr4::Rectangle *CreateRectangle() override;
     virtual ::dr4::Text      *CreateText()      override;
 
+    virtual void SetDefaultFont( const ::dr4::Font* font ) override;
+    virtual const ::dr4::Font* GetDefaultFont() override;
+
+    virtual void SetClipboard( const std::string& string ) override;
+    virtual std::string GetClipboard() override;
+
+
     virtual void StartTextInput() override;
     virtual void StopTextInput() override;
 
@@ -57,6 +65,8 @@ private:
     std::chrono::time_point<std::chrono::high_resolution_clock> ctorTime_;
 
     char utf8_buffer_[5];
+
+    const ::dr4::Font* font_;
 };
 
 }

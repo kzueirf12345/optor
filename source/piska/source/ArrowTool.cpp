@@ -14,7 +14,7 @@ optor::pp::ArrowTool::ArrowTool(::pp::Canvas* cvs)
 {}
 
 std::string_view optor::pp::ArrowTool::Icon() const {
-    return "ArrowToolIcon";
+    return "\uf061";
 }
 
 std::string_view optor::pp::ArrowTool::Name() const {

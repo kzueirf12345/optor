@@ -14,12 +14,14 @@ optor::dr4::Text::Text()
     :   text_{},
         offset_{},
         valign_{::dr4::Text::VAlign::TOP}
-{}
+{
+    text_.setCharacterSize(static_cast<unsigned>(18));
+}
 
 void optor::dr4::Text::SetText(const std::string &text) {
     str_ = text;
     ERROR_HANDLE([this, &text](){
-        text_.setString(text);
+        text_.setString(sf::String::fromUtf8(text.begin(), text.end()));
     });
 }
 
@@ -76,7 +78,7 @@ void optor::dr4::Text::SetFont(const ::dr4::Font *font) {
     sf::FloatRect boundsSF = ERROR_HANDLE([this](){
         return text_.getLocalBounds();
     });
-    return ::dr4::Vec2f{boundsSF.width, boundsSF.height * 2};
+    return ::dr4::Vec2f{boundsSF.width, 2 * boundsSF.height};
 }
 
 const std::string &optor::dr4::Text::GetText() const {

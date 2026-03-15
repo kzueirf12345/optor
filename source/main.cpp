@@ -1,3 +1,4 @@
+#include <cstdio>
 #include <cstdlib>
 #include <dlfcn.h>
 #include <linux/limits.h>
@@ -18,13 +19,13 @@
 #include "common/ErrorHandler.hpp"
 #include "global/Global.hpp"
 #include "optics/Vector.hpp"
+#include "widgets/CreateObjButton.hpp"
 #include "widgets/OpticObjShort.hpp"
 #include "widgets/TopBar.hpp"
 #include "widgets/Widget.hpp"
 #include "widgets/WidgetHeader.hpp"
 #include "widgets/WidgetScrolledList.hpp"
 #include "widgets/WidgetManager.hpp"
-#include "widgets/WidgetText.hpp"
 #include "widgets/WidgetChildable.hpp"
 #include "widgets/SceneWidget.hpp"
 #include "widgets/WidgetButtonCamera.hpp"
@@ -34,20 +35,14 @@
 #include "optics/Triangle.hpp"
 #include "optics/Sphere.hpp"
 
-// FIXME refactor clipRect and draw texture
-// FIXME update sfml 
-// TODO add optic obj
-// TODO remove optic obj
-// TODO change optic obj features
-// TODO update optic obj features
-
+// TODO rotate obj
 
 ::dr4::Font* optor::FONT = nullptr;
-
 
 static void CreateScene(cum::DR4BackendPlugin* backend, optor::WidgetManager* manager);
 static void CreateCameraButtons(cum::DR4BackendPlugin* backend, optor::WidgetManager* manager, optor::SceneWidget* sceneWidget);
 static void CreateObjsList(optor::WidgetManager* manager, optor::SceneWidget* sceneWidget);
+static void CreateAddList(optor::WidgetManager* manager, optor::SceneWidget* sceneWidget, optor::WidgetScrolledList* objList);
 
 int main() {
 
@@ -56,6 +51,14 @@ int main() {
     auto* dr4Backend = dynamic_cast<cum::DR4BackendPlugin*>(ERROR_HANDLE([&pluginsManager](){
         return pluginsManager.LoadFromFile("./build/source/dr4Plugin/libdr4Plugin.so");
     }));
+
+    // auto* dr4Backend = dynamic_cast<cum::DR4BackendPlugin*>(ERROR_HANDLE([&pluginsManager](){
+    //     return pluginsManager.LoadFromFile("./plugins/dr4/v2/libEgor.so");
+    // }));
+
+    // auto* dr4Backend = dynamic_cast<cum::DR4BackendPlugin*>(ERROR_HANDLE([&pluginsManager](){
+    //     return pluginsManager.LoadFromFile("./plugins/dr4/v2/artem/dist/plugin/libswuix_sdl3.so");
+    // }));
 
     dr4Backend->AfterLoad();
 
@@ -86,24 +89,35 @@ int main() {
         optor::FONT->LoadFromFile(optor::FONT_PATH);
     });
 
+    window->SetDefaultFont(optor::FONT);
+
 //==========DR4=================
 //==========GeomPrim=================
 
     std::vector<cum::PPToolPlugin*> ppPlugins = {};
 
     ppPlugins.push_back(dynamic_cast<cum::PPToolPlugin*>(ERROR_HANDLE([&pluginsManager](){
-        return pluginsManager.LoadFromFile("./plugins/pp/libDenchik.so");
+        return pluginsManager.LoadFromFile("./plugins/pp/libDenchik2.so");
     })));
+    ppPlugins.back()->AfterLoad();
     ppPlugins.push_back(dynamic_cast<cum::PPToolPlugin*>(ERROR_HANDLE([&pluginsManager](){
         return pluginsManager.LoadFromFile("./plugins/pp/libArtemLine.so");
     })));
+    ppPlugins.back()->AfterLoad();
+    ppPlugins.push_back(dynamic_cast<cum::PPToolPlugin*>(ERROR_HANDLE([&pluginsManager](){
+        return pluginsManager.LoadFromFile("./plugins/pp/libSeva3.so");
+    })));
+    ppPlugins.back()->AfterLoad();
+    ppPlugins.push_back(dynamic_cast<cum::PPToolPlugin*>(ERROR_HANDLE([&pluginsManager](){
+        return pluginsManager.LoadFromFile("./plugins/pp/libArtemText.so");
+    })));
+    ppPlugins.back()->AfterLoad();
     // ppPlugins.push_back(dynamic_cast<cum::PPToolPlugin*>(ERROR_HANDLE([&pluginsManager](){
-    //     return pluginsManager.LoadFromFile("./plugins/pp/libSeva.so");
+    //     return pluginsManager.LoadFromFile("./plugins/pp/libArtemEssentials.so");
     // })));
     ppPlugins.push_back(dynamic_cast<cum::PPToolPlugin*>(ERROR_HANDLE([&pluginsManager](){
         return pluginsManager.LoadFromFile("./build/source/piska/libpiska.so");
-    })));    
-
+    })));   
     ppPlugins.back()->AfterLoad();
 
 //==========GeomPrim=================
@@ -135,6 +149,8 @@ int main() {
 
         ERROR_HANDLE(&dr4::Window::Display, window);
     }
+
+    delete optor::FONT;
     
     return EXIT_SUCCESS;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        // ВОВА ГЕЙ + ПИДОР
 }
@@ -149,7 +165,7 @@ void CreateScene(cum::DR4BackendPlugin* backend, optor::WidgetManager* manager) 
         manager->GetDesktop(),
         std::make_unique<optor::WidgetHeader>(
             std::make_unique<optor::SceneWidget>(
-                dr4::Vec2f{1750, 900},
+                dr4::Vec2f{1950, 900},
                 manager->GetState()
             ),
             "Scene",
@@ -157,7 +173,7 @@ void CreateScene(cum::DR4BackendPlugin* backend, optor::WidgetManager* manager) 
         )
     ));
 
-    ERROR_HANDLE(&optor::Widget::SetPosition, sceneWidgetWithHeader, dr4::Vec2f(500, 100));
+    ERROR_HANDLE(&optor::Widget::SetPosition, sceneWidgetWithHeader, dr4::Vec2f(350, manager->GetDesktop()->GetSize().y / 15.f));
 
     auto* sceneWidget = dynamic_cast<optor::SceneWidget*>(sceneWidgetWithHeader->GetWidget());
 
@@ -200,7 +216,7 @@ void CreateScene(cum::DR4BackendPlugin* backend, optor::WidgetManager* manager) 
     // }));
 
     auto* floorPlane = dynamic_cast<optor::Plane*>(ERROR_HANDLE([sceneWidget](){
-        return sceneWidget->AddObj(std::make_unique<optor::Plane>(optor::Vector3d(0, -4, 10), optor::Vector3d(0, 1, 0), optor::materials::WOOD));
+        return sceneWidget->AddObj(std::make_unique<optor::Plane>(optor::Vector3d(0, -4, 10), optor::Vector3d(0, 1, 0), optor::materials::PLASTIC));
     }));
 
     auto* triangle = dynamic_cast<optor::Triangle*>(ERROR_HANDLE([sceneWidget](){
@@ -240,12 +256,16 @@ static void CreateCameraButtons(cum::DR4BackendPlugin* backend, optor::WidgetMan
     assert(sceneWidget);
     assert(backend);
 
+    const dr4::Vec2f cameraButtonsSize(350, 250);
+    const dr4::Vec2f buttonSize = {100, 2 * optor::STRING_BLOCK_HEIGHT};
+    const float offset = 20;
+
     auto cameraButtons = std::make_unique<optor::WidgetChildable>(
-        dr4::Vec2f{750, 400},
+        cameraButtonsSize,
         manager->GetState()
     );
 
-    ERROR_HANDLE(&optor::Widget::SetPosition, cameraButtons, dr4::Vec2f(1450, 650));
+    ERROR_HANDLE(&optor::Widget::SetPosition, cameraButtons, dr4::Vec2f(0, 845 - 2*optor::INIT_HEADER_HEIGHT));
 
     cameraButtons->SetName("Camera buttons");
 
@@ -253,85 +273,85 @@ static void CreateCameraButtons(cum::DR4BackendPlugin* backend, optor::WidgetMan
         &optor::WidgetChildable::AddChild, 
         cameraButtons, 
         std::make_unique<optor::WidgetButtonCamera>(
-            dr4::Vec2f{200, 100},
+            buttonSize,
             manager->GetState(),
-            "left",
+            "\uf060",
             &sceneWidget->GetCamera(),
             optor::MoveDirection::LEFT
         )
     ));
 
-    ERROR_HANDLE(&optor::Widget::SetPosition, leftButton, dr4::Vec2f(50, 150));
+    ERROR_HANDLE(&optor::Widget::SetPosition, leftButton, dr4::Vec2f(offset, cameraButtonsSize.y / 2 - buttonSize.y / 2));
 
     auto* rightButton = dynamic_cast<optor::WidgetButtonCamera*>(ERROR_HANDLE(
         &optor::WidgetChildable::AddChild, 
         cameraButtons, 
         std::make_unique<optor::WidgetButtonCamera>(
-            dr4::Vec2f{200, 100},
+            buttonSize,
             manager->GetState(),
-            "right",
+            "\uf061",
             &sceneWidget->GetCamera(),
             optor::MoveDirection::RIGHT
         )
     ));
 
-    ERROR_HANDLE(&optor::Widget::SetPosition, rightButton, dr4::Vec2f(250, 150));
+    ERROR_HANDLE(&optor::Widget::SetPosition, rightButton, dr4::Vec2f(offset + buttonSize.x, cameraButtonsSize.y / 2 - buttonSize.y / 2));
 
     auto* upButton = dynamic_cast<optor::WidgetButtonCamera*>(ERROR_HANDLE(
         &optor::WidgetChildable::AddChild, 
         cameraButtons, 
         std::make_unique<optor::WidgetButtonCamera>(
-            dr4::Vec2f{200, 100},
+            buttonSize,
             manager->GetState(),
-            "up",
+            "\uf062",
             &sceneWidget->GetCamera(),
             optor::MoveDirection::UP
         )
     ));
 
-    ERROR_HANDLE(&optor::Widget::SetPosition, upButton, dr4::Vec2f(150, 45));
+    ERROR_HANDLE(&optor::Widget::SetPosition, upButton, dr4::Vec2f(offset + buttonSize.x / 2, cameraButtonsSize.y / 2 - buttonSize.y * 3 / 2));
 
     auto* downButton = dynamic_cast<optor::WidgetButtonCamera*>(ERROR_HANDLE(
         &optor::WidgetChildable::AddChild, 
         cameraButtons, 
         std::make_unique<optor::WidgetButtonCamera>(
-            dr4::Vec2f{200, 100},
+            buttonSize,
             manager->GetState(),
-            "down",
+            "\uf063",
             &sceneWidget->GetCamera(),
             optor::MoveDirection::DOWN
         )
     ));
 
-    ERROR_HANDLE(&optor::Widget::SetPosition, downButton, dr4::Vec2f(150, 255));
+    ERROR_HANDLE(&optor::Widget::SetPosition, downButton, dr4::Vec2f(offset + buttonSize.x / 2, cameraButtonsSize.y / 2 + buttonSize.y / 2));
 
     auto* forwardButton = dynamic_cast<optor::WidgetButtonCamera*>(ERROR_HANDLE(
         &optor::WidgetChildable::AddChild, 
         cameraButtons, 
         std::make_unique<optor::WidgetButtonCamera>(
-            dr4::Vec2f{200, 100},
+            buttonSize,
             manager->GetState(),
-            "forward",
+            "\uf062",
             &sceneWidget->GetCamera(),
             optor::MoveDirection::FORWARD
         )
     ));
 
-    ERROR_HANDLE(&optor::Widget::SetPosition, forwardButton, dr4::Vec2f(500, 100));
+    ERROR_HANDLE(&optor::Widget::SetPosition, forwardButton, dr4::Vec2f(cameraButtonsSize.x - offset - buttonSize.x, cameraButtonsSize.y / 2 - buttonSize.y));
 
         auto* backwordButton = dynamic_cast<optor::WidgetButtonCamera*>(ERROR_HANDLE(
         &optor::WidgetChildable::AddChild, 
         cameraButtons, 
         std::make_unique<optor::WidgetButtonCamera>(
-            dr4::Vec2f{200, 100},
+            buttonSize,
             manager->GetState(),
-            "backword",
+            "\uf063",
             &sceneWidget->GetCamera(),
             optor::MoveDirection::BACKWARD
         )
     ));
 
-    ERROR_HANDLE(&optor::Widget::SetPosition, backwordButton, dr4::Vec2f(500, 200));
+    ERROR_HANDLE(&optor::Widget::SetPosition, backwordButton, dr4::Vec2f(cameraButtonsSize.x - offset - buttonSize.x, cameraButtonsSize.y / 2));
 
     auto* cameraButtonsWithHeader = dynamic_cast<optor::WidgetHeader*>(ERROR_HANDLE(
         &optor::WidgetChildable::AddChild, 
@@ -346,11 +366,11 @@ static void CreateCameraButtons(cum::DR4BackendPlugin* backend, optor::WidgetMan
 
 static void CreateObjsList(optor::WidgetManager* manager, optor::SceneWidget* sceneWidget) {
     auto list = std::make_unique<optor::WidgetScrolledList>(
-        dr4::Vec2f(400, 900),
+        dr4::Vec2f(250, 250 + optor::INIT_HEADER_HEIGHT),
         manager->GetState()
     );
 
-    list->SetName("Optical Oblects list");
+    list->SetName("Objects list");
 
     const auto& objs = sceneWidget->GetScene().GetObjs();
 
@@ -358,32 +378,12 @@ static void CreateObjsList(optor::WidgetManager* manager, optor::SceneWidget* sc
 
         auto* obj = objs[ind].get();
 
-        const std::string name = obj->GetTypeName();
-
-        auto nameWidget = std::make_unique<optor::OpticObjShort>(
+        auto listElem = std::make_unique<optor::OpticObjShort>(
             manager,
-            dr4::Vec2f{list->GetSize().x - optor::INIT_SCROLLBAR_WIDTH - optor::STRING_BLOCK_HEIGHT, optor::STRING_BLOCK_HEIGHT},
-            obj
+            dr4::Vec2f{list->GetSize().x - optor::INIT_SCROLLBAR_WIDTH - 15, optor::STRING_BLOCK_HEIGHT},
+            obj,
+            manager->GetState()->objCounter++
         );
-
-        nameWidget->SetOutlineThickness(0);
-        nameWidget->SetPosition({optor::STRING_BLOCK_HEIGHT, 0});
-
-        auto numWidget = std::make_unique<optor::WidgetText>(
-            dr4::Vec2f{optor::STRING_BLOCK_HEIGHT, optor::STRING_BLOCK_HEIGHT},
-            manager->GetState(),
-            std::to_string(ind)
-        );
-
-        numWidget->SetOutlineThickness(0);
-
-        auto listElem = std::make_unique<optor::WidgetChildable> (
-            dr4::Vec2f(nameWidget->GetSize().x + optor::STRING_BLOCK_HEIGHT, optor::STRING_BLOCK_HEIGHT),
-            manager->GetState()
-        );
-
-        ERROR_HANDLE(&optor::WidgetChildable::AddChild, listElem, std::move(numWidget));
-        ERROR_HANDLE(&optor::WidgetChildable::AddChild, listElem, std::move(nameWidget));
 
         ERROR_HANDLE(&optor::WidgetChildable::AddChild, list, std::move(listElem));
     }
@@ -394,7 +394,75 @@ static void CreateObjsList(optor::WidgetManager* manager, optor::SceneWidget* sc
         optor::WidgetHeader::CloseMode::HIDE
     );
 
-    listWithHeader->SetPosition({50, 100});
+    listWithHeader->SetPosition({0, 75});
 
-    ERROR_HANDLE(&optor::WidgetChildable::AddChild, manager->GetDesktop(), std::move(listWithHeader));
+    auto* listWithHeaderPtr = dynamic_cast<optor::WidgetHeader*>(ERROR_HANDLE(&optor::WidgetChildable::AddChild, manager->GetDesktop(), std::move(listWithHeader)));
+
+    ERROR_HANDLE(&CreateAddList, manager, sceneWidget, dynamic_cast<optor::WidgetScrolledList*>(listWithHeaderPtr->GetWidget()));
+}
+
+static void CreateAddList(optor::WidgetManager* manager, optor::SceneWidget* sceneWidget, optor::WidgetScrolledList* objList) {
+    auto list = std::make_unique<optor::WidgetScrolledList>(
+        dr4::Vec2f(250, 300 ),
+        manager->GetState()
+    );
+
+    list->SetName("Add Object");
+
+    auto listWithHeader  = std::make_unique<optor::WidgetHeader>(
+        std::move(list),
+        list->GetName().value(),
+        optor::WidgetHeader::CloseMode::HIDE
+    );
+
+    listWithHeader->SetPosition({0, 435 - optor::INIT_HEADER_HEIGHT});
+
+    auto* listWithHeaderPtr = dynamic_cast<optor::WidgetHeader*>(ERROR_HANDLE(&optor::WidgetChildable::AddChild, manager->GetDesktop(), std::move(listWithHeader)));
+
+    auto* listPtr = dynamic_cast<optor::WidgetScrolledList*>(listWithHeaderPtr->GetWidget());
+
+    std::cerr << listPtr << std::endl;
+
+    listPtr->AddChild(std::make_unique<optor::CreateObjButton<optor::Sphere>>(
+        manager,
+         dr4::Vec2f(listPtr->GetSize().x - optor::INIT_SCROLLBAR_WIDTH - 15, optor::STRING_BLOCK_HEIGHT), 
+         "Sphere", 
+         std::vector<optor::WidgetChildable*>{objList}, 
+         sceneWidget
+    ));
+    listPtr->AddChild(std::make_unique<optor::CreateObjButton<optor::Triangle>>(
+        manager,
+         dr4::Vec2f(listPtr->GetSize().x - optor::INIT_SCROLLBAR_WIDTH - 15, optor::STRING_BLOCK_HEIGHT), 
+         "Triangle", 
+         std::vector<optor::WidgetChildable*>{objList}, 
+         sceneWidget
+    ));
+    listPtr->AddChild(std::make_unique<optor::CreateObjButton<optor::AABB>>(
+        manager,
+         dr4::Vec2f(listPtr->GetSize().x - optor::INIT_SCROLLBAR_WIDTH - 15, optor::STRING_BLOCK_HEIGHT), 
+         "AABB", 
+         std::vector<optor::WidgetChildable*>{objList}, 
+         sceneWidget
+    ));
+    listPtr->AddChild(std::make_unique<optor::CreateObjButton<optor::FinitPlane>>(
+        manager,
+         dr4::Vec2f(listPtr->GetSize().x - optor::INIT_SCROLLBAR_WIDTH - 15, optor::STRING_BLOCK_HEIGHT), 
+         "FinitPlane", 
+         std::vector<optor::WidgetChildable*>{objList}, 
+         sceneWidget
+    ));
+    listPtr->AddChild(std::make_unique<optor::CreateObjButton<optor::Light>>(
+        manager,
+         dr4::Vec2f(listPtr->GetSize().x - optor::INIT_SCROLLBAR_WIDTH - 15, optor::STRING_BLOCK_HEIGHT), 
+         "Light", 
+         std::vector<optor::WidgetChildable*>{objList}, 
+         sceneWidget
+    ));
+    listPtr->AddChild(std::make_unique<optor::CreateObjButton<optor::Plane>>(
+        manager,
+         dr4::Vec2f(listPtr->GetSize().x - optor::INIT_SCROLLBAR_WIDTH - 15, optor::STRING_BLOCK_HEIGHT), 
+         "Plane", 
+         std::vector<optor::WidgetChildable*>{objList}, 
+         sceneWidget
+    ));
 }

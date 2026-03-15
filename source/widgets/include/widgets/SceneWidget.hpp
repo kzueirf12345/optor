@@ -14,6 +14,7 @@ class SceneWidget: public optor::Widget {
     public:
         SceneWidget(const dr4::Vec2f& size, optor::WidgetsState* state);
 
+
         virtual void SetPosition(const dr4::Vec2f& position) override;
         
         virtual void Draw(dr4::Texture& srcTexture) override final;
@@ -38,7 +39,16 @@ class SceneWidget: public optor::Widget {
 
         bool needUpdateScene_;
 
+        size_t serializeFileNum_;
+        FILE* serializeFile_;
+        bool notNeedSerilize_;
+
+        inline static const std::string SERIALIZE_FOLDERNAME = "serializations";
+        inline static const std::string SERIALIZE_FILENAME = "./build/" + SERIALIZE_FOLDERNAME + "/serialize"; 
+
         void RotateCamera(const dr4::Vec2f& mouseOffset);
+
+        void WriteSerialize();
 
     private:
 };

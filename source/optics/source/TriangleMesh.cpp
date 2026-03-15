@@ -113,3 +113,38 @@ std::array<optor::Vector3d, 8> optor::TriangleMesh::GetAABB() const
         optor::Vector3d{maxPoint.x, maxPoint.y, maxPoint.z}
     };
 }
+
+void optor::TriangleMesh::WriteSerialize(FILE* file, size_t baseTabCnt) const {
+    std::string baseIndent(baseTabCnt, ' ');
+    std::string innerIndent(baseTabCnt + 4, ' ');
+    std::string trianglesIndent(baseTabCnt + 8, ' ');
+    
+    fprintf(file, "%s{\n", baseIndent.c_str());
+    
+    fprintf(file, "%s\"type\": \"%s\",\n", innerIndent.c_str(), GetTypeName().c_str());
+    
+    OpticObj::WriteSerialize(file, baseTabCnt + 4);
+    
+    fprintf(file, "%s\"triangles\": [\n", innerIndent.c_str());
+    
+    for (size_t i = 0; i < triangles_.size(); ++i) {
+        const auto& triangle = triangles_[i];
+        fprintf(file, "%s{\n", trianglesIndent.c_str());
+        fprintf(file, "%s\"v0\": [%g, %g, %g],\n", 
+                trianglesIndent.c_str(), triangle.v0_.x, triangle.v0_.y, triangle.v0_.z);
+        fprintf(file, "%s\"v1\": [%g, %g, %g],\n", 
+                trianglesIndent.c_str(), triangle.v1_.x, triangle.v1_.y, triangle.v1_.z);
+        fprintf(file, "%s\"v2\": [%g, %g, %g]\n", 
+                trianglesIndent.c_str(), triangle.v2_.x, triangle.v2_.y, triangle.v2_.z);
+        
+        if (i < triangles_.size() - 1) {
+            fprintf(file, "%s},\n", trianglesIndent.c_str());
+        } else {
+            fprintf(file, "%s}\n", trianglesIndent.c_str());
+        }
+    }
+    
+    fprintf(file, "%s]\n", innerIndent.c_str());
+    
+    fprintf(file, "%s}", baseIndent.c_str());
+}

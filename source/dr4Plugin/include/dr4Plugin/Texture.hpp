@@ -51,6 +51,8 @@ public:
 
     virtual void Clear(::dr4::Color color) override;
 
+    virtual ::dr4::Image* GetImage() const override;
+
     virtual void DrawOn(::dr4::Texture& texture) const override;
 
     virtual void SetPos(::dr4::Vec2f pos) override;

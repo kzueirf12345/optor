@@ -4,23 +4,28 @@
 #include "dr4/keycodes.hpp"
 #include "optics/OpticObj.hpp"
 #include "widgets/OpticObjDesc.hpp"
+#include "widgets/Textable.hpp"
 #include "widgets/WidgetChildable.hpp"
 #include "widgets/WidgetManager.hpp"
-#include "widgets/WidgetText.hpp"
 
 namespace optor 
 {
 
-class OpticObjShort : public WidgetText {
+class OpticObjShort : public Textable, public WidgetChildable {
     public:
-        OpticObjShort(optor::WidgetManager* manager, const dr4::Vec2f& size, optor::OpticObj* obj);
+        OpticObjShort(optor::WidgetManager* manager, const dr4::Vec2f& size, optor::OpticObj* obj, size_t ind);
 
         virtual void OnIdle() override;
         virtual bool OnKeyboardPress(const dr4::Event& event) override;
 
-        const optor::OpticObj* GetObj() const noexcept;
+        virtual void Draw(dr4::Texture& srcTexture) override;
+
+        optor::OpticObj* GetObj();
+
+        [[nodiscard]] virtual std::string GetTypeName() const override {return "OpticObjShort"; };
 
     private:
+
         optor::OpticObj* obj_;
 
         optor::WidgetChildable* desktop_;
