@@ -49,7 +49,7 @@ int main() {
     cum::Manager pluginsManager = {};
 
     auto* dr4Backend = dynamic_cast<cum::DR4BackendPlugin*>(ERROR_HANDLE([&pluginsManager](){
-        return pluginsManager.LoadFromFile("./build/source/dr4Plugin/libdr4Plugin.so");
+        return pluginsManager.LoadFromFile("./plugins/dr4/v2/libVovchik.so");
     }));
 
     // auto* dr4Backend = dynamic_cast<cum::DR4BackendPlugin*>(ERROR_HANDLE([&pluginsManager](){

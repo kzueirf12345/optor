@@ -28,15 +28,15 @@ else()
 endif()
 
 add_subdirectory(source/common)
-add_subdirectory(source/dr4Plugin)
+# add_subdirectory(source/dr4Plugin)
 add_subdirectory(source/widgets)
 add_subdirectory(source/global)
 add_subdirectory(source/optics)
 add_subdirectory(source/piska)
 add_subdirectory(source/mipt-ded-zemax)
 
-find_package(X11                            REQUIRED)
-find_package(SFML 2.6.1 COMPONENTS graphics REQUIRED)
+# find_package(X11                            REQUIRED)
+# find_package(SFML 2.6.1 COMPONENTS graphics REQUIRED)
 
 
 add_executable(${CMAKE_PROJECT_NAME}

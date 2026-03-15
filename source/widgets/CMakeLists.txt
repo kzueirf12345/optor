@@ -52,16 +52,10 @@ target_include_directories(widgets
 
 target_link_libraries(widgets
     PRIVATE 
-        # SDL3_ttf
-        # SDL3
         common
         cum
         dr4
         pp
         global
         optics
-        dr4Plugin
 )
-
-# add_subdirectory(external/SDL_ttf)
-# target_link_libraries(твоя_цель PRIVATE SDL3_ttf)
