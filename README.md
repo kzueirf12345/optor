@@ -35,7 +35,7 @@ $ ./build/optor # если есть ошибки из-за старой верс
 
 ### Функционал
 
-<video src="readme_assets/usage.mp4"  controls></video>
+![Видео функционала](readme_assets/usage.mp4)
 
 ![Интерфейс программы](readme_assets/prog1.png)
 
