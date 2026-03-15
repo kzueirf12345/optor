@@ -35,7 +35,9 @@ $ ./build/optor # если есть ошибки из-за старой верс
 
 ### Функционал
 
-![Видео функционала](readme_assets/usage.mp4)
+![Видео функционала в хорошем качестве](readme_assets/usage.mp4)
+
+![Гифка функционала](readme_assets/usage.gif)
 
 ![Интерфейс программы](readme_assets/prog1.png)
 
